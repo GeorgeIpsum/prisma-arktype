@@ -1,25 +1,36 @@
 import { access, mkdir, rm } from "node:fs/promises";
-import { generatorHandler } from "@prisma/generator-helper";
+import generatorHelperPkg from "@prisma/generator-helper";
+
+const { generatorHandler } = generatorHelperPkg;
+
 import { getConfig, setConfig } from "./config";
-import { processCreate } from "./generators/create";
-import { processEnums } from "./generators/enum";
-import { processInclude } from "./generators/include";
-import { processOrderBy } from "./generators/orderBy";
-import { processPlain } from "./generators/plain";
+import { processCreate, processedCreate } from "./generators/create";
+import { processEnums, processedEnums } from "./generators/enum";
+import { processedInclude, processInclude } from "./generators/include";
+import { processedOrderBy, processOrderBy } from "./generators/orderBy";
+import { processedPlain, processPlain } from "./generators/plain";
 import {
+  processedRelations,
+  processedRelationsCreate,
+  processedRelationsUpdate,
   processRelations,
   processRelationsCreate,
   processRelationsUpdate,
 } from "./generators/relations";
-import { processSelect } from "./generators/select";
-import { processUpdate } from "./generators/update";
-import { processWhere } from "./generators/where";
+import { processedSelect, processSelect } from "./generators/select";
+import { processedUpdate, processUpdate } from "./generators/update";
+import {
+  processedWhere,
+  processedWhereUnique,
+  processWhere,
+} from "./generators/where";
+import { write } from "./writer";
 
 generatorHandler({
   onManifest(config) {
     return {
       defaultOutput: "./prisma/generated/validators",
-      prettyName: "prismaark",
+      prettyName: "prismark",
     };
   },
   async onGenerate(options) {
@@ -32,7 +43,7 @@ generatorHandler({
       await access(getConfig().output);
       await rm(getConfig().output, { recursive: true });
     } catch {
-      console.error("Output directory does not exist, creating a new one.");
+      console.log("Output directory does not exist, creating a new one.");
     }
 
     await mkdir(getConfig().output, { recursive: true });
@@ -48,5 +59,22 @@ generatorHandler({
     processRelations(options.dmmf.datamodel.models);
     processRelationsCreate(options.dmmf.datamodel.models);
     processRelationsUpdate(options.dmmf.datamodel.models);
+
+    await write(
+      processedEnums,
+      processedPlain,
+      processedRelations,
+      processedWhere,
+      processedWhereUnique,
+      processedCreate,
+      processedUpdate,
+      processedRelationsCreate,
+      processedRelationsUpdate,
+      processedSelect,
+      processedInclude,
+      processedOrderBy,
+    );
+
+    console.log("✅ prismark: Generated ArkType schemas successfully!");
   },
 });

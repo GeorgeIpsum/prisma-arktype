@@ -1,4 +1,19 @@
 {
   "root": true,
-  "extends": ["@tilli-pro/biome"]
+  "extends": ["@tilli-pro/biome"],
+  "overrides": [
+    {
+      "includes": ["**/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noEnum": "off"
+          },
+          "security": {
+            "noSecrets": "off"
+          }
+        }
+      }
+    }
+  ]
 }

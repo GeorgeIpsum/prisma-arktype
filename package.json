@@ -1,14 +1,45 @@
 {
-  "name": "prisma-arktype",
+  "name": "prismark",
   "version": "1.0.0",
-  "description": "",
+  "description": "Generate ArkType schemas from your Prisma schema",
   "type": "module",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
-  "keywords": [],
+  "bin": {
+    "prismark": "./dist/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "pkgroll",
+    "dev": "pkgroll --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "pnpm build && prisma generate && vitest run",
+    "pretest": "pnpm build",
+    "prepublishOnly": "npm run build",
+    "lint": "biome check",
+    "lint:fix": "biome check --write"
+  },
+  "keywords": [
+    "prisma",
+    "arktype",
+    "validation",
+    "schema",
+    "generator",
+    "typesafe"
+  ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/prismark.git"
+  },
   "packageManager": "pnpm@10.19.0",
   "dependencies": {
     "@prisma/generator-helper": "^6.18.0",
@@ -22,6 +53,7 @@
     "pkgroll": "^2.20.1",
     "prisma": "^6.18.0",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^2.1.9"
   }
 }
