@@ -27,7 +27,7 @@ import {
 import { write } from "./writer";
 
 generatorHandler({
-  onManifest(config) {
+  onManifest() {
     return {
       defaultOutput: "./prisma/generated/validators",
       prettyName: "prismark",
@@ -43,7 +43,7 @@ generatorHandler({
       await access(getConfig().output);
       await rm(getConfig().output, { recursive: true });
     } catch {
-      console.log("Output directory does not exist, creating a new one.");
+      // no-op
     }
 
     await mkdir(getConfig().output, { recursive: true });
@@ -75,6 +75,6 @@ generatorHandler({
       processedOrderBy,
     );
 
-    console.log("✅ prismark: Generated ArkType schemas successfully!");
+    console.info("✅ prismark: Generated ArkType schemas successfully!");
   },
 });
