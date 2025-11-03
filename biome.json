@@ -1,0 +1,4 @@
+{
+  "root": true,
+  "extends": ["@tilli-pro/biome"]
+}
