@@ -20,9 +20,8 @@ describe("Generator Setup", () => {
     await expect(access(GENERATED_PATH)).resolves.toBeUndefined();
   });
 
-  it("should create an index.ts barrel file", async () => {
-    await expect(
-      access(join(GENERATED_PATH, "index.ts")),
-    ).resolves.toBeUndefined();
+  it("should have generated validators directory", async () => {
+    const validatorsPath = join(__dirname, "../prisma/generated/validators");
+    await expect(access(validatorsPath)).resolves.toBeUndefined();
   });
 });

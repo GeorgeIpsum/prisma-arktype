@@ -1,5 +1,5 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { extractAnnotations, generateArktypeOptions } from "../annotations";
+import { extractAnnotations } from "../annotations";
 import { makeUnion } from "../wrappers";
 import type { ProcessedModel } from "../model";
 
@@ -29,7 +29,6 @@ function stringifyEnum(enumData: DMMF.DatamodelEnum): string | undefined {
 
   // In ArkType, string literals in unions need single quotes
   const values = enumData.values.map((v) => `'${v.name}'`);
-  const options = generateArktypeOptions(annotations);
 
-  return `type("${makeUnion(values)}")${options}`;
+  return `type("${makeUnion(values)}")`;
 }

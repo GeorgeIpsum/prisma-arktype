@@ -1,5 +1,5 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { extractAnnotations, generateArktypeOptions } from "../annotations";
+import { extractAnnotations } from "../annotations";
 import type { ProcessedModel } from "../model";
 
 export const processedSelect: ProcessedModel[] = [];
@@ -41,6 +41,5 @@ function stringifySelect(model: DMMF.Model): string | undefined {
   // Add _count field
   fields.push(`"_count?": "boolean"`);
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }

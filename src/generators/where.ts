@@ -1,14 +1,10 @@
 import type { DMMF } from "@prisma/generator-helper";
-import {
-  extractAnnotations,
-  generateArktypeOptions,
-  isTypeOverwrite,
-} from "../annotations";
+import { extractAnnotations, isTypeOverwrite } from "../annotations";
 import {
   isPrimitivePrismaFieldType,
   stringifyPrimitiveType,
 } from "../primitiveField";
-import { wrapWithArray } from "../wrappers";
+import { wrapPrimitiveWithArray } from "../wrappers";
 import { processedEnums } from "./enum";
 import type { ProcessedModel } from "../model";
 
@@ -63,7 +59,7 @@ function stringifyWhere(model: DMMF.Model): string | undefined {
     let fieldType: string;
 
     if (typeOverwrite) {
-      fieldType = `"${typeOverwrite.value}"`;
+      fieldType = typeOverwrite.value;
     } else if (isPrimitivePrismaFieldType(field.type)) {
       fieldType = stringifyPrimitiveType(field.type, fieldAnnotations);
     } else if (field.kind === "enum") {
@@ -77,15 +73,14 @@ function stringifyWhere(model: DMMF.Model): string | undefined {
 
     if (field.isList) {
       const inner = fieldType.slice(1, -1);
-      fieldType = `"${wrapWithArray(inner)}"`;
+      fieldType = `"${wrapPrimitiveWithArray(inner)}"`;
     }
 
     // All where fields are optional
     fields.push(`"${field.name}?": ${fieldType}`);
   }
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }
 
 function stringifyWhereUnique(model: DMMF.Model): string | undefined {
@@ -111,7 +106,7 @@ function stringifyWhereUnique(model: DMMF.Model): string | undefined {
     let fieldType: string;
 
     if (typeOverwrite) {
-      fieldType = `"${typeOverwrite.value}"`;
+      fieldType = typeOverwrite.value;
     } else if (isPrimitivePrismaFieldType(field.type)) {
       fieldType = stringifyPrimitiveType(field.type, fieldAnnotations);
     } else if (field.kind === "enum") {
@@ -131,6 +126,5 @@ function stringifyWhereUnique(model: DMMF.Model): string | undefined {
     return;
   }
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }

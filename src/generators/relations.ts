@@ -1,5 +1,5 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { extractAnnotations, generateArktypeOptions } from "../annotations";
+import { extractAnnotations } from "../annotations";
 import type { ProcessedModel } from "../model";
 
 export const processedRelations: ProcessedModel[] = [];
@@ -40,14 +40,15 @@ function stringifyRelations(model: DMMF.Model): string | undefined {
 
     // For relations, use "unknown" since cross-references need runtime resolution
     // The actual types will be enforced by Prisma Client
-    let fieldType = `"unknown"`;
+    let fieldType: string;
 
-    // Apply wrappers
+    // Apply wrappers - use type().array() for proper array syntax
     if (field.isList) {
-      fieldType = `"unknown[]"`;
-    }
-    if (!field.isRequired) {
+      fieldType = `type("unknown").array()`;
+    } else if (!field.isRequired) {
       fieldType = `"unknown | null"`;
+    } else {
+      fieldType = `"unknown"`;
     }
 
     fields.push(`"${field.name}": ${fieldType}`);
@@ -57,8 +58,7 @@ function stringifyRelations(model: DMMF.Model): string | undefined {
     return;
   }
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }
 
 export function processRelationsCreate(
@@ -120,8 +120,7 @@ function stringifyRelationsInputCreate(
     return;
   }
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }
 
 export function processRelationsUpdate(
@@ -176,14 +175,17 @@ function stringifyRelationsInputUpdate(
 
     let fieldType: string;
     if (field.isList) {
-      // For list relations, allow connect and disconnect
-      fieldType = `{ "connect"?: { "id": ${idType} }[], "disconnect"?: { "id": ${idType} }[] }`;
+      // For list relations, allow connect and disconnect arrays
+      // Arrays of objects need to use type({}).array() syntax
+      const connectType = `type({ "id": ${idType} }).array()`;
+      const disconnectType = `type({ "id": ${idType} }).array()`;
+      fieldType = `{ "connect?": ${connectType}, "disconnect?": ${disconnectType} }`;
     } else {
       // For single relations
       if (field.isRequired) {
         fieldType = `{ "connect": { "id": ${idType} } }`;
       } else {
-        fieldType = `{ "connect"?: { "id": ${idType} }, "disconnect"?: "boolean" }`;
+        fieldType = `{ "connect?": { "id": ${idType} }, "disconnect?": "boolean" }`;
       }
     }
 
@@ -194,6 +196,5 @@ function stringifyRelationsInputUpdate(
     return;
   }
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }

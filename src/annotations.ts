@@ -3,7 +3,6 @@ export type Annotation =
   | { type: "HIDDEN_INPUT" }
   | { type: "HIDDEN_INPUT_CREATE" }
   | { type: "HIDDEN_INPUT_UPDATE" }
-  | { type: "OPTIONS"; value: string }
   | { type: "TYPE_OVERWRITE"; value: string };
 
 export function isHidden(
@@ -28,12 +27,6 @@ export function isHiddenInputUpdate(
   annotation: Annotation,
 ): annotation is { type: "HIDDEN_INPUT_UPDATE" } {
   return annotation.type === "HIDDEN_INPUT_UPDATE";
-}
-
-export function isOptions(
-  annotation: Annotation,
-): annotation is { type: "OPTIONS"; value: string } {
-  return annotation.type === "OPTIONS";
 }
 
 export function isTypeOverwrite(
@@ -65,11 +58,9 @@ const annotationKeys = [
     ],
     type: "HIDDEN_INPUT_UPDATE" as const,
   },
-  { keys: ["@prisma-arktype.options"], type: "OPTIONS" as const },
   { keys: ["@prisma-arktype.typeOverwrite"], type: "TYPE_OVERWRITE" as const },
 ];
 
-const prismaArktypeOptionsRegex = /@prisma-arktype\.options\{(.+)\}/;
 const prismaArktypeTypeOverwriteRegex = /@prisma-arktype\.typeOverwrite=(.+)/;
 
 export function extractAnnotations(documentation?: string): {
@@ -92,14 +83,7 @@ export function extractAnnotations(documentation?: string): {
           if (line.includes(key)) {
             isAnnotation = true;
 
-            if (type === "OPTIONS") {
-              const match = line.match(prismaArktypeOptionsRegex);
-              if (match && match[1]) {
-                annotations.push({ type: "OPTIONS", value: match[1] });
-              } else {
-                throw new Error(`Invalid OPTIONS annotation: ${line}`);
-              }
-            } else if (type === "TYPE_OVERWRITE") {
+            if (type === "TYPE_OVERWRITE") {
               const match = line.match(prismaArktypeTypeOverwriteRegex);
               if (match && match[1]) {
                 annotations.push({
@@ -115,7 +99,6 @@ export function extractAnnotations(documentation?: string): {
             break;
           }
         }
-        // biome-ignore lint/nursery/noUnnecessaryConditions: <idk>
         if (isAnnotation) break;
       }
 
@@ -149,13 +132,4 @@ export function containsHiddenInputCreate(annotations: Annotation[]): boolean {
 
 export function containsHiddenInputUpdate(annotations: Annotation[]): boolean {
   return annotations.some(isHiddenInputUpdate);
-}
-
-export function generateArktypeOptions(annotations: Annotation[]): string {
-  const optionsAnnotations = annotations.filter(isOptions);
-  if (optionsAnnotations.length === 0) {
-    return "";
-  }
-
-  return `.pipe(${optionsAnnotations.map((a) => a.value).join(", ")})`;
 }

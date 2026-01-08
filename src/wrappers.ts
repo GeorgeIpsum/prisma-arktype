@@ -1,5 +1,9 @@
-export function wrapWithArray(input: string): string {
+export function wrapPrimitiveWithArray(input: string): string {
   return `${input}[]`;
+}
+
+export function wrapObjectWithArray(input: string): string {
+  return `type(${input}).array()`;
 }
 
 export function wrapWithNullable(input: string): string {

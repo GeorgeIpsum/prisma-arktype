@@ -1,37 +1,38 @@
-import { type } from "arktype";
 import { describe, expect, it } from "vitest";
+import { TEST_MODEL_MAP } from "./config/model-mapping";
+import {
+  isValidationError,
+  isValidationSuccess,
+  loadEnumValidator,
+} from "./utils/test-helpers";
 
 describe("Enum Generation", () => {
-  it("should generate Role enum", async () => {
-    const { Role } = await import("../prisma/generated/Role");
-    expect(Role).toBeDefined();
+  describe(TEST_MODEL_MAP.BASIC_ENUM, () => {
+    it("should validate valid enum values", async () => {
+      const EnumValidator = await loadEnumValidator(TEST_MODEL_MAP.BASIC_ENUM);
 
-    // Test valid values
-    const userResult = Role("USER");
-    expect(userResult).toBe("USER");
+      for (const value of TEST_MODEL_MAP.ENUM_VALUES) {
+        const result = EnumValidator(value);
+        expect(isValidationSuccess(result)).toBe(true);
+      }
+    });
 
-    const adminResult = Role("ADMIN");
-    expect(adminResult).toBe("ADMIN");
+    it("should reject invalid enum values", async () => {
+      const EnumValidator = await loadEnumValidator(TEST_MODEL_MAP.BASIC_ENUM);
 
-    const moderatorResult = Role("MODERATOR");
-    expect(moderatorResult).toBe("MODERATOR");
-
-    // Test invalid value
-    const invalidResult = Role("INVALID");
-    expect(invalidResult instanceof type.errors).toBe(true);
+      const result = EnumValidator("INVALID_VALUE");
+      expect(isValidationError(result)).toBe(true);
+    });
   });
 
-  it("should generate Status enum", async () => {
-    const { Status } = await import("../prisma/generated/Status");
-    expect(Status).toBeDefined();
+  describe(TEST_MODEL_MAP.STATUS_ENUM, () => {
+    it("should validate valid status enum values", async () => {
+      const EnumValidator = await loadEnumValidator(TEST_MODEL_MAP.STATUS_ENUM);
 
-    const activeResult = Status("ACTIVE");
-    expect(activeResult).toBe("ACTIVE");
-
-    const inactiveResult = Status("INACTIVE");
-    expect(inactiveResult).toBe("INACTIVE");
-
-    const pendingResult = Status("PENDING");
-    expect(pendingResult).toBe("PENDING");
+      for (const value of TEST_MODEL_MAP.STATUS_VALUES) {
+        const result = EnumValidator(value);
+        expect(isValidationSuccess(result)).toBe(true);
+      }
+    });
   });
 });

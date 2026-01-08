@@ -1,67 +1,58 @@
-import { type } from "arktype";
 import { describe, expect, it } from "vitest";
+import { TEST_MODEL_MAP } from "./config/model-mapping";
+import { isValidationSuccess, loadValidator } from "./utils/test-helpers";
 
 describe("Where Clause Generation", () => {
-  it("should generate UserWhere schema", async () => {
-    const { UserWhere } = await import("../prisma/generated/UserWhere");
-    expect(UserWhere).toBeDefined();
+  const MODEL = TEST_MODEL_MAP.MODEL_WITH_UNIQUE;
 
-    // Valid where clause
-    const validWhere = {
+  it("should generate Where schema", async () => {
+    const WhereValidator = await loadValidator(MODEL, "Where");
+    expect(WhereValidator).toBeDefined();
+  });
+
+  it("should make all fields optional in Where", async () => {
+    const WhereValidator = await loadValidator(MODEL, "Where");
+
+    const result = WhereValidator({});
+    expect(isValidationSuccess(result)).toBe(true);
+  });
+
+  it("should accept partial where conditions", async () => {
+    const WhereValidator = await loadValidator(MODEL, "Where");
+
+    const result = WhereValidator({
       email: "test@example.com",
-      isActive: true,
-    };
+    });
 
-    const result = UserWhere(validWhere);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
+  });
+});
+
+describe("WhereUnique Clause Generation", () => {
+  const MODEL = TEST_MODEL_MAP.MODEL_WITH_UNIQUE;
+
+  it("should generate WhereUnique schema", async () => {
+    const WhereUniqueValidator = await loadValidator(MODEL, "WhereUnique");
+    expect(WhereUniqueValidator).toBeDefined();
   });
 
-  it("should allow empty where clause", async () => {
-    const { UserWhere } = await import("../prisma/generated/UserWhere");
+  it("should accept unique identifier", async () => {
+    const WhereUniqueValidator = await loadValidator(MODEL, "WhereUnique");
 
-    const emptyWhere = {};
-    const result = UserWhere(emptyWhere);
-    expect(result instanceof type.errors).toBe(false);
+    const result = WhereUniqueValidator({
+      id: "test123",
+    });
+
+    expect(isValidationSuccess(result)).toBe(true);
   });
 
-  it("should generate UserWhereUnique schema", async () => {
-    const { UserWhereUnique } = await import(
-      "../prisma/generated/UserWhereUnique"
-    );
-    expect(UserWhereUnique).toBeDefined();
+  it("should accept unique field", async () => {
+    const WhereUniqueValidator = await loadValidator(MODEL, "WhereUnique");
 
-    // Valid unique where clause
-    const validWhereUnique = {
-      id: "user123",
-    };
-
-    const result = UserWhereUnique(validWhereUnique);
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should validate WhereUnique with email", async () => {
-    const { UserWhereUnique } = await import(
-      "../prisma/generated/UserWhereUnique"
-    );
-
-    const whereByEmail = {
+    const result = WhereUniqueValidator({
       email: "test@example.com",
-    };
+    });
 
-    const result = UserWhereUnique(whereByEmail);
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should generate PostWhere schema", async () => {
-    const { PostWhere } = await import("../prisma/generated/PostWhere");
-    expect(PostWhere).toBeDefined();
-
-    const validWhere = {
-      published: true,
-      authorId: "user123",
-    };
-
-    const result = PostWhere(validWhere);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 });

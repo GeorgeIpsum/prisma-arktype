@@ -146,4 +146,9 @@ vite.config.ts.timestamp-*
 
 # Generated files
 prisma/generated
-prisma/schema
+
+# Ignore production schemas but keep test schemas
+prisma/schema/*
+!prisma/schema/test-models.prisma
+!prisma/schema/README.md
+!prisma/schema/schema.prisma

@@ -1,97 +1,67 @@
-import { type } from "arktype";
 import { describe, expect, it } from "vitest";
+import { TEST_MODEL_MAP } from "./config/model-mapping";
+import {
+  getFixture,
+  isValidationError,
+  isValidationSuccess,
+  loadValidator,
+} from "./utils/test-helpers";
 
 describe("Plain Model Generation", () => {
-  it("should generate UserPlain schema", async () => {
-    const { UserPlain } = await import("../prisma/generated/UserPlain");
-    expect(UserPlain).toBeDefined();
+  const MODEL = TEST_MODEL_MAP.BASIC_MODEL;
 
-    // Test valid user plain data
-    const validData = {
-      id: "user123",
+  it("should generate Plain schema for model", async () => {
+    const PlainValidator = await loadValidator(MODEL, "Plain");
+    expect(PlainValidator).toBeDefined();
+  });
+
+  it("should validate with complete valid data", async () => {
+    const PlainValidator = await loadValidator(MODEL, "Plain");
+    const fixture = getFixture("TestUser");
+
+    const result = PlainValidator({
+      ...fixture,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    expect(isValidationSuccess(result)).toBe(true);
+  });
+
+  it("should reject data with missing required fields", async () => {
+    const PlainValidator = await loadValidator(MODEL, "Plain");
+
+    const result = PlainValidator({
+      id: "test",
+      // missing email (required)
+    });
+
+    expect(isValidationError(result)).toBe(true);
+  });
+
+  it("should reject data with wrong types", async () => {
+    const PlainValidator = await loadValidator(MODEL, "Plain");
+    const fixture = getFixture("TestUser");
+
+    const result = PlainValidator({
+      ...fixture,
+      email: 123, // should be string
+    });
+
+    expect(isValidationError(result)).toBe(true);
+  });
+
+  it("should allow optional fields to be omitted", async () => {
+    const PlainValidator = await loadValidator(MODEL, "Plain");
+
+    const result = PlainValidator({
+      id: "test",
       email: "test@example.com",
-      name: "Test User",
-      age: 25,
-      role: "USER",
-      isActive: true,
+      // name and phoneNumber are optional
       createdAt: new Date(),
       updatedAt: new Date(),
-    };
+    });
 
-    const result = UserPlain(validData);
-    expect(result instanceof type.errors).toBe(false);
-    if (!(result instanceof type.errors)) {
-      expect(result.email).toBe(validData.email);
-      expect(result.name).toBe(validData.name);
-    }
-  });
-
-  it("should validate UserPlain required fields", async () => {
-    const { UserPlain } = await import("../prisma/generated/UserPlain");
-
-    // Missing required fields
-    const invalidData = {
-      name: "Test User",
-    };
-
-    const result = UserPlain(invalidData);
-    expect(result instanceof type.errors).toBe(true);
-  });
-
-  it("should generate PostPlain schema", async () => {
-    const { PostPlain } = await import("../prisma/generated/PostPlain");
-    expect(PostPlain).toBeDefined();
-
-    const validPost = {
-      id: "post123",
-      title: "Test Post",
-      content: "This is a test post",
-      published: false,
-      views: 100,
-      authorId: "user123",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    const result = PostPlain(validPost);
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should handle optional fields", async () => {
-    const { UserPlain } = await import("../prisma/generated/UserPlain");
-
-    const dataWithoutOptionals = {
-      id: "user123",
-      email: "test@example.com",
-      role: "USER",
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    const result = UserPlain(dataWithoutOptionals);
-    if (result instanceof type.errors) {
-      console.log("UserPlain validation failed:", result.summary);
-    }
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should validate types correctly", async () => {
-    const { PostPlain } = await import("../prisma/generated/PostPlain");
-
-    // Wrong type for views (should be integer)
-    const invalidPost = {
-      id: "post123",
-      title: "Test Post",
-      content: "This is a test post",
-      published: false,
-      views: "not a number",
-      authorId: "user123",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    const result = PostPlain(invalidPost);
-    expect(result instanceof type.errors).toBe(true);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 });

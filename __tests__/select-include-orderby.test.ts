@@ -1,109 +1,78 @@
-import { type } from "arktype";
 import { describe, expect, it } from "vitest";
+import { TEST_MODEL_MAP } from "./config/model-mapping";
+import {
+  isValidationError,
+  isValidationSuccess,
+  loadValidator,
+} from "./utils/test-helpers";
 
 describe("Select Schema Generation", () => {
-  it("should generate UserSelect schema", async () => {
-    const { UserSelect } = await import("../prisma/generated/UserSelect");
-    expect(UserSelect).toBeDefined();
+  const MODEL = TEST_MODEL_MAP.BASIC_MODEL;
 
-    const validSelect = {
+  it("should generate Select schema", async () => {
+    const SelectValidator = await loadValidator(MODEL, "Select");
+    expect(SelectValidator).toBeDefined();
+  });
+
+  it("should accept boolean flags for fields", async () => {
+    const SelectValidator = await loadValidator(MODEL, "Select");
+
+    const result = SelectValidator({
       id: true,
       email: true,
-      name: true,
-    };
+      name: false,
+    });
 
-    const result = UserSelect(validSelect);
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should allow partial selection", async () => {
-    const { UserSelect } = await import("../prisma/generated/UserSelect");
-
-    const partialSelect = {
-      email: true,
-    };
-
-    const result = UserSelect(partialSelect);
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should include _count field", async () => {
-    const { UserSelect } = await import("../prisma/generated/UserSelect");
-
-    const selectWithCount = {
-      email: true,
-      _count: true,
-    };
-
-    const result = UserSelect(selectWithCount);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 });
 
 describe("Include Schema Generation", () => {
-  it("should generate UserInclude schema", async () => {
-    const { UserInclude } = await import("../prisma/generated/UserInclude");
-    expect(UserInclude).toBeDefined();
+  const MODEL = TEST_MODEL_MAP.MODEL_WITH_RELATIONS;
 
-    const validInclude = {
-      posts: true,
-      profile: true,
-    };
-
-    const result = UserInclude(validInclude);
-    expect(result instanceof type.errors).toBe(false);
+  it("should generate Include schema", async () => {
+    const IncludeValidator = await loadValidator(MODEL, "Include");
+    expect(IncludeValidator).toBeDefined();
   });
 
-  it("should generate PostInclude schema", async () => {
-    const { PostInclude } = await import("../prisma/generated/PostInclude");
-    expect(PostInclude).toBeDefined();
+  it("should accept boolean flags for relations", async () => {
+    const IncludeValidator = await loadValidator(MODEL, "Include");
 
-    const validInclude = {
-      author: true,
-      tags: true,
-      comments: true,
-    };
+    const result = IncludeValidator({
+      payments: true,
+      profile: false,
+    });
 
-    const result = PostInclude(validInclude);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 });
 
 describe("OrderBy Schema Generation", () => {
-  it("should generate UserOrderBy schema", async () => {
-    const { UserOrderBy } = await import("../prisma/generated/UserOrderBy");
-    expect(UserOrderBy).toBeDefined();
+  const MODEL = TEST_MODEL_MAP.BASIC_MODEL;
 
-    const validOrderBy = {
+  it("should generate OrderBy schema", async () => {
+    const OrderByValidator = await loadValidator(MODEL, "OrderBy");
+    expect(OrderByValidator).toBeDefined();
+  });
+
+  it("should accept asc/desc for fields", async () => {
+    const OrderByValidator = await loadValidator(MODEL, "OrderBy");
+
+    const result = OrderByValidator({
       email: "asc",
       createdAt: "desc",
-    };
+    });
 
-    const result = UserOrderBy(validOrderBy);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 
-  it("should validate sort direction", async () => {
-    const { UserOrderBy } = await import("../prisma/generated/UserOrderBy");
+  it("should reject invalid sort directions", async () => {
+    const OrderByValidator = await loadValidator(MODEL, "OrderBy");
 
-    const invalidOrderBy = {
+    const result = OrderByValidator({
       email: "invalid",
-    };
+    });
 
-    const result = UserOrderBy(invalidOrderBy);
-    expect(result instanceof type.errors).toBe(true);
-  });
-
-  it("should generate PostOrderBy schema", async () => {
-    const { PostOrderBy } = await import("../prisma/generated/PostOrderBy");
-    expect(PostOrderBy).toBeDefined();
-
-    const validOrderBy = {
-      title: "asc",
-      views: "desc",
-    };
-
-    const result = PostOrderBy(validOrderBy);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationError(result)).toBe(true);
   });
 });
