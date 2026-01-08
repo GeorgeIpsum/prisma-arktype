@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+env:
+  DATABASE_URL: ""
+
 jobs:
   test:
     name: Test
@@ -34,12 +37,6 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
-
-      - name: Create .env file
-        run: echo "DATABASE_URL=''" > .env
-
-      - name: Verify .env exists
-        run: cat .env
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

@@ -1,4 +1,3 @@
-// biome-ignore lint/style/noDefaultExport: <required for commitlint config>
 export default {
   extends: ["@commitlint/config-conventional"],
   rules: {
