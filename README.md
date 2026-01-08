@@ -132,75 +132,102 @@ const whereResult = UserWhere(whereClause);
 
 ## Annotations
 
-Control schema generation using annotations in your Prisma schema:
+Control schema generation using annotations in your Prisma schema. All annotations are added as documentation comments (`///`).
+
+### Available Annotations
+
+| Annotation | Scope | Description |
+|------------|-------|-------------|
+| `@prisma-arktype.hide` | Model or Field | Completely hide from all generated schemas |
+| `@prisma-arktype.input.hide` | Field | Hide from Create and Update input schemas |
+| `@prisma-arktype.create.input.hide` | Field | Hide from Create input schema only |
+| `@prisma-arktype.update.input.hide` | Field | Hide from Update input schema only |
+| `@prisma-arktype.typeOverwrite="<type>"` | Field | Override the generated ArkType type |
 
 ### Hide Fields/Models
+
+Completely exclude models or fields from all generated schemas:
 
 ```prisma
 /// @prisma-arktype.hide
 model InternalModel {
   id String @id
+  secret String
 }
 
 model User {
   id String @id
+  email String
   /// @prisma-arktype.hide
-  internalField String
+  passwordHash String
 }
 ```
 
 ### Hide from Input Models
 
+Control which fields appear in Create and Update schemas:
+
 ```prisma
 model User {
   id String @id
+  email String
+
   /// @prisma-arktype.input.hide
+  /// Hidden from both Create and Update
   computedField String
+
   /// @prisma-arktype.create.input.hide
-  onlyInUpdates String
+  /// Only appears in Update schema
+  lastModified DateTime
+
   /// @prisma-arktype.update.input.hide
-  onlyInCreates String
+  /// Only appears in Create schema
+  initialStatus String
 }
 ```
 
 ### Type Override
+
+Override the default type mapping with custom ArkType type strings:
 
 ```prisma
 model User {
   id String @id
   /// @prisma-arktype.typeOverwrite="string.email"
   email String
+  /// @prisma-arktype.typeOverwrite="string.url"
+  website String
   /// @prisma-arktype.typeOverwrite="string.numeric"
   phone String
 }
 ```
 
-### Custom Options
-
-```prisma
-model User {
-  id String @id
-  /// @prisma-arktype.options{minLength: 3, maxLength: 50}
-  username String
-}
-```
+This allows you to use any ArkType type definition, including built-in refinements like `string.email`, `string.url`, `number.integer`, etc.
 
 ## Type Mapping
 
 Prisma types are mapped to ArkType as follows:
 
-| Prisma Type | ArkType Type |
-|-------------|--------------|
-| `String` | `"string"` |
-| `Int` | `"integer"` |
-| `BigInt` | `"integer"` |
-| `Float` | `"number"` |
-| `Decimal` | `"number"` |
-| `Boolean` | `"boolean"` |
-| `DateTime` | `"Date"` |
-| `Json` | `"unknown"` |
-| `Bytes` | `"instanceof Buffer"` |
-| Enums | Union of literal values |
+| Prisma Type | ArkType Type | Example Output |
+|-------------|--------------|----------------|
+| `String` | `"string"` | `"string"` |
+| `Int` | `"number.integer"` | `"number.integer"` |
+| `BigInt` | `"number.integer"` | `"number.integer"` |
+| `Float` | `"number"` | `"number"` |
+| `Decimal` | `"number"` | `"number"` |
+| `Boolean` | `"boolean"` | `"boolean"` |
+| `DateTime` | `"Date"` | `"Date"` |
+| `Json` | `"unknown"` | `"unknown"` |
+| `Bytes` | `"instanceof Buffer"` | `"instanceof Buffer"` |
+| Enums | Union of literal values | `type("'USD' \| 'EUR' \| 'GBP'")` |
+| Relations | `"unknown"` | `type("unknown").array()` for lists |
+
+### Special Handling
+
+- **Optional fields**: Use `?` on the key name (`"name?": "string"`)
+- **Nullable fields**: Add `| null` to the type (`"string | null"`)
+- **Arrays**: Use `.array()` syntax for lists (`type("string").array()`)
+- **Enums**: Generated as string literal unions wrapped in `type()`
 
 ## Differences from prismabox
 
@@ -269,7 +296,7 @@ The test schema includes specialized models for testing:
 1. **Basic CRUD** - `TestUser`, `TestPost`, `TestProfile`
 2. **All Prisma Types** - `TestAllTypes` (String, Int, BigInt, Float, Decimal, Boolean, DateTime, Json, Bytes)
 3. **Relations** - One-to-one, one-to-many, many-to-many, composite keys
-4. **Annotations** - `@prisma-arktype.hide`, `@prisma-arktype.typeOverwrite`, custom options
+4. **Annotations** - `@prisma-arktype.hide`, `@prisma-arktype.input.hide`, `@prisma-arktype.typeOverwrite`
 5. **Query Operations** - Select, Include, OrderBy schemas
 6. **Enums** - `TestCurrency`, `TestStatus`
 

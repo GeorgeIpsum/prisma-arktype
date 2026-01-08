@@ -38,7 +38,6 @@ model TestUser {
   /// @prisma-arktype.typeOverwrite="string.email"
   email String @unique
 
-  /// @prisma-arktype.options{minLength: 2, maxLength: 100}
   name        String?
   phoneNumber String?
   isActive    Boolean  @default(true)
@@ -269,16 +268,13 @@ model AnnotatedModel {
   updatedAt DateTime @updatedAt
 }
 
-/// Model for testing custom options
+/// Model for testing plain schema generation with defaults
+/// Note: Custom options (@prisma-arktype.options) have been removed
+/// Use typeOverwrite with ArkType refinements for custom validation
 model TestOptionsModel {
   id String @id @default(cuid(2))
-
-  /// @prisma-arktype.options{minLength: 3, maxLength: 50}
   username String
-
-  /// @prisma-arktype.options{minimum: 0, maximum: 100}
   score Int @default(0)
-
   normalField String
 }
 

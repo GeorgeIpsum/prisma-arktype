@@ -40,9 +40,9 @@ The `test-models.prisma` file is a **completely self-contained schema** designed
    - Testing: all Prisma scalar types (String, Int, BigInt, Float, Decimal, Boolean, DateTime, Json, Bytes)
    - Features: optional types, defaults, enum fields
 
-4. **Annotation Models** - `HiddenModel`, `AnnotatedModel`, `TestOptionsModel`
-   - Testing: `@prisma-arktype.hide`, `@prisma-arktype.input.hide`, `@prisma-arktype.typeOverwrite`, custom options
-   - Features: field-level and model-level annotations
+4. **Annotation Models** - `HiddenModel`, `AnnotatedModel`
+   - Testing: `@prisma-arktype.hide`, `@prisma-arktype.input.hide`, `@prisma-arktype.create.input.hide`, `@prisma-arktype.update.input.hide`, `@prisma-arktype.typeOverwrite`
+   - Features: field-level and model-level annotations for controlling schema generation
 
 5. **Query Models** - `TestQueryModel`, `TestQueryItem`
    - Testing: Select, Include, OrderBy schema generation
