@@ -10,6 +10,10 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 env:
   DATABASE_URL: "postgres"
 
+permissions:
+  id-token: write # Required for OIDC
+  contents: read
+
 jobs:
   release:
     name: Release
