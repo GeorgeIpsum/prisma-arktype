@@ -1,95 +1,138 @@
-import { access } from "node:fs/promises";
-import { join } from "node:path";
-import { type } from "arktype";
 import { describe, expect, it } from "vitest";
-
-const GENERATED_PATH = join(__dirname, "../prisma/generated");
+import { TEST_MODEL_MAP } from "./config/model-mapping";
+import {
+  getFixture,
+  isValidationError,
+  isValidationSuccess,
+  loadValidator,
+} from "./utils/test-helpers";
 
 describe("Annotation Support", () => {
-  it("should hide models marked with @prisma-arktype.hide", async () => {
-    // HiddenModel should not be generated
-    const hiddenModelPath = join(GENERATED_PATH, "HiddenModel.ts");
-    await expect(access(hiddenModelPath)).rejects.toThrow();
+  describe("@prisma-arktype.hide on model", () => {
+    it("should not generate validators for hidden model", async () => {
+      const modelName = TEST_MODEL_MAP.HIDDEN_MODEL;
+
+      await expect(loadValidator(modelName, "Plain")).rejects.toThrow();
+    });
   });
 
-  it("should generate AnnotatedModel", async () => {
-    const { AnnotatedModelPlain } = await import(
-      "../prisma/generated/AnnotatedModelPlain"
-    );
-    expect(AnnotatedModelPlain).toBeDefined();
+  describe("@prisma-arktype.hide on field", () => {
+    it("should exclude hidden field from Plain schema", async () => {
+      const modelName = TEST_MODEL_MAP.ANNOTATED_MODEL;
+      const PlainValidator = await loadValidator(modelName, "Plain");
+
+      const fixture = getFixture("AnnotatedModel");
+      const { hiddenField, ...fixtureWithoutHidden } = fixture;
+
+      // hiddenField should not be in the schema (ArkType allows extra props)
+      // So we just verify the schema validates without hiddenField
+      const result = PlainValidator({
+        ...fixtureWithoutHidden,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      expect(isValidationSuccess(result)).toBe(true);
+    });
   });
 
-  it("should exclude hiddenField from plain model", async () => {
-    const { AnnotatedModelPlain } = await import(
-      "../prisma/generated/AnnotatedModelPlain"
-    );
+  describe("@prisma-arktype.input.hide", () => {
+    it("should exclude field from Create and Update schemas", async () => {
+      const modelName = TEST_MODEL_MAP.ANNOTATED_MODEL;
+      const CreateValidator = await loadValidator(modelName, "Create");
 
-    // hiddenField should not be in the schema definition
-    const validData = {
-      id: "test123",
-      computedField: "test",
-      updateOnlyField: "test",
-      createOnlyField: "test",
-      email: "test@example.com",
-      normalField: "test",
-    };
+      const fixture = getFixture("AnnotatedModel");
 
-    // The schema should validate data without hiddenField
-    const result = AnnotatedModelPlain(validData);
-    expect(result instanceof type.errors).toBe(false);
+      // Should work without computedField
+      const result = CreateValidator({
+        email: fixture.email,
+        normalField: fixture.normalField,
+        createOnlyField: fixture.createOnlyField,
+        updateOnlyField: fixture.updateOnlyField,
+        // computedField excluded
+      });
+
+      expect(isValidationSuccess(result)).toBe(true);
+    });
   });
 
-  it("should exclude computedField from create input", async () => {
-    const { AnnotatedModelCreate } = await import(
-      "../prisma/generated/AnnotatedModelCreate"
-    );
-    expect(AnnotatedModelCreate).toBeDefined();
+  describe("@prisma-arktype.create.input.hide", () => {
+    it("should exclude field from Create but allow in Update", async () => {
+      const modelName = TEST_MODEL_MAP.ANNOTATED_MODEL;
+      const CreateValidator = await loadValidator(modelName, "Create");
+      const UpdateValidator = await loadValidator(modelName, "Update");
 
-    // computedField and hiddenField should not be in create schema
-    const validCreate = {
-      createOnlyField: "test",
-      email: "test@example.com",
-      normalField: "test",
-    };
+      // Should work in Create without updateOnlyField
+      const createResult = CreateValidator({
+        email: "test@example.com",
+        normalField: "normal",
+        createOnlyField: "create",
+        // updateOnlyField excluded from create
+      });
+      expect(isValidationSuccess(createResult)).toBe(true);
 
-    const result = AnnotatedModelCreate(validCreate);
-    expect(result instanceof type.errors).toBe(false);
+      // Should work in Update with updateOnlyField
+      const updateResult = UpdateValidator({
+        updateOnlyField: "updated",
+      });
+      expect(isValidationSuccess(updateResult)).toBe(true);
+    });
   });
 
-  it("should exclude createOnlyField from update input", async () => {
-    const { AnnotatedModelUpdate } = await import(
-      "../prisma/generated/AnnotatedModelUpdate"
-    );
-    expect(AnnotatedModelUpdate).toBeDefined();
+  describe("@prisma-arktype.update.input.hide", () => {
+    it("should exclude field from Update but allow in Create", async () => {
+      const modelName = TEST_MODEL_MAP.ANNOTATED_MODEL;
+      const CreateValidator = await loadValidator(modelName, "Create");
+      const UpdateValidator = await loadValidator(modelName, "Update");
 
-    // createOnlyField should not be in update schema
-    const validUpdate = {
-      updateOnlyField: "test",
-      email: "test@example.com",
-      normalField: "test",
-    };
+      // Should work in Create with createOnlyField
+      const createResult = CreateValidator({
+        email: "test@example.com",
+        normalField: "normal",
+        createOnlyField: "create",
+      });
+      expect(isValidationSuccess(createResult)).toBe(true);
 
-    const result = AnnotatedModelUpdate(validUpdate);
-    expect(result instanceof type.errors).toBe(false);
+      // Should work in Update without createOnlyField (field is hidden)
+      const updateResult = UpdateValidator({
+        normalField: "updated",
+        // createOnlyField excluded from update
+      });
+      expect(isValidationSuccess(updateResult)).toBe(true);
+    });
   });
 
-  it("should apply type overwrite for email field", async () => {
-    const { AnnotatedModelPlain } = await import(
-      "../prisma/generated/AnnotatedModelPlain"
-    );
+  describe("@prisma-arktype.typeOverwrite", () => {
+    it("should apply custom type validation", async () => {
+      const modelName = TEST_MODEL_MAP.ANNOTATED_MODEL;
+      const PlainValidator = await loadValidator(modelName, "Plain");
 
-    // The email field should use the custom type override
-    const dataWithInvalidEmail = {
-      id: "test123",
-      computedField: "test",
-      updateOnlyField: "test",
-      createOnlyField: "test",
-      email: "not-an-email",
-      normalField: "test",
-    };
+      // Invalid email should fail
+      const invalidResult = PlainValidator({
+        id: "test",
+        email: "not-an-email",
+        normalField: "normal",
+        computedField: "computed",
+        updateOnlyField: "update",
+        createOnlyField: "create",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
 
-    const result = AnnotatedModelPlain(dataWithInvalidEmail);
-    // This should fail because email is overridden with "string.email"
-    expect(result instanceof type.errors).toBe(true);
+      expect(isValidationError(invalidResult)).toBe(true);
+
+      // Valid email should pass
+      const validResult = PlainValidator({
+        id: "test",
+        email: "valid@example.com",
+        normalField: "normal",
+        computedField: "computed",
+        updateOnlyField: "update",
+        createOnlyField: "create",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+
+      expect(isValidationSuccess(validResult)).toBe(true);
+    });
   });
 });

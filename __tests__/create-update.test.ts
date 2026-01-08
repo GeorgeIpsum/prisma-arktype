@@ -1,88 +1,69 @@
-import { type } from "arktype";
 import { describe, expect, it } from "vitest";
+import { TEST_MODEL_MAP } from "./config/model-mapping";
+import {
+  getFixture,
+  isValidationSuccess,
+  loadValidator,
+} from "./utils/test-helpers";
 
 describe("Create Input Generation", () => {
-  it("should generate UserCreate schema", async () => {
-    const { UserCreate } = await import("../prisma/generated/UserCreate");
-    expect(UserCreate).toBeDefined();
+  const MODEL = TEST_MODEL_MAP.MODEL_WITH_TIMESTAMPS;
 
-    // Valid create data (should exclude id, createdAt, updatedAt)
-    const validCreate = {
-      email: "newuser@example.com",
-      name: "New User",
-      role: "USER",
-      isActive: true,
-    };
-
-    const result = UserCreate(validCreate);
-    if (result instanceof type.errors) {
-      console.log("UserCreate validation failed:", result.summary);
-    }
-    expect(result instanceof type.errors).toBe(false);
+  it("should generate Create schema", async () => {
+    const CreateValidator = await loadValidator(MODEL, "Create");
+    expect(CreateValidator).toBeDefined();
   });
 
-  it("should not require fields with defaults in create", async () => {
-    const { UserCreate } = await import("../prisma/generated/UserCreate");
+  it("should exclude auto-generated id field", async () => {
+    const CreateValidator = await loadValidator(MODEL, "Create");
+    const fixture = getFixture("TestUser");
 
-    // Minimal create data
-    const minimalCreate = {
-      email: "minimal@example.com",
-    };
+    // Should work without id (auto-generated)
+    const result = CreateValidator({
+      email: fixture.email,
+      name: fixture.name,
+      phoneNumber: fixture.phoneNumber,
+    });
 
-    const result = UserCreate(minimalCreate);
-    if (result instanceof type.errors) {
-      console.log("UserCreate minimal validation failed:", result.summary);
-    }
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 
-  it("should generate PostCreate schema", async () => {
-    const { PostCreate } = await import("../prisma/generated/PostCreate");
-    expect(PostCreate).toBeDefined();
+  it("should exclude createdAt and updatedAt (auto-generated)", async () => {
+    const CreateValidator = await loadValidator(MODEL, "Create");
 
-    const validCreate = {
-      title: "New Post",
-      content: "Post content",
-      authorId: "user123",
-    };
+    // Should work without timestamps
+    const result = CreateValidator({
+      email: "test@example.com",
+      name: "Test",
+    });
 
-    const result = PostCreate(validCreate);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 });
 
 describe("Update Input Generation", () => {
-  it("should generate UserUpdate schema", async () => {
-    const { UserUpdate } = await import("../prisma/generated/UserUpdate");
-    expect(UserUpdate).toBeDefined();
+  const MODEL = TEST_MODEL_MAP.MODEL_WITH_TIMESTAMPS;
 
-    // All fields should be optional in update
-    const validUpdate = {
+  it("should generate Update schema", async () => {
+    const UpdateValidator = await loadValidator(MODEL, "Update");
+    expect(UpdateValidator).toBeDefined();
+  });
+
+  it("should make all fields optional", async () => {
+    const UpdateValidator = await loadValidator(MODEL, "Update");
+
+    // Empty object should be valid
+    const result = UpdateValidator({});
+    expect(isValidationSuccess(result)).toBe(true);
+  });
+
+  it("should accept partial data", async () => {
+    const UpdateValidator = await loadValidator(MODEL, "Update");
+
+    const result = UpdateValidator({
       name: "Updated Name",
-    };
+    });
 
-    const result = UserUpdate(validUpdate);
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should allow empty update object", async () => {
-    const { UserUpdate } = await import("../prisma/generated/UserUpdate");
-
-    const emptyUpdate = {};
-    const result = UserUpdate(emptyUpdate);
-    expect(result instanceof type.errors).toBe(false);
-  });
-
-  it("should generate PostUpdate schema", async () => {
-    const { PostUpdate } = await import("../prisma/generated/PostUpdate");
-    expect(PostUpdate).toBeDefined();
-
-    const validUpdate = {
-      title: "Updated Title",
-      published: true,
-    };
-
-    const result = PostUpdate(validUpdate);
-    expect(result instanceof type.errors).toBe(false);
+    expect(isValidationSuccess(result)).toBe(true);
   });
 });

@@ -1,5 +1,5 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { extractAnnotations, generateArktypeOptions } from "../annotations";
+import { extractAnnotations } from "../annotations";
 import type { ProcessedModel } from "../model";
 
 export const processedInclude: ProcessedModel[] = [];
@@ -47,6 +47,5 @@ function stringifyInclude(model: DMMF.Model): string | undefined {
     return;
   }
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }

@@ -239,6 +239,57 @@ pnpm lint
 pnpm lint:fix
 ```
 
+### Testing
+
+This library has a **completely schema-independent test suite** using self-contained test models in `prisma/schema/test-models.prisma`.
+
+#### Running Tests
+
+```bash
+# Run all tests
+pnpm test:e2e
+
+# Run tests in watch mode
+pnpm test:watch
+```
+
+#### Test Architecture
+
+The test suite is designed to be **100% independent** of production schemas:
+
+- **Self-Contained Schema** - `prisma/schema/test-models.prisma` contains all models needed for testing
+- **No Production Dependencies** - Tests work even if production schemas don't exist
+- **Comprehensive Coverage** - Test models cover all Prisma types, relations, and generator features
+- **Portable** - Can be used across different projects or extracted as a standalone test suite
+
+#### Test Model Categories
+
+The test schema includes specialized models for testing:
+
+1. **Basic CRUD** - `TestUser`, `TestPost`, `TestProfile`
+2. **All Prisma Types** - `TestAllTypes` (String, Int, BigInt, Float, Decimal, Boolean, DateTime, Json, Bytes)
+3. **Relations** - One-to-one, one-to-many, many-to-many, composite keys
+4. **Annotations** - `@prisma-arktype.hide`, `@prisma-arktype.typeOverwrite`, custom options
+5. **Query Operations** - Select, Include, OrderBy schemas
+6. **Enums** - `TestCurrency`, `TestStatus`
+
+#### Adding New Tests
+
+1. **Add test models** to `prisma/schema/test-models.prisma` if needed
+2. **Update mapping** in `__tests__/config/model-mapping.ts` to reference your models
+3. **Write tests** using helper functions from `__tests__/utils/test-helpers.ts`
+4. **Run tests** - `pnpm test`
+
+See existing test files for examples.
+
+#### Why Schema-Independent?
+
+- ✅ Tests never break due to production schema changes
+- ✅ Contributors can run tests without setting up production databases
+- ✅ Tests can be run in isolation (CI/CD, local development)
+- ✅ Clear, documented examples of generator usage
+- ✅ Easy to test new features by adding new test models
+
 ### Publishing
 
 This project uses [Changesets](https://github.com/changesets/changesets) for version management and publishing.

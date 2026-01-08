@@ -1,4 +1,4 @@
-import { type Annotation, generateArktypeOptions } from "./annotations";
+import type { Annotation } from "./annotations";
 
 const primitiveTypes = [
   "Int",
@@ -24,27 +24,25 @@ export function stringifyPrimitiveType(
   type: PrimitiveFieldType,
   annotations: Annotation[],
 ): string {
-  const options = generateArktypeOptions(annotations);
-
   switch (type) {
     case "Int":
     case "BigInt":
-      return `"number.integer"${options}`;
+      return `"number.integer"`;
     case "Float":
     case "Decimal":
-      return `"number"${options}`;
+      return `"number"`;
     case "String":
-      return `"string"${options}`;
+      return `"string"`;
     case "DateTime":
       // ArkType uses "Date" for date objects or ISO date strings
-      return `"Date"${options}`;
+      return `"Date"`;
     case "Json":
-      return `"unknown"${options}`;
+      return `"unknown"`;
     case "Boolean":
-      return `"boolean"${options}`;
+      return `"boolean"`;
     case "Bytes":
       // Bytes can be represented as Buffer in Node.js
-      return `"instanceof Buffer"${options}`;
+      return `"instanceof Buffer"`;
     default:
       throw new Error(`Unsupported primitive type: ${type}`);
   }

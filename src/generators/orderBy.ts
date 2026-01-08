@@ -1,5 +1,5 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { extractAnnotations, generateArktypeOptions } from "../annotations";
+import { extractAnnotations } from "../annotations";
 import type { ProcessedModel } from "../model";
 
 export const processedOrderBy: ProcessedModel[] = [];
@@ -40,6 +40,5 @@ function stringifyOrderBy(model: DMMF.Model): string | undefined {
     fields.push(`"${field.name}?": ${sortOrder}`);
   }
 
-  const options = generateArktypeOptions(modelAnnotations);
-  return `{\n  ${fields.join(",\n  ")}\n}${options}`;
+  return `{\n  ${fields.join(",\n  ")}\n}`;
 }

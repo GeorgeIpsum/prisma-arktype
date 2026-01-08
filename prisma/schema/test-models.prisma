@@ -1,0 +1,344 @@
+// TEST-SPECIFIC MODELS
+// These models are ONLY used for testing the prisma-arktype generator.
+// They provide comprehensive coverage of all generator features.
+// They are NOT used in production code.
+//
+// This schema is completely self-contained and independent of production schemas.
+// Tests can run with ONLY this schema, making them truly schema-agnostic.
+
+// ============================================
+// ENUMS FOR TESTING
+// ============================================
+
+enum TestCurrency {
+  USD
+  CAD
+  EUR
+  GBP
+  JPY
+  AUD
+  CNY
+}
+
+enum TestStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+// ============================================
+// BASIC MODELS FOR CORE FUNCTIONALITY TESTING
+// ============================================
+
+/// Basic model for testing plain schemas, create/update inputs, where clauses
+/// Includes: required fields, optional fields, unique fields, timestamps, defaults
+model TestUser {
+  id String @id @default(cuid(2))
+
+  /// @prisma-arktype.typeOverwrite="string.email"
+  email String @unique
+
+  /// @prisma-arktype.options{minLength: 2, maxLength: 100}
+  name        String?
+  phoneNumber String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations for testing
+  posts    TestPost[]
+  profile  TestProfile?
+  metadata TestMetadata[]
+
+  @@index([email])
+}
+
+/// Model for testing relations (many-to-one, one-to-many)
+model TestPost {
+  id        String   @id @default(cuid(2))
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  views     Int      @default(0)
+  rating    Float?
+  authorId  String
+  author    TestUser @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tags     TestTag[]
+  comments TestComment[]
+
+  @@index([authorId])
+}
+
+/// Model for testing one-to-one relations
+model TestProfile {
+  id        String   @id @default(cuid(2))
+  userId    String   @unique
+  user      TestUser @relation(fields: [userId], references: [id])
+  bio       String?
+  website   String?
+  avatarUrl String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Model for testing composite primary keys
+model TestMetadata {
+  userId    String
+  user      TestUser @relation(fields: [userId], references: [id])
+  key       String
+  value     String
+  createdAt DateTime @default(now())
+
+  @@id([userId, key])
+  @@index([userId])
+}
+
+/// Model for testing many-to-many relations
+model TestTag {
+  id    String     @id @default(cuid(2))
+  name  String     @unique
+  posts TestPost[]
+}
+
+/// Model for testing nested relations
+model TestComment {
+  id        String   @id @default(cuid(2))
+  content   String
+  postId    String
+  post      TestPost @relation(fields: [postId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+}
+
+// ============================================
+// MODELS FOR TESTING ALL PRISMA FIELD TYPES
+// ============================================
+
+/// Model for testing all Prisma scalar types
+model TestAllTypes {
+  id String @id @default(cuid(2))
+
+  // String types
+  string String
+  text   String @db.Text
+
+  // Number types
+  int     Int
+  bigInt  BigInt
+  float   Float
+  decimal Decimal
+
+  // Boolean
+  boolean Boolean
+
+  // DateTime
+  dateTime DateTime
+  date     DateTime @db.Date
+  time     DateTime @db.Time
+
+  // JSON
+  json Json
+
+  // Bytes
+  bytes Bytes
+
+  // Optional variants
+  stringOpt   String?
+  intOpt      Int?
+  booleanOpt  Boolean?
+  dateTimeOpt DateTime?
+  jsonOpt     Json?
+
+  // With defaults
+  stringDefault   String   @default("default")
+  intDefault      Int      @default(42)
+  booleanDefault  Boolean  @default(true)
+  dateTimeDefault DateTime @default(now())
+  jsonDefault     Json     @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Model for testing enum fields
+model TestEnumModel {
+  id       String       @id @default(cuid(2))
+  currency TestCurrency @default(USD)
+  status   TestStatus   @default(ACTIVE)
+
+  // Optional enum
+  optionalCurrency TestCurrency?
+  optionalStatus   TestStatus?
+}
+
+// ============================================
+// MODELS FOR TESTING JSON FIELDS
+// ============================================
+
+/// Model for testing Json field handling
+model TestJsonModel {
+  id       String @id @default(cuid(2))
+  metadata Json   @default("{}")
+  settings Json?
+  data     Json
+}
+
+// ============================================
+// MODELS FOR TESTING UNIQUE CONSTRAINTS
+// ============================================
+
+/// Model for testing various unique constraints
+model TestUniqueModel {
+  id       String @id @default(cuid(2))
+  email    String @unique
+  username String @unique
+  slug     String
+  category String
+
+  @@unique([slug, category])
+}
+
+// ============================================
+// MODELS FOR TESTING COMPOSITE KEYS
+// ============================================
+
+/// Model for testing composite primary keys
+model TestCompositeKey {
+  tenantId String
+  userId   String
+  role     String
+  metadata Json   @default("{}")
+
+  @@id([tenantId, userId])
+  @@unique([tenantId, userId])
+  @@index([userId])
+}
+
+// ============================================
+// ANNOTATION TESTING MODELS
+// ============================================
+
+/// Model hidden from generation via @prisma-arktype.hide
+/// Should NOT generate any validators
+/// @prisma-arktype.hide
+model HiddenModel {
+  id   String @id @default(cuid(2))
+  name String
+  data Json   @default("{}")
+}
+
+/// Model for testing all annotation features
+model AnnotatedModel {
+  id String @id @default(cuid(2))
+
+  /// Field hidden from all schemas
+  /// @prisma-arktype.hide
+  hiddenField String
+
+  /// Field hidden from all input schemas (Create and Update)
+  /// @prisma-arktype.input.hide
+  computedField String
+
+  /// Field hidden from Create input only
+  /// @prisma-arktype.create.input.hide
+  updateOnlyField String
+
+  /// Field hidden from Update input only
+  /// @prisma-arktype.update.input.hide
+  createOnlyField String
+
+  /// Field with type override to use email validation
+  /// @prisma-arktype.typeOverwrite="string.email"
+  email String
+
+  /// Field with type override to use URL validation
+  /// @prisma-arktype.typeOverwrite="string.url"
+  website String?
+
+  /// Regular field without annotations
+  normalField String
+
+  /// Optional field
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Model for testing custom options
+model TestOptionsModel {
+  id String @id @default(cuid(2))
+
+  /// @prisma-arktype.options{minLength: 3, maxLength: 50}
+  username String
+
+  /// @prisma-arktype.options{minimum: 0, maximum: 100}
+  score Int @default(0)
+
+  normalField String
+}
+
+// ============================================
+// MODELS FOR TESTING RELATIONS CREATE/UPDATE
+// ============================================
+
+/// Model for testing relation create operations
+model TestOrganization {
+  id       String        @id @default(cuid(2))
+  name     String
+  members  TestMember[]
+  projects TestProject[]
+}
+
+model TestMember {
+  id             String           @id @default(cuid(2))
+  name           String
+  email          String           @unique
+  organizationId String
+  organization   TestOrganization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+}
+
+model TestProject {
+  id             String           @id @default(cuid(2))
+  name           String
+  description    String?
+  organizationId String
+  organization   TestOrganization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId])
+}
+
+// ============================================
+// MODELS FOR TESTING SELECT/INCLUDE/ORDERBY
+// ============================================
+
+/// Model specifically for testing Select, Include, and OrderBy schemas
+model TestQueryModel {
+  id        String   @id @default(cuid(2))
+  title     String
+  subtitle  String?
+  priority  Int      @default(0)
+  score     Float    @default(0.0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations for testing include
+  items TestQueryItem[]
+}
+
+model TestQueryItem {
+  id      String         @id @default(cuid(2))
+  name    String
+  value   String
+  modelId String
+  model   TestQueryModel @relation(fields: [modelId], references: [id])
+
+  @@index([modelId])
+}

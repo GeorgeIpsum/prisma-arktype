@@ -1,0 +1,16 @@
+// Example Prisma schema for testing prisma-arktype
+
+datasource db {
+  provider     = "postgresql"
+  relationMode = "foreignKeys"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/client"
+}
+
+generator prisma-arktype {
+  provider = "node ./dist/index.js"
+  output   = "../generated/validators"
+}
