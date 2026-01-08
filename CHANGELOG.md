@@ -1,5 +1,11 @@
 # prisma-arktype
 
+## 2.1.0
+
+### Minor Changes
+
+- 9df3e84: Fix schema generation for more complex relations
+
 ## 2.0.0
 
 ### Major Changes
