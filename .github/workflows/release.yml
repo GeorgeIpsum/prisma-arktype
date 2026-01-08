@@ -7,9 +7,6 @@ on:
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
-env:
-  DATABASE_URL: "postgres"
-
 permissions:
   id-token: write # Required for OIDC
   contents: read
@@ -30,7 +27,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          registry-url: "https://registry.npmjs.org"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -56,6 +52,8 @@ jobs:
 
       - name: Generate Prisma schemas
         run: pnpm exec prisma generate
+        env:
+          DATABASE_URL: "postgres"
 
       - name: Run tests
         run: pnpm test
