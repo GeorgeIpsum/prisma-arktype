@@ -1,5 +1,11 @@
 # prisma-arktype
 
+## 2.2.0
+
+### Minor Changes
+
+- d3305be: use generated enum schemas in resulting model schemas
+
 ## 2.1.0
 
 ### Minor Changes
