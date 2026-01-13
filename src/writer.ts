@@ -8,6 +8,15 @@ export async function format(input: string): Promise<string> {
   return input;
 }
 
+function generateEnumImports(enumDependencies?: string[]): string {
+  if (!enumDependencies || enumDependencies.length === 0) {
+    return "";
+  }
+  return `${enumDependencies
+    .map((enumName) => `import { ${enumName} } from "./${enumName}";`)
+    .join("\n")}\n`;
+}
+
 export function mapAllModelsForWrite(
   processedEnums: ProcessedModel[],
   processedPlain: ProcessedModel[],
@@ -35,7 +44,8 @@ export function mapAllModelsForWrite(
 
   // Add plain models
   for (const model of processedPlain) {
-    const content = `${arktypeImport}export const ${model.name}Plain = type(${model.stringified});\n`;
+    const enumImports = generateEnumImports(model.enumDependencies);
+    const content = `${arktypeImport}${enumImports}export const ${model.name}Plain = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Plain`, content);
   }
 
@@ -59,25 +69,29 @@ export function mapAllModelsForWrite(
 
   // Add where clauses
   for (const model of processedWhere) {
-    const content = `${arktypeImport}export const ${model.name}Where = type(${model.stringified});\n`;
+    const enumImports = generateEnumImports(model.enumDependencies);
+    const content = `${arktypeImport}${enumImports}export const ${model.name}Where = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Where`, content);
   }
 
   // Add whereUnique clauses
   for (const model of processedWhereUnique) {
-    const content = `${arktypeImport}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
+    const enumImports = generateEnumImports(model.enumDependencies);
+    const content = `${arktypeImport}${enumImports}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
     modelMap.set(`${model.name}WhereUnique`, content);
   }
 
   // Add create inputs
   for (const model of processedCreate) {
-    const content = `${arktypeImport}export const ${model.name}Create = type(${model.stringified});\n`;
+    const enumImports = generateEnumImports(model.enumDependencies);
+    const content = `${arktypeImport}${enumImports}export const ${model.name}Create = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Create`, content);
   }
 
   // Add update inputs
   for (const model of processedUpdate) {
-    const content = `${arktypeImport}export const ${model.name}Update = type(${model.stringified});\n`;
+    const enumImports = generateEnumImports(model.enumDependencies);
+    const content = `${arktypeImport}${enumImports}export const ${model.name}Update = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Update`, content);
   }
 

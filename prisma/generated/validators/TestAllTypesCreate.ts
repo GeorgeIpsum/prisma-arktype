@@ -1,0 +1,26 @@
+import { type } from "arktype";
+
+export const TestAllTypesCreate = type({
+  string: "string",
+  text: "string",
+  int: "number.integer",
+  bigInt: "number.integer",
+  float: "number",
+  decimal: "number",
+  boolean: "boolean",
+  dateTime: "Date",
+  date: "Date",
+  time: "Date",
+  json: "unknown",
+  bytes: "instanceof Buffer",
+  "stringOpt?": "string | null",
+  "intOpt?": "number.integer | null",
+  "booleanOpt?": "boolean | null",
+  "dateTimeOpt?": "Date | null",
+  "jsonOpt?": "unknown | null",
+  "stringDefault?": "string",
+  "intDefault?": "number.integer",
+  "booleanDefault?": "boolean",
+  "dateTimeDefault?": "Date",
+  "jsonDefault?": "unknown",
+});

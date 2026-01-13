@@ -12,11 +12,12 @@ export function processUpdate(
     const { hidden } = extractAnnotations(model.documentation);
     if (hidden) continue;
 
-    const stringified = stringifyPlainInputUpdate(model);
-    if (stringified) {
+    const result = stringifyPlainInputUpdate(model);
+    if (result) {
       processedUpdate.push({
         name: model.name,
-        stringified,
+        stringified: result.stringified,
+        enumDependencies: result.enumDependencies,
       });
     }
   }
