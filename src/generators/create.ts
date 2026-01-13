@@ -12,11 +12,12 @@ export function processCreate(
     const { hidden } = extractAnnotations(model.documentation);
     if (hidden) continue;
 
-    const stringified = stringifyPlainInputCreate(model);
-    if (stringified) {
+    const result = stringifyPlainInputCreate(model);
+    if (result) {
       processedCreate.push({
         name: model.name,
-        stringified,
+        stringified: result.stringified,
+        enumDependencies: result.enumDependencies,
       });
     }
   }

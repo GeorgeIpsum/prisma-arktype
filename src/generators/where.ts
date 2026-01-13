@@ -15,19 +15,21 @@ export function processWhere(
   models: DMMF.Model[] | Readonly<DMMF.Model[]>,
 ): void {
   for (const model of models) {
-    const stringified = stringifyWhere(model);
-    if (stringified) {
+    const result = stringifyWhere(model);
+    if (result) {
       processedWhere.push({
         name: model.name,
-        stringified,
+        stringified: result.stringified,
+        enumDependencies: result.enumDependencies,
       });
     }
 
-    const stringifiedUnique = stringifyWhereUnique(model);
-    if (stringifiedUnique) {
+    const uniqueResult = stringifyWhereUnique(model);
+    if (uniqueResult) {
       processedWhereUnique.push({
         name: model.name,
-        stringified: stringifiedUnique,
+        stringified: uniqueResult.stringified,
+        enumDependencies: uniqueResult.enumDependencies,
       });
     }
   }
@@ -37,7 +39,9 @@ export function processWhere(
 
 const enumMatch = /type\("(.+)"\)/;
 
-function stringifyWhere(model: DMMF.Model): string | undefined {
+function stringifyWhere(
+  model: DMMF.Model,
+): { stringified: string; enumDependencies: string[] } | undefined {
   const { annotations: modelAnnotations, hidden } = extractAnnotations(
     model.documentation,
   );
@@ -47,6 +51,7 @@ function stringifyWhere(model: DMMF.Model): string | undefined {
   }
 
   const fields: string[] = [];
+  const enumDependencies: string[] = [];
 
   for (const field of model.fields) {
     const { annotations: fieldAnnotations, hidden: fieldHidden } =
@@ -65,25 +70,42 @@ function stringifyWhere(model: DMMF.Model): string | undefined {
     } else if (field.kind === "enum") {
       const enumDef = processedEnums.find((e) => e.name === field.type);
       if (!enumDef) continue;
-      const match = enumDef.stringified.match(enumMatch);
-      fieldType = match ? `"${match[1]}"` : `"'${field.type}'"`;
+
+      // Track this enum as a dependency
+      if (!enumDependencies.includes(field.type)) {
+        enumDependencies.push(field.type);
+      }
+
+      // Reference the enum by name
+      fieldType = field.type;
     } else {
       continue;
     }
 
+    const isEnumType = field.kind === "enum" && !typeOverwrite;
+
     if (field.isList) {
-      const inner = fieldType.slice(1, -1);
-      fieldType = `"${wrapPrimitiveWithArray(inner)}"`;
+      if (isEnumType) {
+        fieldType = `${fieldType}.array()`;
+      } else {
+        const inner = fieldType.slice(1, -1);
+        fieldType = `"${wrapPrimitiveWithArray(inner)}"`;
+      }
     }
 
     // All where fields are optional
     fields.push(`"${field.name}?": ${fieldType}`);
   }
 
-  return `{\n  ${fields.join(",\n  ")}\n}`;
+  return {
+    stringified: `{\n  ${fields.join(",\n  ")}\n}`,
+    enumDependencies,
+  };
 }
 
-function stringifyWhereUnique(model: DMMF.Model): string | undefined {
+function stringifyWhereUnique(
+  model: DMMF.Model,
+): { stringified: string; enumDependencies: string[] } | undefined {
   const { annotations: modelAnnotations, hidden } = extractAnnotations(
     model.documentation,
   );
@@ -93,6 +115,7 @@ function stringifyWhereUnique(model: DMMF.Model): string | undefined {
   }
 
   const fields: string[] = [];
+  const enumDependencies: string[] = [];
 
   for (const field of model.fields) {
     const { annotations: fieldAnnotations, hidden: fieldHidden } =
@@ -112,8 +135,14 @@ function stringifyWhereUnique(model: DMMF.Model): string | undefined {
     } else if (field.kind === "enum") {
       const enumDef = processedEnums.find((e) => e.name === field.type);
       if (!enumDef) continue;
-      const match = enumDef.stringified.match(enumMatch);
-      fieldType = match ? `"${match[1]}"` : `"'${field.type}'"`;
+
+      // Track this enum as a dependency
+      if (!enumDependencies.includes(field.type)) {
+        enumDependencies.push(field.type);
+      }
+
+      // Reference the enum by name
+      fieldType = field.type;
     } else {
       continue;
     }
@@ -126,5 +155,8 @@ function stringifyWhereUnique(model: DMMF.Model): string | undefined {
     return;
   }
 
-  return `{\n  ${fields.join(",\n  ")}\n}`;
+  return {
+    stringified: `{\n  ${fields.join(",\n  ")}\n}`,
+    enumDependencies,
+  };
 }

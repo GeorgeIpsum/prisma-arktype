@@ -64,4 +64,28 @@ describe("Plain Model Generation", () => {
 
     expect(isValidationSuccess(result)).toBe(true);
   });
+
+  it("should validate models with enum fields using enum references", async () => {
+    const TestEnumModelPlain = await loadValidator("TestEnumModel", "Plain");
+
+    // Valid enum values
+    const validResult = TestEnumModelPlain({
+      id: "test",
+      currency: "USD",
+      status: "ACTIVE",
+      optionalCurrency: "EUR",
+      optionalStatus: "INACTIVE",
+    });
+
+    expect(isValidationSuccess(validResult)).toBe(true);
+
+    // Invalid enum values
+    const invalidResult = TestEnumModelPlain({
+      id: "test",
+      currency: "INVALID_CURRENCY",
+      status: "ACTIVE",
+    });
+
+    expect(isValidationError(invalidResult)).toBe(true);
+  });
 });

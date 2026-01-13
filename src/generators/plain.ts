@@ -15,11 +15,12 @@ export function processPlain(
   models: DMMF.Model[] | Readonly<DMMF.Model[]>,
 ): void {
   for (const model of models) {
-    const stringified = stringifyPlain(model);
-    if (stringified) {
+    const result = stringifyPlain(model);
+    if (result) {
       processedPlain.push({
         name: model.name,
-        stringified,
+        stringified: result.stringified,
+        enumDependencies: result.enumDependencies,
       });
     }
   }
@@ -32,7 +33,7 @@ function stringifyPlain(
   model: DMMF.Model,
   isInputCreate = false,
   isInputUpdate = false,
-): string | undefined {
+): { stringified: string; enumDependencies: string[] } | undefined {
   const config = getConfig();
   const { annotations: modelAnnotations, hidden } = extractAnnotations(
     model.documentation,
@@ -43,6 +44,7 @@ function stringifyPlain(
   }
 
   const fields: string[] = [];
+  const enumDependencies: string[] = [];
 
   for (const field of model.fields) {
     const {
@@ -78,24 +80,39 @@ function stringifyPlain(
     } else if (isPrimitivePrismaFieldType(field.type)) {
       fieldType = stringifyPrimitiveType(field.type, fieldAnnotations);
     } else if (field.kind === "enum") {
-      // For enums in object definitions, extract the union string from the type() call
+      // Reference the enum type directly instead of inlining
       const enumDef = processedEnums.find((e) => e.name === field.type);
       if (!enumDef) continue;
-      // Extract from type("'A' | 'B'") -> "'A' | 'B'" (keep the quotes)
-      const match = enumDef.stringified.match(enumMatch);
-      fieldType = match ? `"${match[1]}"` : `"'${field.type}'"`;
+
+      // Track this enum as a dependency
+      if (!enumDependencies.includes(field.type)) {
+        enumDependencies.push(field.type);
+      }
+
+      // Reference the enum by name (not as a string)
+      fieldType = field.type;
     } else {
       continue;
     }
 
     // Apply wrappers
+    const isEnumType = field.kind === "enum" && !typeOverwrite;
+
     if (field.isList) {
-      fieldType = `"${wrapPrimitiveWithArray(fieldType.slice(1, -1))}"`;
+      if (isEnumType) {
+        fieldType = `${fieldType}.array()`;
+      } else {
+        fieldType = `"${wrapPrimitiveWithArray(fieldType.slice(1, -1))}"`;
+      }
     }
     if (!field.isRequired) {
-      // Remove quotes, add null, re-add quotes
-      const inner = fieldType.slice(1, -1);
-      fieldType = `"${inner} | null"`;
+      if (isEnumType) {
+        fieldType = `${fieldType}.or("null")`;
+      } else {
+        // Remove quotes, add null, re-add quotes
+        const inner = fieldType.slice(1, -1);
+        fieldType = `"${inner} | null"`;
+      }
       // In ArkType, optional fields (can be missing) need ? on the key
       fieldName += "?";
     }
@@ -109,17 +126,20 @@ function stringifyPlain(
     fields.push(`"${fieldName}": ${fieldType}`);
   }
 
-  return `{\n  ${fields.join(",\n  ")}\n}`;
+  return {
+    stringified: `{\n  ${fields.join(",\n  ")}\n}`,
+    enumDependencies,
+  };
 }
 
 export function stringifyPlainInputCreate(
   model: DMMF.Model,
-): string | undefined {
+): { stringified: string; enumDependencies: string[] } | undefined {
   return stringifyPlain(model, true, false);
 }
 
 export function stringifyPlainInputUpdate(
   model: DMMF.Model,
-): string | undefined {
+): { stringified: string; enumDependencies: string[] } | undefined {
   return stringifyPlain(model, false, true);
 }
