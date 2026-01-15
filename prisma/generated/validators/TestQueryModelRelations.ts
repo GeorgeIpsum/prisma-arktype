@@ -1,5 +1,5 @@
 import { type } from "arktype";
-
+import { TestQueryItemPlain } from "./TestQueryItemPlain";
 export const TestQueryModelRelations = type({
-  items: type("unknown").array(),
+  items: TestQueryItemPlain.array(),
 });

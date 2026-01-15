@@ -86,16 +86,18 @@ generator prisma-arktype {
 
 For each model, the generator creates multiple schema types:
 
-- **`ModelPlain`** - Fields without relationships
-- **`ModelRelations`** - Relationship definitions only
-- **`Model`** - Complete composite schema (Plain & Relations)
-- **`ModelWhere`** - Where clause schema
-- **`ModelWhereUnique`** - Unique where clause schema
-- **`ModelCreate`** - Create input schema
-- **`ModelUpdate`** - Update input schema
-- **`ModelSelect`** - Select schema
-- **`ModelInclude`** - Include schema
-- **`ModelOrderBy`** - OrderBy schema
+- **`ModelPlain`** - Scalar fields only (strings, numbers, dates, enums) - no relations
+- **`ModelRelations`** - Relationship fields only, referencing related model Plain types
+- **`Model`** - Complete composite schema combining Plain & Relations
+- **`ModelWhere`** - Where clause schema for filtering
+- **`ModelWhereUnique`** - Unique where clause schema for finding specific records
+- **`ModelCreate`** - Input schema for creating records
+- **`ModelUpdate`** - Input schema for updating records
+- **`ModelSelect`** - Schema for selecting specific fields
+- **`ModelInclude`** - Schema for including relations
+- **`ModelOrderBy`** - Schema for ordering results
+
+**Enums** are generated as separate reusable types that are imported and referenced by models that use them.
 
 ### Using Generated Schemas
 
@@ -128,6 +130,101 @@ const whereClause = {
 
 const whereResult = UserWhere(whereClause);
 // ...
+```
+
+### Generated Code Examples
+
+#### Enum Generation
+
+For a Prisma enum like:
+```prisma
+enum Currency {
+  USD
+  EUR
+  GBP
+}
+```
+
+The generator creates a separate reusable type:
+```typescript
+// Currency.ts
+import { type } from "arktype";
+
+export const Currency = type("'USD' | 'EUR' | 'GBP'");
+```
+
+Which is then imported and used in models:
+```typescript
+// PaymentPlain.ts
+import { type } from "arktype";
+import { Currency } from "./Currency";
+
+export const PaymentPlain = type({
+  "id": "string",
+  "amount": "number",
+  "currency": Currency,        // Required enum
+  "status?": Currency.or("null") // Optional enum
+});
+```
+
+#### Relation Generation
+
+For Prisma models with relations like:
+```prisma
+model User {
+  id    String  @id
+  email String
+  posts Post[]
+}
+
+model Post {
+  id       String @id
+  title    String
+  author   User   @relation(fields: [authorId], references: [id])
+  authorId String
+}
+```
+
+The generator creates Plain types (without relations):
+```typescript
+// UserPlain.ts
+export const UserPlain = type({
+  "id": "string",
+  "email": "string"
+});
+
+// PostPlain.ts
+export const PostPlain = type({
+  "id": "string",
+  "title": "string",
+  "authorId": "string"
+});
+```
+
+And Relations types that reference the Plain types:
+```typescript
+// UserRelations.ts
+import { PostPlain } from "./PostPlain";
+
+export const UserRelations = type({
+  "posts": PostPlain.array() // Array of Post objects
+});
+
+// PostRelations.ts
+import { UserPlain } from "./UserPlain";
+
+export const PostRelations = type({
+  "author": UserPlain // Single User object
+});
+```
+
+The combined model merges both:
+```typescript
+// User.ts
+import { UserPlain } from "./UserPlain";
+import { UserRelations } from "./UserRelations";
+
+export const User = type(() => UserPlain.and(UserRelations));
 ```
 
 ## Annotations
@@ -219,15 +316,16 @@ Prisma types are mapped to ArkType as follows:
 | `DateTime` | `"Date"` | `"Date"` |
 | `Json` | `"unknown"` | `"unknown"` |
 | `Bytes` | `"instanceof Buffer"` | `"instanceof Buffer"` |
-| Enums | Union of literal values | `type("'USD' \| 'EUR' \| 'GBP'")` |
-| Relations | `"unknown"` | `type("unknown").array()` for lists |
+| Enums | Reference to enum type | `Currency` (imported from `./Currency`) |
+| Relations | Reference to related Plain type | `PostPlain` or `PostPlain.array()` |
 
 ### Special Handling
 
 - **Optional fields**: Use `?` on the key name (`"name?": "string"`)
 - **Nullable fields**: Add `| null` to the type (`"string | null"`)
-- **Arrays**: Use `.array()` syntax for lists (`type("string").array()`)
-- **Enums**: Generated as string literal unions wrapped in `type()`
+- **Arrays**: Use `.array()` syntax for lists (`type("string").array()` or `Currency.array()`)
+- **Enums**: Generated as separate reusable type definitions and imported where used
+- **Relations**: Reference the Plain type of the related model, imported automatically
 
 ## Differences from prismabox
 

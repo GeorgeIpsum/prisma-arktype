@@ -1,6 +1,7 @@
 import { type } from "arktype";
-
+import { TestMemberPlain } from "./TestMemberPlain";
+import { TestProjectPlain } from "./TestProjectPlain";
 export const TestOrganizationRelations = type({
-  members: type("unknown").array(),
-  projects: type("unknown").array(),
+  members: TestMemberPlain.array(),
+  projects: TestProjectPlain.array(),
 });
