@@ -1,7 +1,9 @@
 import { type } from "arktype";
-
+import { TestCommentPlain } from "./TestCommentPlain";
+import { TestTagPlain } from "./TestTagPlain";
+import { TestUserPlain } from "./TestUserPlain";
 export const TestPostRelations = type({
-  author: "unknown",
-  tags: type("unknown").array(),
-  comments: type("unknown").array(),
+  author: TestUserPlain,
+  tags: TestTagPlain.array(),
+  comments: TestCommentPlain.array(),
 });
