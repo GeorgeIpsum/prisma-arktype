@@ -47,10 +47,17 @@ describe("Relations Schema Generation", () => {
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
-      // Arrays should accept multiple elements, not just single-element tuples
-      posts: [{}, {}, {}], // Multiple posts
+      // Arrays should accept multiple elements with valid related model data
+      posts: [
+        { title: "Post 1", authorId: "user_test", updatedAt: new Date() },
+        { title: "Post 2", authorId: "user_test", updatedAt: new Date() },
+        { title: "Post 3", authorId: "user_test", updatedAt: new Date() },
+      ],
       profile: null,
-      metadata: [{}, {}], // Multiple metadata
+      metadata: [
+        { userId: "user_test", key: "meta1", value: "value1" },
+        { userId: "user_test", key: "meta2", value: "value2" },
+      ],
     });
 
     expect(isValidationSuccess(result)).toBe(true);

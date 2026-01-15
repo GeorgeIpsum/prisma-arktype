@@ -10,18 +10,21 @@ export function processRelations(
   models: DMMF.Model[] | Readonly<DMMF.Model[]>,
 ): void {
   for (const model of models) {
-    const stringified = stringifyRelations(model);
-    if (stringified) {
+    const result = stringifyRelations(model);
+    if (result) {
       processedRelations.push({
         name: model.name,
-        stringified,
+        stringified: result.stringified,
+        modelDependencies: result.modelDependencies,
       });
     }
   }
   Object.freeze(processedRelations);
 }
 
-function stringifyRelations(model: DMMF.Model): string | undefined {
+function stringifyRelations(
+  model: DMMF.Model,
+): { stringified: string; modelDependencies: string[] } | undefined {
   const { annotations: modelAnnotations, hidden } = extractAnnotations(
     model.documentation,
   );
@@ -31,6 +34,7 @@ function stringifyRelations(model: DMMF.Model): string | undefined {
   }
 
   const fields: string[] = [];
+  const modelDependencies: string[] = [];
 
   for (const field of model.fields) {
     const { hidden: fieldHidden } = extractAnnotations(field.documentation);
@@ -38,17 +42,23 @@ function stringifyRelations(model: DMMF.Model): string | undefined {
     if (fieldHidden) continue;
     if (field.kind !== "object") continue; // Only process relations
 
-    // For relations, use "unknown" since cross-references need runtime resolution
-    // The actual types will be enforced by Prisma Client
+    // Reference the Plain type of the related model
+    const relatedModelPlain = `${field.type}Plain`;
+
+    // Track this model as a dependency
+    if (!modelDependencies.includes(field.type)) {
+      modelDependencies.push(field.type);
+    }
+
     let fieldType: string;
 
     // Apply wrappers - use type().array() for proper array syntax
     if (field.isList) {
-      fieldType = `type("unknown").array()`;
+      fieldType = `${relatedModelPlain}.array()`;
     } else if (!field.isRequired) {
-      fieldType = `"unknown | null"`;
+      fieldType = `${relatedModelPlain}.or("null")`;
     } else {
-      fieldType = `"unknown"`;
+      fieldType = relatedModelPlain;
     }
 
     fields.push(`"${field.name}": ${fieldType}`);
@@ -58,7 +68,10 @@ function stringifyRelations(model: DMMF.Model): string | undefined {
     return;
   }
 
-  return `{\n  ${fields.join(",\n  ")}\n}`;
+  return {
+    stringified: `{\n  ${fields.join(",\n  ")}\n}`,
+    modelDependencies,
+  };
 }
 
 export function processRelationsCreate(

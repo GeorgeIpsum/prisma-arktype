@@ -17,6 +17,17 @@ function generateEnumImports(enumDependencies?: string[]): string {
     .join("\n")}\n`;
 }
 
+function generateModelImports(modelDependencies?: string[]): string {
+  if (!modelDependencies || modelDependencies.length === 0) {
+    return "";
+  }
+  return `${modelDependencies
+    .map(
+      (modelName) => `import { ${modelName}Plain } from "./${modelName}Plain";`,
+    )
+    .join("\n")}\n`;
+}
+
 export function mapAllModelsForWrite(
   processedEnums: ProcessedModel[],
   processedPlain: ProcessedModel[],
@@ -51,7 +62,8 @@ export function mapAllModelsForWrite(
 
   // Add relations
   for (const model of processedRelations) {
-    const content = `${arktypeImport}export const ${model.name}Relations = type(${model.stringified});\n`;
+    const modelImports = generateModelImports(model.modelDependencies);
+    const content = `${arktypeImport}${modelImports}export const ${model.name}Relations = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Relations`, content);
   }
 
