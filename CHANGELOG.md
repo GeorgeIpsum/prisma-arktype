@@ -1,5 +1,11 @@
 # prisma-arktype
 
+## 2.3.0
+
+### Minor Changes
+
+- cbb297c: add relation links automatically in generated schemas
+
 ## 2.2.0
 
 ### Minor Changes
