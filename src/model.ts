@@ -10,4 +10,5 @@ export interface ProcessedModel {
   enumDependencies?: string[]; // Enum types that this model references
   modelDependencies?: string[]; // Model Plain types that this model references
   externalSchemaDependencies?: ExternalSchemaDependency[]; // External schema imports
+  needsDateTimeFilter?: boolean; // Whether this model needs DateTimeFilter import
 }

@@ -19,22 +19,30 @@ export function processWhere(
   for (const model of models) {
     const result = stringifyWhere(model);
     if (result) {
-      processedWhere.push({
+      const processedModel: ProcessedModel = {
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
-      });
+      };
+      if (result.needsDateTimeFilter) {
+        processedModel.needsDateTimeFilter = true;
+      }
+      processedWhere.push(processedModel);
     }
 
     const uniqueResult = stringifyWhereUnique(model);
     if (uniqueResult) {
-      processedWhereUnique.push({
+      const processedModel: ProcessedModel = {
         name: model.name,
         stringified: uniqueResult.stringified,
         enumDependencies: uniqueResult.enumDependencies,
         externalSchemaDependencies: uniqueResult.externalSchemaDependencies,
-      });
+      };
+      if (uniqueResult.needsDateTimeFilter) {
+        processedModel.needsDateTimeFilter = true;
+      }
+      processedWhereUnique.push(processedModel);
     }
   }
   Object.freeze(processedWhere);
@@ -48,6 +56,7 @@ function stringifyWhere(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      needsDateTimeFilter?: boolean;
     }
   | undefined {
   const { hidden } = extractAnnotations(model.documentation);
@@ -59,6 +68,7 @@ function stringifyWhere(model: DMMF.Model):
   const fields: string[] = [];
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
+  let needsDateTimeFilter = false;
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -135,6 +145,8 @@ function stringifyWhere(model: DMMF.Model):
     const isEnumType =
       field.kind === "enum" && !typeOverwrite && !schemaAnnotation;
     const isExternalSchema = schemaAnnotation?.isExternal === true;
+    const isDateTimeField =
+      field.type === "DateTime" && !typeOverwrite && !schemaAnnotation;
 
     if (field.isList) {
       if (isExternalSchema || isEnumType) {
@@ -145,15 +157,33 @@ function stringifyWhere(model: DMMF.Model):
       }
     }
 
+    // DateTime fields can accept either Date or DateTimeFilter
+    if (isDateTimeField && !field.isList) {
+      // Use type() constructor to create a union with DateTimeFilter
+      fieldType = `type("Date").or(DateTimeFilter)`;
+      needsDateTimeFilter = true;
+    }
+
     // All where fields are optional
     fields.push(`"${field.name}?": ${fieldType}`);
   }
 
-  return {
+  const result: {
+    stringified: string;
+    enumDependencies: string[];
+    externalSchemaDependencies: ExternalSchemaDependency[];
+    needsDateTimeFilter?: boolean;
+  } = {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
     externalSchemaDependencies,
   };
+
+  if (needsDateTimeFilter) {
+    result.needsDateTimeFilter = true;
+  }
+
+  return result;
 }
 
 function stringifyWhereUnique(model: DMMF.Model):
@@ -161,6 +191,7 @@ function stringifyWhereUnique(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      needsDateTimeFilter?: boolean;
     }
   | undefined {
   const { hidden } = extractAnnotations(model.documentation);
@@ -172,6 +203,7 @@ function stringifyWhereUnique(model: DMMF.Model):
   const fields: string[] = [];
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
+  let needsDateTimeFilter = false;
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -246,6 +278,16 @@ function stringifyWhereUnique(model: DMMF.Model):
       continue;
     }
 
+    const isDateTimeField =
+      field.type === "DateTime" && !typeOverwrite && !schemaAnnotation;
+
+    // DateTime fields can accept either Date or DateTimeFilter
+    if (isDateTimeField) {
+      // Use type() constructor to create a union with DateTimeFilter
+      fieldType = `type("Date").or(DateTimeFilter)`;
+      needsDateTimeFilter = true;
+    }
+
     // All whereUnique fields are optional
     fields.push(`"${field.name}?": ${fieldType}`);
   }
@@ -254,9 +296,20 @@ function stringifyWhereUnique(model: DMMF.Model):
     return;
   }
 
-  return {
+  const result: {
+    stringified: string;
+    enumDependencies: string[];
+    externalSchemaDependencies: ExternalSchemaDependency[];
+    needsDateTimeFilter?: boolean;
+  } = {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
     externalSchemaDependencies,
   };
+
+  if (needsDateTimeFilter) {
+    result.needsDateTimeFilter = true;
+  }
+
+  return result;
 }

@@ -9,6 +9,10 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./runtime/filters": {
+      "import": "./dist/runtime/filters.js",
+      "types": "./dist/runtime/filters.d.ts"
     }
   },
   "bin": {

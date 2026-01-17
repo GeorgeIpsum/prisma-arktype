@@ -55,6 +55,9 @@ export const TEST_MODEL_MAP = {
 
   // Schema annotation model
   SCHEMA_ANNOTATION_MODEL: "TestSchemaAnnotation",
+
+  // All types model (for comprehensive type testing)
+  ALL_TYPES: "TestAllTypes",
 } as const;
 
 /**

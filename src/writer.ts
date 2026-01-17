@@ -47,6 +47,13 @@ function generateExternalSchemaImports(
     .join("\n")}\n`;
 }
 
+function generateDateTimeFilterImport(needsDateTimeFilter?: boolean): string {
+  if (!needsDateTimeFilter) {
+    return "";
+  }
+  return `import { DateTimeFilter } from "prisma-arktype/runtime/filters";\n`;
+}
+
 export function mapAllModelsForWrite(
   processedEnums: ProcessedModel[],
   processedPlain: ProcessedModel[],
@@ -107,7 +114,10 @@ export function mapAllModelsForWrite(
     const externalSchemaImports = generateExternalSchemaImports(
       model.externalSchemaDependencies,
     );
-    const content = `${arktypeImport}${enumImports}${externalSchemaImports}export const ${model.name}Where = type(${model.stringified});\n`;
+    const dateTimeFilterImport = generateDateTimeFilterImport(
+      model.needsDateTimeFilter,
+    );
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${dateTimeFilterImport}export const ${model.name}Where = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Where`, content);
   }
 
@@ -117,7 +127,10 @@ export function mapAllModelsForWrite(
     const externalSchemaImports = generateExternalSchemaImports(
       model.externalSchemaDependencies,
     );
-    const content = `${arktypeImport}${enumImports}${externalSchemaImports}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
+    const dateTimeFilterImport = generateDateTimeFilterImport(
+      model.needsDateTimeFilter,
+    );
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${dateTimeFilterImport}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
     modelMap.set(`${model.name}WhereUnique`, content);
   }
 
