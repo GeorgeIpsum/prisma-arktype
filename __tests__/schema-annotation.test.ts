@@ -206,10 +206,13 @@ describe("Schema Annotation Support", () => {
       const validResult = CreateValidator({
         inlineJson: fixture.inlineJson,
         addressJson: fixture.addressJson,
+        billingAddress: fixture.billingAddress,
         configJson: fixture.configJson,
         emailWithSchema: fixture.emailWithSchema,
         items: fixture.items,
         metadata: fixture.metadata,
+        age: fixture.age,
+        isActive: fixture.isActive,
       });
 
       expect(isValidationSuccess(validResult)).toBe(true);
@@ -254,6 +257,152 @@ describe("Schema Annotation Support", () => {
       });
 
       expect(isValidationSuccess(validResult)).toBe(true);
+    });
+  });
+
+  describe("Alias collision prevention", () => {
+    it("should generate unique aliases for multiple fields using same schema", async () => {
+      const PlainValidator = await loadValidator(
+        "TestSchemaAnnotation",
+        "Plain",
+      );
+      const fixture = getFixture("TestSchemaAnnotation");
+
+      // Both addressJson and billingAddress use AddressSchema
+      // Should generate unique aliases: AddressSchema_addressJson, AddressSchema_billingAddress
+      const validResult = PlainValidator(fixture);
+
+      expect(isValidationSuccess(validResult)).toBe(true);
+    });
+
+    it("should validate each field independently with same schema", async () => {
+      const PlainValidator = await loadValidator(
+        "TestSchemaAnnotation",
+        "Plain",
+      );
+      const fixture = getFixture("TestSchemaAnnotation");
+
+      // Invalid addressJson should fail
+      const invalidAddress = PlainValidator({
+        ...fixture,
+        addressJson: {
+          street: "123 Main St",
+          // missing city, zipCode, country
+        },
+      });
+
+      expect(isValidationError(invalidAddress)).toBe(true);
+
+      // Invalid billingAddress should fail
+      const invalidBilling = PlainValidator({
+        ...fixture,
+        billingAddress: {
+          street: "456 Billing Ave",
+          city: "Cambridge",
+          // missing zipCode, country
+        },
+      });
+
+      expect(isValidationError(invalidBilling)).toBe(true);
+    });
+  });
+
+  describe("Schema on different field types", () => {
+    it("should work on Int fields with number constraints", async () => {
+      const PlainValidator = await loadValidator(
+        "TestSchemaAnnotation",
+        "Plain",
+      );
+      const fixture = getFixture("TestSchemaAnnotation");
+
+      const validResult = PlainValidator(fixture);
+      expect(isValidationSuccess(validResult)).toBe(true);
+
+      // Test constraint: age must be between 0 and 150
+      const tooYoung = PlainValidator({
+        ...fixture,
+        age: -1,
+      });
+      expect(isValidationError(tooYoung)).toBe(true);
+
+      const tooOld = PlainValidator({
+        ...fixture,
+        age: 151,
+      });
+      expect(isValidationError(tooOld)).toBe(true);
+
+      const validAge = PlainValidator({
+        ...fixture,
+        age: 75,
+      });
+      expect(isValidationSuccess(validAge)).toBe(true);
+    });
+
+    it("should work on Boolean fields", async () => {
+      const PlainValidator = await loadValidator(
+        "TestSchemaAnnotation",
+        "Plain",
+      );
+      const fixture = getFixture("TestSchemaAnnotation");
+
+      const validTrue = PlainValidator({
+        ...fixture,
+        isActive: true,
+      });
+      expect(isValidationSuccess(validTrue)).toBe(true);
+
+      const validFalse = PlainValidator({
+        ...fixture,
+        isActive: false,
+      });
+      expect(isValidationSuccess(validFalse)).toBe(true);
+
+      const invalidBoolean = PlainValidator({
+        ...fixture,
+        isActive: "true", // string instead of boolean
+      });
+      expect(isValidationError(invalidBoolean)).toBe(true);
+    });
+
+    it("should work on DateTime fields", async () => {
+      const PlainValidator = await loadValidator(
+        "TestSchemaAnnotation",
+        "Plain",
+      );
+      const fixture = getFixture("TestSchemaAnnotation");
+
+      const validResult = PlainValidator(fixture);
+      expect(isValidationSuccess(validResult)).toBe(true);
+
+      const invalidDate = PlainValidator({
+        ...fixture,
+        createdAt: "2024-01-01", // string instead of Date
+      });
+      expect(isValidationError(invalidDate)).toBe(true);
+
+      const validDate = PlainValidator({
+        ...fixture,
+        createdAt: new Date(),
+      });
+      expect(isValidationSuccess(validDate)).toBe(true);
+    });
+
+    it("should work on String fields with custom constraints", async () => {
+      const PlainValidator = await loadValidator(
+        "TestSchemaAnnotation",
+        "Plain",
+      );
+      const fixture = getFixture("TestSchemaAnnotation");
+
+      // emailWithSchema uses "string.email" constraint
+      const validEmail = PlainValidator(fixture);
+      expect(isValidationSuccess(validEmail)).toBe(true);
+
+      const invalidEmail = PlainValidator({
+        ...fixture,
+        emailWithSchema: "not-an-email",
+      });
+      expect(isValidationError(invalidEmail)).toBe(true);
     });
   });
 });

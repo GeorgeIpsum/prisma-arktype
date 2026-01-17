@@ -11,6 +11,8 @@ import type { ExternalSchemaDependency, ProcessedModel } from "../model";
 export const processedWhere: ProcessedModel[] = [];
 export const processedWhereUnique: ProcessedModel[] = [];
 
+const extRegex = /\.(ts|js)$/;
+
 export function processWhere(
   models: DMMF.Model[] | Readonly<DMMF.Model[]>,
 ): void {
@@ -39,7 +41,7 @@ export function processWhere(
   Object.freeze(processedWhereUnique);
 }
 
-const enumMatch = /type\("(.+)"\)/;
+const _enumMatch = /type\("(.+)"\)/;
 
 function stringifyWhere(model: DMMF.Model):
   | {
@@ -48,9 +50,7 @@ function stringifyWhere(model: DMMF.Model):
       externalSchemaDependencies: ExternalSchemaDependency[];
     }
   | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
@@ -67,12 +67,7 @@ function stringifyWhere(model: DMMF.Model):
     fieldName?: string,
   ): string {
     const baseName =
-      exportName ||
-      path
-        .split("/")
-        .pop()
-        ?.replace(/\.(ts|js)$/, "") ||
-      "Schema";
+      exportName || path.split("/").pop()?.replace(extRegex, "") || "Schema";
     const suffix = fieldName ? `_${fieldName}` : "";
     return `${baseName}${suffix}`;
   }
@@ -93,13 +88,13 @@ function stringifyWhere(model: DMMF.Model):
       if (schemaAnnotation.isExternal) {
         // External schema - generate alias and track dependency
         const alias = generateUniqueAlias(
-          schemaAnnotation.importPath!,
+          schemaAnnotation.importPath as string,
           schemaAnnotation.exportName,
           field.name,
         );
         if (!externalSchemaDependencies.some((d) => d.localAlias === alias)) {
           const dependency: ExternalSchemaDependency = {
-            importPath: schemaAnnotation.importPath!,
+            importPath: schemaAnnotation.importPath as string,
             localAlias: alias,
           };
           if (schemaAnnotation.exportName) {
@@ -168,9 +163,7 @@ function stringifyWhereUnique(model: DMMF.Model):
       externalSchemaDependencies: ExternalSchemaDependency[];
     }
   | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
@@ -187,12 +180,7 @@ function stringifyWhereUnique(model: DMMF.Model):
     fieldName?: string,
   ): string {
     const baseName =
-      exportName ||
-      path
-        .split("/")
-        .pop()
-        ?.replace(/\.(ts|js)$/, "") ||
-      "Schema";
+      exportName || path.split("/").pop()?.replace(extRegex, "") || "Schema";
     const suffix = fieldName ? `_${fieldName}` : "";
     return `${baseName}${suffix}`;
   }

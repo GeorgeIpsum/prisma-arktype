@@ -13,7 +13,7 @@ pre-commit:
   commands:
     lint:
       glob: "*.{js,ts,json}"
-      run: pnpm lint:fix
+      run: pnpm lint
       stage_fixed: true
 
     # Prevent committing common debug patterns

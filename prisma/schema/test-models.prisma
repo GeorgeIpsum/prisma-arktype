@@ -356,6 +356,10 @@ model TestSchemaAnnotation {
   /// @prisma-arktype.schema="../../../__tests__/fixtures/schemas:AddressSchema"
   addressJson Json
 
+  /// Second field using same schema - tests alias collision prevention
+  /// @prisma-arktype.schema="../../../__tests__/fixtures/schemas:AddressSchema"
+  billingAddress Json
+
   /// External default export schema
   /// @prisma-arktype.schema="../../../__tests__/fixtures/defaultSchema"
   configJson Json
@@ -372,4 +376,16 @@ model TestSchemaAnnotation {
   /// Optional field with external schema
   /// @prisma-arktype.schema="../../../__tests__/fixtures/schemas:MetadataSchema"
   metadata Json?
+
+  /// Schema on Int field - tests non-Json field type support
+  /// @prisma-arktype.schema="number.integer>=0<=150"
+  age Int
+
+  /// Schema on Boolean field
+  /// @prisma-arktype.schema="boolean"
+  isActive Boolean
+
+  /// Schema on DateTime field
+  /// @prisma-arktype.schema="Date"
+  createdAt DateTime @default(now())
 }

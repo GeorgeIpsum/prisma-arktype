@@ -28,7 +28,7 @@ export function processPlain(
   Object.freeze(processedPlain);
 }
 
-const enumMatch = /type\("(.+)"\)/;
+const _enumMatch = /type\("(.+)"\)/;
 
 function stringifyPlain(
   model: DMMF.Model,

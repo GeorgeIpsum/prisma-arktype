@@ -219,6 +219,12 @@ export const TEST_FIXTURES = {
       zipCode: "02101",
       country: "USA",
     },
+    billingAddress: {
+      street: "456 Billing Ave",
+      city: "Cambridge",
+      zipCode: "02139",
+      country: "USA",
+    },
     configJson: {
       theme: "dark" as const,
       language: "en",
@@ -229,5 +235,8 @@ export const TEST_FIXTURES = {
       { id: "item2", quantity: 10 },
     ],
     metadata: { key: "testKey", value: "testValue" },
+    age: 25,
+    isActive: true,
+    createdAt: new Date("2024-01-01T00:00:00Z"),
   },
 } as const;

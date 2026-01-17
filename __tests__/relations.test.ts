@@ -4,7 +4,7 @@ import { isValidationSuccess, loadValidator } from "./utils/test-helpers";
 
 describe("Relations Schema Generation", () => {
   const PARENT_MODEL = TEST_MODEL_MAP.ONE_TO_ONE_PARENT;
-  const CHILD_MODEL = TEST_MODEL_MAP.ONE_TO_ONE_CHILD;
+  const _CHILD_MODEL = TEST_MODEL_MAP.ONE_TO_ONE_CHILD;
 
   it("should generate Relations schema", async () => {
     const RelationsValidator = await loadValidator(PARENT_MODEL, "Relations");
