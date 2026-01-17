@@ -16,11 +16,11 @@
   },
   "files": ["dist"],
   "scripts": {
-    "build": "pkgroll",
+    "build": "pkgroll && prisma generate",
     "dev": "pkgroll --watch",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "pnpm build && prisma generate && vitest run",
+    "test:e2e": "pnpm build && vitest run",
     "pretest": "pnpm build",
     "prepublishOnly": "npm run build",
     "postinstall": "lefthook install",
