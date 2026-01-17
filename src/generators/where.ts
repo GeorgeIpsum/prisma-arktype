@@ -202,13 +202,13 @@ function stringifyWhereUnique(model: DMMF.Model):
       if (schemaAnnotation.isExternal) {
         // External schema - generate alias and track dependency
         const alias = generateUniqueAlias(
-          schemaAnnotation.importPath!,
+          schemaAnnotation.importPath as string,
           schemaAnnotation.exportName,
           field.name,
         );
         if (!externalSchemaDependencies.some((d) => d.localAlias === alias)) {
           const dependency: ExternalSchemaDependency = {
-            importPath: schemaAnnotation.importPath!,
+            importPath: schemaAnnotation.importPath as string,
             localAlias: alias,
           };
           if (schemaAnnotation.exportName) {
