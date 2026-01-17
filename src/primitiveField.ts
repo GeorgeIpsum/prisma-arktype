@@ -41,8 +41,9 @@ export function stringifyPrimitiveType(
     case "Boolean":
       return `"boolean"`;
     case "Bytes":
-      // Bytes can be represented as Buffer in Node.js
-      return `"instanceof Buffer"`;
+      // Bytes is represented as Buffer in Node.js (which extends Uint8Array)
+      // Use unknown since binary data validation is uncommon in queries
+      return `"unknown"`;
     default:
       throw new Error(`Unsupported primitive type: ${type}`);
   }
