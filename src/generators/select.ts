@@ -20,9 +20,7 @@ export function processSelect(
 }
 
 function stringifySelect(model: DMMF.Model): string | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
