@@ -7,7 +7,8 @@
       "linter": {
         "rules": {
           "style": {
-            "noEnum": "off"
+            "noEnum": "off",
+            "noDefaultExport": "off"
           },
           "security": {
             "noSecrets": "off"

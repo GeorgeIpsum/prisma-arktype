@@ -145,10 +145,7 @@ vite.config.ts.timestamp-*
 .vscode
 
 # Generated files
-prisma/generated/client
-prisma/generated/validators/*
-!prisma/generated/validators/Test*.ts
-!prisma/generated/validators/Annotated*.ts
+prisma/generated
 
 # Ignore production schemas but keep test schemas
 prisma/schema/*

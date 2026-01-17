@@ -18,6 +18,7 @@ export function processCreate(
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
+        externalSchemaDependencies: result.externalSchemaDependencies,
       });
     }
   }

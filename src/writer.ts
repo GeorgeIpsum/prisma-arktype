@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getConfig } from "./config";
-import type { ProcessedModel } from "./model";
+import type { ExternalSchemaDependency, ProcessedModel } from "./model";
 
 export async function format(input: string): Promise<string> {
   // For now, return input as-is. Could integrate prettier later
@@ -25,6 +25,25 @@ function generateModelImports(modelDependencies?: string[]): string {
     .map(
       (modelName) => `import { ${modelName}Plain } from "./${modelName}Plain";`,
     )
+    .join("\n")}\n`;
+}
+
+function generateExternalSchemaImports(
+  externalSchemaDependencies?: ExternalSchemaDependency[],
+): string {
+  if (!externalSchemaDependencies || externalSchemaDependencies.length === 0) {
+    return "";
+  }
+
+  return `${externalSchemaDependencies
+    .map((dep) => {
+      if (dep.exportName) {
+        // Named export: import { ExportName as Alias } from "path"
+        return `import { ${dep.exportName} as ${dep.localAlias} } from "${dep.importPath}";`;
+      }
+      // Default export: import Alias from "path"
+      return `import ${dep.localAlias} from "${dep.importPath}";`;
+    })
     .join("\n")}\n`;
 }
 
@@ -56,7 +75,10 @@ export function mapAllModelsForWrite(
   // Add plain models
   for (const model of processedPlain) {
     const enumImports = generateEnumImports(model.enumDependencies);
-    const content = `${arktypeImport}${enumImports}export const ${model.name}Plain = type(${model.stringified});\n`;
+    const externalSchemaImports = generateExternalSchemaImports(
+      model.externalSchemaDependencies,
+    );
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}export const ${model.name}Plain = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Plain`, content);
   }
 
@@ -82,28 +104,40 @@ export function mapAllModelsForWrite(
   // Add where clauses
   for (const model of processedWhere) {
     const enumImports = generateEnumImports(model.enumDependencies);
-    const content = `${arktypeImport}${enumImports}export const ${model.name}Where = type(${model.stringified});\n`;
+    const externalSchemaImports = generateExternalSchemaImports(
+      model.externalSchemaDependencies,
+    );
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}export const ${model.name}Where = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Where`, content);
   }
 
   // Add whereUnique clauses
   for (const model of processedWhereUnique) {
     const enumImports = generateEnumImports(model.enumDependencies);
-    const content = `${arktypeImport}${enumImports}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
+    const externalSchemaImports = generateExternalSchemaImports(
+      model.externalSchemaDependencies,
+    );
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
     modelMap.set(`${model.name}WhereUnique`, content);
   }
 
   // Add create inputs
   for (const model of processedCreate) {
     const enumImports = generateEnumImports(model.enumDependencies);
-    const content = `${arktypeImport}${enumImports}export const ${model.name}Create = type(${model.stringified});\n`;
+    const externalSchemaImports = generateExternalSchemaImports(
+      model.externalSchemaDependencies,
+    );
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}export const ${model.name}Create = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Create`, content);
   }
 
   // Add update inputs
   for (const model of processedUpdate) {
     const enumImports = generateEnumImports(model.enumDependencies);
-    const content = `${arktypeImport}${enumImports}export const ${model.name}Update = type(${model.stringified});\n`;
+    const externalSchemaImports = generateExternalSchemaImports(
+      model.externalSchemaDependencies,
+    );
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}export const ${model.name}Update = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Update`, content);
   }
 

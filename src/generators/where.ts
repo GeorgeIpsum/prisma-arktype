@@ -1,15 +1,17 @@
 import type { DMMF } from "@prisma/generator-helper";
-import { extractAnnotations, isTypeOverwrite } from "../annotations";
+import { extractAnnotations, isSchema, isTypeOverwrite } from "../annotations";
 import {
   isPrimitivePrismaFieldType,
   stringifyPrimitiveType,
 } from "../primitiveField";
 import { wrapPrimitiveWithArray } from "../wrappers";
 import { processedEnums } from "./enum";
-import type { ProcessedModel } from "../model";
+import type { ExternalSchemaDependency, ProcessedModel } from "../model";
 
 export const processedWhere: ProcessedModel[] = [];
 export const processedWhereUnique: ProcessedModel[] = [];
+
+const extRegex = /\.(ts|js)$/;
 
 export function processWhere(
   models: DMMF.Model[] | Readonly<DMMF.Model[]>,
@@ -21,6 +23,7 @@ export function processWhere(
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
+        externalSchemaDependencies: result.externalSchemaDependencies,
       });
     }
 
@@ -30,6 +33,7 @@ export function processWhere(
         name: model.name,
         stringified: uniqueResult.stringified,
         enumDependencies: uniqueResult.enumDependencies,
+        externalSchemaDependencies: uniqueResult.externalSchemaDependencies,
       });
     }
   }
@@ -37,14 +41,16 @@ export function processWhere(
   Object.freeze(processedWhereUnique);
 }
 
-const enumMatch = /type\("(.+)"\)/;
+const _enumMatch = /type\("(.+)"\)/;
 
-function stringifyWhere(
-  model: DMMF.Model,
-): { stringified: string; enumDependencies: string[] } | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+function stringifyWhere(model: DMMF.Model):
+  | {
+      stringified: string;
+      enumDependencies: string[];
+      externalSchemaDependencies: ExternalSchemaDependency[];
+    }
+  | undefined {
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
@@ -52,6 +58,19 @@ function stringifyWhere(
 
   const fields: string[] = [];
   const enumDependencies: string[] = [];
+  const externalSchemaDependencies: ExternalSchemaDependency[] = [];
+
+  // Helper function for generating unique aliases
+  function generateUniqueAlias(
+    path: string,
+    exportName?: string,
+    fieldName?: string,
+  ): string {
+    const baseName =
+      exportName || path.split("/").pop()?.replace(extRegex, "") || "Schema";
+    const suffix = fieldName ? `_${fieldName}` : "";
+    return `${baseName}${suffix}`;
+  }
 
   for (const field of model.fields) {
     const { annotations: fieldAnnotations, hidden: fieldHidden } =
@@ -60,10 +79,41 @@ function stringifyWhere(
     if (fieldHidden) continue;
     if (field.kind === "object") continue; // Skip relations
 
+    const schemaAnnotation = fieldAnnotations.find(isSchema);
     const typeOverwrite = fieldAnnotations.find(isTypeOverwrite);
     let fieldType: string;
 
-    if (typeOverwrite) {
+    if (schemaAnnotation) {
+      // HIGHEST PRIORITY: schema annotation
+      if (schemaAnnotation.isExternal) {
+        // External schema - generate alias and track dependency
+        const alias = generateUniqueAlias(
+          schemaAnnotation.importPath as string,
+          schemaAnnotation.exportName,
+          field.name,
+        );
+        if (!externalSchemaDependencies.some((d) => d.localAlias === alias)) {
+          const dependency: ExternalSchemaDependency = {
+            importPath: schemaAnnotation.importPath as string,
+            localAlias: alias,
+          };
+          if (schemaAnnotation.exportName) {
+            dependency.exportName = schemaAnnotation.exportName;
+          }
+          externalSchemaDependencies.push(dependency);
+        }
+        fieldType = alias;
+      } else {
+        // Inline schema - use directly
+        // Object schemas ({ ... }) should not be quoted
+        // Simple type strings should be quoted
+        if (schemaAnnotation.value.trim().startsWith("{")) {
+          fieldType = schemaAnnotation.value;
+        } else {
+          fieldType = `"${schemaAnnotation.value}"`;
+        }
+      }
+    } else if (typeOverwrite) {
       fieldType = typeOverwrite.value;
     } else if (isPrimitivePrismaFieldType(field.type)) {
       fieldType = stringifyPrimitiveType(field.type, fieldAnnotations);
@@ -82,10 +132,12 @@ function stringifyWhere(
       continue;
     }
 
-    const isEnumType = field.kind === "enum" && !typeOverwrite;
+    const isEnumType =
+      field.kind === "enum" && !typeOverwrite && !schemaAnnotation;
+    const isExternalSchema = schemaAnnotation?.isExternal === true;
 
     if (field.isList) {
-      if (isEnumType) {
+      if (isExternalSchema || isEnumType) {
         fieldType = `${fieldType}.array()`;
       } else {
         const inner = fieldType.slice(1, -1);
@@ -100,15 +152,18 @@ function stringifyWhere(
   return {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
+    externalSchemaDependencies,
   };
 }
 
-function stringifyWhereUnique(
-  model: DMMF.Model,
-): { stringified: string; enumDependencies: string[] } | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+function stringifyWhereUnique(model: DMMF.Model):
+  | {
+      stringified: string;
+      enumDependencies: string[];
+      externalSchemaDependencies: ExternalSchemaDependency[];
+    }
+  | undefined {
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
@@ -116,6 +171,19 @@ function stringifyWhereUnique(
 
   const fields: string[] = [];
   const enumDependencies: string[] = [];
+  const externalSchemaDependencies: ExternalSchemaDependency[] = [];
+
+  // Helper function for generating unique aliases
+  function generateUniqueAlias(
+    path: string,
+    exportName?: string,
+    fieldName?: string,
+  ): string {
+    const baseName =
+      exportName || path.split("/").pop()?.replace(extRegex, "") || "Schema";
+    const suffix = fieldName ? `_${fieldName}` : "";
+    return `${baseName}${suffix}`;
+  }
 
   for (const field of model.fields) {
     const { annotations: fieldAnnotations, hidden: fieldHidden } =
@@ -125,10 +193,41 @@ function stringifyWhereUnique(
     if (field.kind === "object") continue;
     if (!(field.isId || field.isUnique)) continue;
 
+    const schemaAnnotation = fieldAnnotations.find(isSchema);
     const typeOverwrite = fieldAnnotations.find(isTypeOverwrite);
     let fieldType: string;
 
-    if (typeOverwrite) {
+    if (schemaAnnotation) {
+      // HIGHEST PRIORITY: schema annotation
+      if (schemaAnnotation.isExternal) {
+        // External schema - generate alias and track dependency
+        const alias = generateUniqueAlias(
+          schemaAnnotation.importPath as string,
+          schemaAnnotation.exportName,
+          field.name,
+        );
+        if (!externalSchemaDependencies.some((d) => d.localAlias === alias)) {
+          const dependency: ExternalSchemaDependency = {
+            importPath: schemaAnnotation.importPath as string,
+            localAlias: alias,
+          };
+          if (schemaAnnotation.exportName) {
+            dependency.exportName = schemaAnnotation.exportName;
+          }
+          externalSchemaDependencies.push(dependency);
+        }
+        fieldType = alias;
+      } else {
+        // Inline schema - use directly
+        // Object schemas ({ ... }) should not be quoted
+        // Simple type strings should be quoted
+        if (schemaAnnotation.value.trim().startsWith("{")) {
+          fieldType = schemaAnnotation.value;
+        } else {
+          fieldType = `"${schemaAnnotation.value}"`;
+        }
+      }
+    } else if (typeOverwrite) {
       fieldType = typeOverwrite.value;
     } else if (isPrimitivePrismaFieldType(field.type)) {
       fieldType = stringifyPrimitiveType(field.type, fieldAnnotations);
@@ -158,5 +257,6 @@ function stringifyWhereUnique(
   return {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
+    externalSchemaDependencies,
   };
 }
