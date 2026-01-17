@@ -1,5 +1,11 @@
 # prisma-arktype
 
+## 2.4.0
+
+### Minor Changes
+
+- 6086baf: allow custom json schema injection for generated schemas
+
 ## 2.3.0
 
 ### Minor Changes
