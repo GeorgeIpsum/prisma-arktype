@@ -239,6 +239,7 @@ Control schema generation using annotations in your Prisma schema. All annotatio
 | `@prisma-arktype.input.hide` | Field | Hide from Create and Update input schemas |
 | `@prisma-arktype.create.input.hide` | Field | Hide from Create input schema only |
 | `@prisma-arktype.update.input.hide` | Field | Hide from Update input schema only |
+| `@prisma-arktype.schema="<schema>"` | Field | Custom ArkType schema (inline or external) |
 | `@prisma-arktype.typeOverwrite="<type>"` | Field | Override the generated ArkType type |
 
 ### Hide Fields/Models
@@ -300,6 +301,48 @@ model User {
 ```
 
 This allows you to use any ArkType type definition, including built-in refinements like `string.email`, `string.url`, `number.integer`, etc.
+
+### Custom Schemas
+
+Bring your own ArkType schemas for any field using `@prisma-arktype.schema`:
+
+```prisma
+model User {
+  id String @id
+
+  /// Inline schema for structured JSON
+  /// @prisma-arktype.schema="{ name: 'string', age: 'number' }"
+  profile Json
+
+  /// External schema from a file (named export)
+  /// @prisma-arktype.schema="../schemas/address:AddressSchema"
+  address Json
+
+  /// External schema (default export)
+  /// @prisma-arktype.schema="../schemas/config"
+  settings Json
+}
+```
+
+**Import Path Rules:**
+- Paths are relative to the generated validators directory
+- Named exports use colon syntax: `"path:ExportName"`
+- Default exports omit the colon: `"path"`
+- Works with ANY field type (not just Json)
+
+**Priority:** `schema` > `typeOverwrite` > default type mapping
+
+**Example external schema file** (`schemas/address.ts`):
+```typescript
+import { type } from "arktype";
+
+export const AddressSchema = type({
+  street: "string",
+  city: "string",
+  zipCode: "string",
+  country: "string",
+});
+```
 
 ## Type Mapping
 

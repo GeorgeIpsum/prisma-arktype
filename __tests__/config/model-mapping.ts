@@ -52,6 +52,9 @@ export const TEST_MODEL_MAP = {
   // Annotation models (from test-models.prisma)
   HIDDEN_MODEL: "HiddenModel",
   ANNOTATED_MODEL: "AnnotatedModel",
+
+  // Schema annotation model
+  SCHEMA_ANNOTATION_MODEL: "TestSchemaAnnotation",
 } as const;
 
 /**
@@ -205,5 +208,26 @@ export const TEST_FIXTURES = {
     name: "Test Project",
     description: "Test project description",
     organizationId: "org_test123",
+  },
+
+  TestSchemaAnnotation: {
+    id: "schema_test123",
+    inlineJson: { name: "John Doe", age: 30 },
+    addressJson: {
+      street: "123 Main St",
+      city: "Boston",
+      zipCode: "02101",
+      country: "USA",
+    },
+    configJson: {
+      theme: "dark" as const,
+      language: "en",
+    },
+    emailWithSchema: "test@example.com",
+    items: [
+      { id: "item1", quantity: 5 },
+      { id: "item2", quantity: 10 },
+    ],
+    metadata: { key: "testKey", value: "testValue" },
   },
 } as const;

@@ -338,3 +338,38 @@ model TestQueryItem {
 
   @@index([modelId])
 }
+
+// ============================================
+// MODELS FOR TESTING SCHEMA ANNOTATION
+// ============================================
+
+/// Model specifically for testing @prisma-arktype.schema annotation
+/// Tests inline schemas, external schemas (named and default exports), priority over typeOverwrite
+model TestSchemaAnnotation {
+  id String @id @default(cuid(2))
+
+  /// Inline schema for structured JSON
+  /// @prisma-arktype.schema="{ name: 'string', age: 'number.integer' }"
+  inlineJson Json
+
+  /// External named export schema
+  /// @prisma-arktype.schema="../../../__tests__/fixtures/schemas:AddressSchema"
+  addressJson Json
+
+  /// External default export schema
+  /// @prisma-arktype.schema="../../../__tests__/fixtures/defaultSchema"
+  configJson Json
+
+  /// Schema takes priority over typeOverwrite
+  /// @prisma-arktype.schema="string.email"
+  /// @prisma-arktype.typeOverwrite="string"
+  emailWithSchema String
+
+  /// Array field with external schema
+  /// @prisma-arktype.schema="../../../__tests__/fixtures/schemas:ItemSchema"
+  items Json[]
+
+  /// Optional field with external schema
+  /// @prisma-arktype.schema="../../../__tests__/fixtures/schemas:MetadataSchema"
+  metadata Json?
+}
