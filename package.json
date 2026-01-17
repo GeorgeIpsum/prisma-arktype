@@ -23,7 +23,7 @@
     "test:e2e": "pnpm build && prisma generate && vitest run",
     "pretest": "pnpm build",
     "prepublishOnly": "npm run build",
-    "postinstall": "lefthook install",
+    "postinstall": "lefthook install && prisma generate",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "changeset": "changeset",
