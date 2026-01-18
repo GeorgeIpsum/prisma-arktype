@@ -264,14 +264,5 @@ export async function write(
     writePromises.push(writeFile(filePath, await format(content)));
   }
 
-  // TODO: determine perf hit of this
-  // Create barrel file
-  // const barrelExports = Array.from(modelMap.keys())
-  //   .map((name) => `export * from "./${name}";`)
-  //   .join("\n");
-  // writePromises.push(
-  //   writeFile(join(config.output, "index.ts"), await format(barrelExports)),
-  // );
-
   await Promise.all(writePromises);
 }
