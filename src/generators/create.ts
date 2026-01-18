@@ -19,6 +19,7 @@ export function processCreate(
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
+        runtimeDependencies: result.runtimeDependencies,
       });
     }
   }

@@ -389,3 +389,17 @@ model TestSchemaAnnotation {
   /// @prisma-arktype.schema="Date"
   createdAt DateTime @default(now())
 }
+
+// ============================================
+// MODELS FOR TESTING ARRAY FILTERS
+// ============================================
+
+/// Model for testing array field filtering in Where clauses
+/// Tests: String[], Int[], BigInt[], Enum[] array filtering with has, hasEvery, hasSome, equals, isEmpty
+model TestArrayFilter {
+  id         String     @id @default(cuid(2))
+  keys       String[]
+  numbers    Int[]
+  bigInts    BigInt[]
+  enumKeys   TestStatus[]
+}

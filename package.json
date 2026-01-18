@@ -9,6 +9,38 @@
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./runtime/filters": {
+      "import": "./dist/runtime/filters.js",
+      "types": "./dist/runtime/filters.d.ts"
+    },
+    "./runtime/buffer": {
+      "import": "./dist/runtime/buffer.js",
+      "types": "./dist/runtime/buffer.d.ts"
+    },
+    "./runtime/uint8array": {
+      "import": "./dist/runtime/uint8array.js",
+      "types": "./dist/runtime/uint8array.d.ts"
+    },
+    "./runtime/arrayFilters": {
+      "import": "./dist/runtime/arrayFilters.js",
+      "types": "./dist/runtime/arrayFilters.d.ts"
+    },
+    "./runtime/stringFilter": {
+      "import": "./dist/runtime/stringFilter.js",
+      "types": "./dist/runtime/stringFilter.d.ts"
+    },
+    "./runtime/numberFilter": {
+      "import": "./dist/runtime/numberFilter.js",
+      "types": "./dist/runtime/numberFilter.d.ts"
+    },
+    "./runtime/enumFilter": {
+      "import": "./dist/runtime/enumFilter.js",
+      "types": "./dist/runtime/enumFilter.d.ts"
+    },
+    "./runtime/booleanFilter": {
+      "import": "./dist/runtime/booleanFilter.js",
+      "types": "./dist/runtime/booleanFilter.d.ts"
     }
   },
   "bin": {
@@ -53,12 +85,15 @@
     "@prisma/generator-helper": "^6.18.0",
     "arktype": "^2.1.25"
   },
+  "peerDependencies": {
+    "@prisma/client": ">=6"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.3.11",
     "@changesets/cli": "2.29.8",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
-    "@prisma/client": "^6.18.0",
+    "@prisma/client": "7.2.0",
     "@tilli-pro/biome": "0.9.0",
     "@types/node": "^24.10.0",
     "lefthook": "^2.0.2",

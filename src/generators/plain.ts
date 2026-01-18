@@ -7,7 +7,11 @@ import {
 } from "../primitiveField";
 import { wrapPrimitiveWithArray } from "../wrappers";
 import { processedEnums } from "./enum";
-import type { ExternalSchemaDependency, ProcessedModel } from "../model";
+import type {
+  ExternalSchemaDependency,
+  ProcessedModel,
+  RuntimeDependency,
+} from "../model";
 
 export const processedPlain: ProcessedModel[] = [];
 
@@ -22,6 +26,7 @@ export function processPlain(
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
+        runtimeDependencies: result.runtimeDependencies,
       });
     }
   }
@@ -39,6 +44,7 @@ function stringifyPlain(
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   const config = getConfig();
@@ -53,6 +59,7 @@ function stringifyPlain(
   const fields: string[] = [];
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
+  const runtimeDependencies: RuntimeDependency[] = [];
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -155,16 +162,26 @@ function stringifyPlain(
     const isEnumType =
       field.kind === "enum" && !typeOverwrite && !schemaAnnotation;
     const isExternalSchema = schemaAnnotation?.isExternal === true;
+    const isBytesField =
+      field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
+
+    // Track runtime dependencies for Bytes fields
+    if (isBytesField) {
+      const runtimeDep = fieldType as RuntimeDependency;
+      if (!runtimeDependencies.includes(runtimeDep)) {
+        runtimeDependencies.push(runtimeDep);
+      }
+    }
 
     if (field.isList) {
-      if (isExternalSchema || isEnumType) {
+      if (isExternalSchema || isEnumType || isBytesField) {
         fieldType = `${fieldType}.array()`;
       } else {
         fieldType = `"${wrapPrimitiveWithArray(fieldType.slice(1, -1))}"`;
       }
     }
     if (!field.isRequired) {
-      if (isExternalSchema || isEnumType) {
+      if (isExternalSchema || isEnumType || isBytesField) {
         fieldType = `${fieldType}.or("null")`;
       } else {
         // Remove quotes, add null, re-add quotes
@@ -188,6 +205,7 @@ function stringifyPlain(
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
     externalSchemaDependencies,
+    runtimeDependencies,
   };
 }
 
@@ -196,6 +214,7 @@ export function stringifyPlainInputCreate(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   return stringifyPlain(model, true, false);
@@ -206,6 +225,7 @@ export function stringifyPlainInputUpdate(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   return stringifyPlain(model, false, true);
