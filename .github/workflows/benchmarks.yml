@@ -159,11 +159,16 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           pnpm bench:update-baseline
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add __benchmarks__/reports/baseline.json __benchmarks__/reports/history/
-          git commit -m "chore: update benchmark baseline [skip ci]" || true
-          git push || true
+          # Only commit if baseline.json was created (i.e., if structured data was available)
+          if [ -f __benchmarks__/reports/baseline.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add __benchmarks__/reports/baseline.json __benchmarks__/reports/history/
+            git commit -m "chore: update benchmark baseline [skip ci]" || true
+            git push || true
+          else
+            echo "Baseline update skipped - no structured benchmark data available"
+          fi
 
       - name: Update baseline (manual trigger)
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.update_baseline == 'true'
