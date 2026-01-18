@@ -7,7 +7,9 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { DMMF } from "@prisma/generator-helper";
-import { getDMMF } from "@prisma/generator-helper";
+import prismaInternals from "@prisma/internals";
+
+const { getDMMF } = prismaInternals;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

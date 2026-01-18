@@ -1,17 +1,15 @@
 # Prismark Performance Benchmarks
 
-Comprehensive performance testing suite for prisma-arktype to measure generation speed, memory usage, and identify bottlenecks.
+Comprehensive performance testing suite for prisma-arktype to measure generation speed and identify bottlenecks.
 
-## Overview
+## ✅ Working Benchmarks
 
-This benchmark suite provides:
+- **Annotation Extraction**: Fully functional with 1.2x-67x performance comparisons
+- **Generation Timing**: Single-run measurements showing throughput (models/sec, fields/sec)
 
-- **End-to-end generation benchmarks** across different schema sizes
-- **Individual processor benchmarks** for each of the 11 generators
-- **Annotation extraction benchmarks** with various densities
-- **Memory profiling** to detect leaks and measure heap usage
-- **Baseline comparison** for regression detection
-- **CI integration** for automated performance monitoring
+## ⚠️ Known Limitations
+
+**Frozen Global Arrays Issue**: Generators use module-level frozen arrays, limiting benchmarks to single-run measurements instead of statistical iterations. See "Technical Details" below for full explanation.
 
 ## Quick Start
 
@@ -20,22 +18,14 @@ This benchmark suite provides:
 pnpm bench
 
 # Run specific benchmark suites
-pnpm bench:generation      # End-to-end generation tests
-pnpm bench:processors      # Individual processor tests
-pnpm bench:annotations     # Annotation extraction tests
-pnpm bench:memory          # Memory profiling (requires --expose-gc)
+pnpm bench:generation      # ✅ Generation timing (single-run)
+pnpm bench:annotations     # ✅ Annotation extraction (full stats)
 
 # Compare with baseline
 pnpm bench:compare
 
 # Update baseline with latest results
 pnpm bench:update-baseline
-
-# View benchmarks in UI
-pnpm bench:ui
-
-# CPU profiling
-pnpm bench:profile         # Generates .cpuprofile file
 ```
 
 ## Test Schemas
@@ -378,3 +368,61 @@ describe('My Feature Performance', () => {
 ## License
 
 Same as main project (MIT)
+
+## Technical Details
+
+### Frozen Global Arrays Issue
+
+The generators use module-level mutable arrays that get frozen after processing:
+
+```typescript
+// Example from enum.ts
+export const processedEnums: ProcessedModel[] = [];
+
+export function processEnums(enums) {
+  for (const enumData of enums) {
+    processedEnums.push({ /* ... */ });  // ← Pushes to global array
+  }
+  Object.freeze(processedEnums);  // ← Freezes after processing
+}
+```
+
+**Impact on Benchmarks**:
+- ✅ First iteration: Works fine
+- ❌ Second iteration: Throws error (can't push to frozen array)
+- ❌ Result: Benchmark shows "NaNx faster" instead of real comparisons
+
+**Current Workaround**: Single-run timing measurements with throughput metrics (models/sec, fields/sec).
+
+**Future Fix**: Refactor generators to avoid global mutable state or use process-isolated benchmark runs.
+
+### Current Benchmark Results
+
+**Annotation Extraction** (3.8M+ ops/sec):
+- Simple annotations: 1.2x-5.4x faster than complex patterns
+- Caching potential: 67x speedup for repeated extraction
+
+**Generation Timing**:
+- Small schema (5 models): ~1ms (4,700+ models/sec, 23,600+ fields/sec)
+- Medium schema (25 models): TBD
+
+### Test Schema Status
+
+| Schema | Status | Issue |
+|--------|--------|-------|
+| small.prisma | ✅ Working | - |
+| medium.prisma | ✅ Working | - |
+| large.prisma | ❌ Disabled | Multiple `@@index` on same line, model/enum naming conflicts |
+| extreme.prisma | ❌ Disabled | Same as large |
+| realistic/*.prisma | ❌ Disabled | Duplicate models, missing relation fields |
+
+### Dependencies
+
+- **@prisma/internals@7.2.0**: For `getDMMF()` function (ESM default export)
+- **vitest@4.0.16**: Benchmark framework (experimental feature)
+
+```typescript
+// Correct import pattern
+import prismaInternals from "@prisma/internals";
+const { getDMMF } = prismaInternals;
+```

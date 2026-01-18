@@ -17,26 +17,158 @@ generator prisma_arktype {
 }
 
 // Enums (20 total)
-enum UserRole { ADMIN USER MODERATOR GUEST SUPER_ADMIN }
-enum OrderStatus { PENDING PROCESSING SHIPPED DELIVERED CANCELLED RETURNED REFUNDED }
-enum PaymentMethod { CREDIT_CARD DEBIT_CARD PAYPAL STRIPE BANK_TRANSFER CRYPTO APPLE_PAY GOOGLE_PAY }
-enum Priority { LOW MEDIUM HIGH URGENT CRITICAL }
-enum ContentType { TEXT IMAGE VIDEO AUDIO DOCUMENT PDF SPREADSHEET PRESENTATION }
-enum SubscriptionTier { FREE BASIC PREMIUM ENTERPRISE }
-enum TransactionType { PURCHASE REFUND CREDIT DEBIT TRANSFER ADJUSTMENT }
-enum NotificationType { EMAIL SMS PUSH IN_APP WEBHOOK }
-enum TaskStatus { TODO IN_PROGRESS BLOCKED REVIEW DONE CANCELLED }
-enum IssueType { BUG FEATURE IMPROVEMENT TASK EPIC STORY }
-enum IssuePriority { TRIVIAL MINOR MAJOR CRITICAL BLOCKER }
-enum ProjectStatus { PLANNING ACTIVE ON_HOLD COMPLETED CANCELLED ARCHIVED }
-enum MemberRole { OWNER ADMIN MEMBER VIEWER GUEST }
-enum EventType { CREATED UPDATED DELETED VIEWED SHARED COMMENTED LIKED }
-enum FileCategory { IMAGE VIDEO DOCUMENT ARCHIVE CODE DATA OTHER }
-enum TicketStatus { OPEN IN_PROGRESS WAITING_RESPONSE RESOLVED CLOSED }
-enum DeploymentStatus { PENDING DEPLOYING DEPLOYED FAILED ROLLED_BACK }
-enum Environment { DEVELOPMENT STAGING PRODUCTION }
-enum LogLevel { DEBUG INFO WARN ERROR FATAL }
-enum AccessLevel { PUBLIC PRIVATE RESTRICTED CONFIDENTIAL }
+enum UserRole {
+  ADMIN
+  USER
+  MODERATOR
+  GUEST
+  SUPER_ADMIN
+}
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+  REFUNDED
+}
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  STRIPE
+  BANK_TRANSFER
+  CRYPTO
+  APPLE_PAY
+  GOOGLE_PAY
+}
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+  CRITICAL
+}
+enum ContentType {
+  TEXT
+  IMAGE
+  VIDEO
+  AUDIO
+  DOCUMENT
+  PDF
+  SPREADSHEET
+  PRESENTATION
+}
+enum SubscriptionTier {
+  FREE
+  BASIC
+  PREMIUM
+  ENTERPRISE
+}
+enum TransactionType {
+  PURCHASE
+  REFUND
+  CREDIT
+  DEBIT
+  TRANSFER
+  ADJUSTMENT
+}
+enum NotificationType {
+  EMAIL
+  SMS
+  PUSH
+  IN_APP
+  WEBHOOK
+}
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  DONE
+  CANCELLED
+}
+enum IssueType {
+  BUG
+  FEATURE
+  IMPROVEMENT
+  TASK
+  EPIC
+  STORY
+}
+enum IssuePriority {
+  TRIVIAL
+  MINOR
+  MAJOR
+  CRITICAL
+  BLOCKER
+}
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+  GUEST
+}
+enum EventType {
+  CREATED
+  UPDATED
+  DELETED
+  VIEWED
+  SHARED
+  COMMENTED
+  LIKED
+}
+enum FileCategory {
+  IMAGE
+  VIDEO
+  DOCUMENT
+  ARCHIVE
+  CODE
+  DATA
+  OTHER
+}
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_RESPONSE
+  RESOLVED
+  CLOSED
+}
+enum DeploymentStatus {
+  PENDING
+  DEPLOYING
+  DEPLOYED
+  FAILED
+  ROLLED_BACK
+}
+enum Environment {
+  DEVELOPMENT
+  STAGING
+  PRODUCTION
+}
+enum LogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+  FATAL
+}
+enum AccessLevel {
+  PUBLIC
+  PRIVATE
+  RESTRICTED
+  CONFIDENTIAL
+}
 
 // Core User Management (10 models)
 model User {
@@ -941,7 +1073,7 @@ model CreditTransaction {
   @@index([customerId])
 }
 
-model PaymentMethod {
+model Payment {
   id String @id @default(cuid())
   customerId String
   type String

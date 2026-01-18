@@ -418,7 +418,7 @@ model Coupon {
 }
 
 // Store Payment Methods
-model PaymentMethod {
+model StoredPaymentMethod {
   id         String   @id @default(cuid())
   customerId String
   customer   Customer @relation(fields: [customerId], references: [id])

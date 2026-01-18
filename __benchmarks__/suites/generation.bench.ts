@@ -1,6 +1,9 @@
 /**
- * End-to-End Generation Benchmarks
- * Measures complete generation pipeline performance across different schema sizes
+ * Generation Timing Benchmarks
+ * Single-run timing measurements for full generation pipeline
+ *
+ * NOTE: Generators use global frozen arrays, so we can only measure once per schema.
+ * This provides baseline timing data for regression detection.
  */
 
 import { bench, describe } from "vitest";
@@ -17,7 +20,11 @@ import {
 import { processSelect } from "../../src/generators/select";
 import { processUpdate } from "../../src/generators/update";
 import { processWhere } from "../../src/generators/where";
-import { loadRealisticSchema, loadSchema } from "../utils/schema-loader";
+import { loadSchema } from "../utils/schema-loader";
+
+// Load schemas once
+const smallSchema = await loadSchema("small");
+const mediumSchema = await loadSchema("medium");
 
 /**
  * Run full generation pipeline (all 11 processors)
@@ -37,131 +44,49 @@ function runFullGeneration(dmmf: any) {
   processRelationsUpdate(dmmf.datamodel.models);
 }
 
-describe("End-to-End Generation - Standard Schemas", () => {
+describe("Generation Timing - Single Measurement", () => {
   bench(
-    "Small schema (5 models, ~30 fields)",
-    async () => {
-      const { dmmf } = await loadSchema("small");
-      runFullGeneration(dmmf);
-    },
-    {
-      iterations: 100,
-      warmupIterations: 10,
-    },
-  );
+    "Small schema (5 models, ~30 fields) - Full Pipeline",
+    () => {
+      const start = performance.now();
+      runFullGeneration(smallSchema.dmmf);
+      const duration = performance.now() - start;
 
-  bench(
-    "Medium schema (25 models, ~200 fields)",
-    async () => {
-      const { dmmf } = await loadSchema("medium");
-      runFullGeneration(dmmf);
-    },
-    {
-      iterations: 50,
-      warmupIterations: 5,
-    },
-  );
+      // Calculate throughput
+      const modelsPerSec = (smallSchema.info.stats.models / duration) * 1000;
+      const fieldsPerSec = (smallSchema.info.stats.fields / duration) * 1000;
 
-  bench(
-    "Large schema (100 models, ~800 fields)",
-    async () => {
-      const { dmmf } = await loadSchema("large");
-      runFullGeneration(dmmf);
+      console.log(`\n  Duration: ${duration.toFixed(2)}ms`);
+      console.log(
+        `  Throughput: ${modelsPerSec.toFixed(0)} models/sec, ${fieldsPerSec.toFixed(0)} fields/sec`,
+      );
     },
     {
-      iterations: 10,
-      warmupIterations: 2,
-    },
-  );
-
-  bench(
-    "Extreme schema (500 models, ~4000 fields)",
-    async () => {
-      const { dmmf } = await loadSchema("extreme");
-      runFullGeneration(dmmf);
-    },
-    {
-      iterations: 5,
-      warmupIterations: 1,
+      iterations: 1, // Single run due to frozen arrays
+      warmupIterations: 0,
     },
   );
 });
 
-describe("End-to-End Generation - Realistic Schemas", () => {
+describe("Medium Schema Timing", () => {
   bench(
-    "E-commerce (30 models)",
-    async () => {
-      const { dmmf } = await loadRealisticSchema("ecommerce");
-      runFullGeneration(dmmf);
+    "Medium schema (25 models, ~200 fields) - Full Pipeline",
+    () => {
+      const start = performance.now();
+      runFullGeneration(mediumSchema.dmmf);
+      const duration = performance.now() - start;
+
+      const modelsPerSec = (mediumSchema.info.stats.models / duration) * 1000;
+      const fieldsPerSec = (mediumSchema.info.stats.fields / duration) * 1000;
+
+      console.log(`\n  Duration: ${duration.toFixed(2)}ms`);
+      console.log(
+        `  Throughput: ${modelsPerSec.toFixed(0)} models/sec, ${fieldsPerSec.toFixed(0)} fields/sec`,
+      );
     },
     {
-      iterations: 50,
-      warmupIterations: 5,
+      iterations: 1,
+      warmupIterations: 0,
     },
-  );
-
-  bench(
-    "SaaS Platform (50 models)",
-    async () => {
-      const { dmmf } = await loadRealisticSchema("saas");
-      runFullGeneration(dmmf);
-    },
-    {
-      iterations: 20,
-      warmupIterations: 3,
-    },
-  );
-
-  bench(
-    "Social Network (40 models)",
-    async () => {
-      const { dmmf } = await loadRealisticSchema("social");
-      runFullGeneration(dmmf);
-    },
-    {
-      iterations: 30,
-      warmupIterations: 5,
-    },
-  );
-});
-
-describe("Scaling Analysis", () => {
-  bench(
-    "Models per second - Small",
-    async () => {
-      const { dmmf, info } = await loadSchema("small");
-      const start = performance.now();
-      runFullGeneration(dmmf);
-      const duration = performance.now() - start;
-      const modelsPerSec = (info.stats.models / duration) * 1000;
-      console.log(`  Small: ${modelsPerSec.toFixed(2)} models/sec`);
-    },
-    { iterations: 20 },
-  );
-
-  bench(
-    "Models per second - Medium",
-    async () => {
-      const { dmmf, info } = await loadSchema("medium");
-      const start = performance.now();
-      runFullGeneration(dmmf);
-      const duration = performance.now() - start;
-      const modelsPerSec = (info.stats.models / duration) * 1000;
-      console.log(`  Medium: ${modelsPerSec.toFixed(2)} models/sec`);
-    },
-    { iterations: 20 },
-  );
-
-  bench(
-    "Models per second - Large",
-    async () => {
-      const { dmmf, info } = await loadSchema("large");
-      const start = performance.now();
-      runFullGeneration(dmmf);
-      const duration = performance.now() - start;
-      const modelsPerSec = (info.stats.models / duration) * 1000;
-      console.log(`  Large: ${modelsPerSec.toFixed(2)} models/sec`);
-    },
-    { iterations: 10 },
   );
 });
