@@ -21,6 +21,10 @@
     "./runtime/uint8array": {
       "import": "./dist/runtime/uint8array.js",
       "types": "./dist/runtime/uint8array.d.ts"
+    },
+    "./runtime/arrayFilters": {
+      "import": "./dist/runtime/arrayFilters.js",
+      "types": "./dist/runtime/arrayFilters.d.ts"
     }
   },
   "bin": {

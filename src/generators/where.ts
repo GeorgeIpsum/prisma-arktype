@@ -156,10 +156,51 @@ function stringifyWhere(model: DMMF.Model):
       }
     }
 
+    // Handle array fields in Where clauses with array filters
     if (field.isList) {
-      if (isExternalSchema || isEnumType || isBytesField) {
+      // For enum arrays, use arrayFilter generic
+      if (isEnumType) {
+        fieldType = `arrayFilter(${fieldType})`;
+        if (!runtimeDependencies.includes("arrayFilter")) {
+          runtimeDependencies.push("arrayFilter");
+        }
+      } else if (
+        field.type === "String" &&
+        !typeOverwrite &&
+        !schemaAnnotation
+      ) {
+        // String array - use StringArrayFilter
+        fieldType = "StringArrayFilter";
+        if (!runtimeDependencies.includes("StringArrayFilter")) {
+          runtimeDependencies.push("StringArrayFilter");
+        }
+      } else if (
+        (field.type === "Int" ||
+          field.type === "Float" ||
+          field.type === "Decimal") &&
+        !typeOverwrite &&
+        !schemaAnnotation
+      ) {
+        // Number array - use NumberArrayFilter
+        fieldType = "NumberArrayFilter";
+        if (!runtimeDependencies.includes("NumberArrayFilter")) {
+          runtimeDependencies.push("NumberArrayFilter");
+        }
+      } else if (
+        field.type === "BigInt" &&
+        !typeOverwrite &&
+        !schemaAnnotation
+      ) {
+        // BigInt array - use BigIntArrayFilter
+        fieldType = "BigIntArrayFilter";
+        if (!runtimeDependencies.includes("BigIntArrayFilter")) {
+          runtimeDependencies.push("BigIntArrayFilter");
+        }
+      } else if (isExternalSchema || isBytesField) {
+        // External schemas and Bytes fields use array() wrapper
         fieldType = `${fieldType}.array()`;
       } else {
+        // Fallback for other primitive arrays
         const inner = fieldType.slice(1, -1);
         fieldType = `"${wrapPrimitiveWithArray(inner)}"`;
       }

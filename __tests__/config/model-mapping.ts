@@ -58,6 +58,9 @@ export const TEST_MODEL_MAP = {
 
   // All types model (for comprehensive type testing)
   ALL_TYPES: "TestAllTypes",
+
+  // Array filter model (for testing array filters in where clauses)
+  ARRAY_FILTER_MODEL: "TestArrayFilter",
 } as const;
 
 /**
@@ -243,5 +246,13 @@ export const TEST_FIXTURES = {
     age: 25,
     isActive: true,
     createdAt: new Date("2024-01-01T00:00:00Z"),
+  },
+
+  TestArrayFilter: {
+    id: "array_test123",
+    keys: ["key1", "key2", "key3"],
+    numbers: [1, 2, 3, 42, 100],
+    bigInts: [1, 2, 3, 9007199254740991],
+    enumKeys: ["ACTIVE", "PENDING"] as const,
   },
 } as const;

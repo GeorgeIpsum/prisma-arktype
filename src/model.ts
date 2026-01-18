@@ -6,12 +6,16 @@ export interface ExternalSchemaDependency {
 
 /**
  * Runtime dependencies are built-in runtime schemas provided by prisma-arktype
- * (e.g., DateTimeFilter, BufferInstance, Uint8ArrayInstance)
+ * (e.g., DateTimeFilter, BufferInstance, Uint8ArrayInstance, array filters)
  */
 export type RuntimeDependency =
   | "DateTimeFilter"
   | "BufferInstance"
-  | "Uint8ArrayInstance";
+  | "Uint8ArrayInstance"
+  | "arrayFilter"
+  | "StringArrayFilter"
+  | "NumberArrayFilter"
+  | "BigIntArrayFilter";
 
 export interface ProcessedModel {
   name: string;

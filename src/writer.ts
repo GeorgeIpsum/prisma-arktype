@@ -58,6 +58,10 @@ const RUNTIME_DEPENDENCY_IMPORTS: Record<RuntimeDependency, string> = {
   DateTimeFilter: `import { DateTimeFilter } from "prisma-arktype/runtime/filters";\n`,
   BufferInstance: `import { BufferInstance } from "prisma-arktype/runtime/buffer";\n`,
   Uint8ArrayInstance: `import { Uint8ArrayInstance } from "prisma-arktype/runtime/uint8array";\n`,
+  arrayFilter: `import { arrayFilter } from "prisma-arktype/runtime/arrayFilters";\n`,
+  StringArrayFilter: `import { StringArrayFilter } from "prisma-arktype/runtime/arrayFilters";\n`,
+  NumberArrayFilter: `import { NumberArrayFilter } from "prisma-arktype/runtime/arrayFilters";\n`,
+  BigIntArrayFilter: `import { BigIntArrayFilter } from "prisma-arktype/runtime/arrayFilters";\n`,
 };
 
 /**
