@@ -97,10 +97,6 @@ describe("Array Filters in Where Clauses", () => {
     it("should accept has filter with enum value", async () => {
       const WhereValidator = await loadValidator(MODEL, "Where");
 
-      const TestStatusEnum = await import(
-        "../prisma/generated/validators/TestStatus"
-      );
-
       const result = WhereValidator({
         enumKeys: { has: "ACTIVE" },
       });

@@ -1,7 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { TEST_MODEL_MAP } from "./config/model-mapping";
 
 describe("Dependency Tracking and Import Generation", () => {
   const VALIDATORS_PATH = join(process.cwd(), "prisma/generated/validators");
