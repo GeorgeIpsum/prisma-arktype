@@ -56,6 +56,11 @@ function generateExternalSchemaImports(
  */
 const RUNTIME_DEPENDENCY_IMPORTS: Record<RuntimeDependency, string> = {
   DateTimeFilter: `import { DateTimeFilter } from "prisma-arktype/runtime/filters";\n`,
+  StringFilter: `import { StringFilter } from "prisma-arktype/runtime/stringFilter";\n`,
+  NumberFilter: `import { NumberFilter } from "prisma-arktype/runtime/numberFilter";\n`,
+  IntFilter: `import { IntFilter } from "prisma-arktype/runtime/numberFilter";\n`,
+  BooleanFilter: `import { BooleanFilter } from "prisma-arktype/runtime/booleanFilter";\n`,
+  enumFilter: `import { enumFilter } from "prisma-arktype/runtime/enumFilter";\n`,
   BufferInstance: `import { BufferInstance } from "prisma-arktype/runtime/buffer";\n`,
   Uint8ArrayInstance: `import { Uint8ArrayInstance } from "prisma-arktype/runtime/uint8array";\n`,
   arrayFilter: `import { arrayFilter } from "prisma-arktype/runtime/arrayFilters";\n`,

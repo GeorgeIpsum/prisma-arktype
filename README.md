@@ -132,6 +132,216 @@ const whereResult = UserWhere(whereClause);
 // ...
 ```
 
+## Where Clause Filters
+
+Where clauses support advanced filtering through dedicated filter types. Fields can accept either direct values or filter objects with comparison operators.
+
+### Filter Types
+
+#### String Filters
+
+String fields can use `StringFilter` for advanced text filtering:
+
+```typescript
+import { UserWhere } from "./generated/validators";
+
+// Direct value
+const result1 = UserWhere({ email: "user@example.com" });
+
+// Filter object
+const result2 = UserWhere({
+  email: {
+    contains: "example",      // Contains substring
+    startsWith: "user",       // Starts with prefix
+    endsWith: ".com",         // Ends with suffix
+    equals: "user@example.com", // Exact match
+    not: "admin@example.com", // Not equal to
+    in: ["user1@example.com", "user2@example.com"], // In array
+    notIn: ["banned@example.com"], // Not in array
+    gt: "a",                  // Greater than (lexicographic)
+    gte: "a",                 // Greater than or equal
+    lt: "z",                  // Less than
+    lte: "z"                  // Less than or equal
+  }
+});
+```
+
+**Available operations:** `contains`, `startsWith`, `endsWith`, `equals`, `not`, `in`, `notIn`, `gt`, `gte`, `lt`, `lte`
+
+#### Number Filters
+
+Integer fields (`Int`, `BigInt`) use `IntFilter`, while floating-point fields (`Float`, `Decimal`) use `NumberFilter`:
+
+```typescript
+import { PostWhere } from "./generated/validators";
+
+// Direct value
+const result1 = PostWhere({ views: 100 });
+
+// Filter object for integers
+const result2 = PostWhere({
+  views: {
+    equals: 100,
+    gt: 50,                   // Greater than
+    gte: 50,                  // Greater than or equal
+    lt: 200,                  // Less than
+    lte: 200,                 // Less than or equal
+    in: [100, 200, 300],      // In array
+    notIn: [0],               // Not in array
+    not: 0                    // Not equal to
+  }
+});
+
+// Filter object for floats/decimals
+const result3 = PostWhere({
+  rating: {
+    gte: 4.5,
+    lte: 5.0
+  }
+});
+```
+
+**Available operations:** `equals`, `gt`, `gte`, `lt`, `lte`, `in`, `notIn`, `not`
+
+#### Boolean Filters
+
+Boolean fields use `BooleanFilter`:
+
+```typescript
+import { PostWhere } from "./generated/validators";
+
+// Direct value
+const result1 = PostWhere({ published: true });
+
+// Filter object
+const result2 = PostWhere({
+  published: {
+    equals: true,
+    not: false
+  }
+});
+```
+
+**Available operations:** `equals`, `not`
+
+#### Enum Filters
+
+Enum fields use the generic `enumFilter`:
+
+```typescript
+import { PaymentWhere } from "./generated/validators";
+
+// Direct enum value
+const result1 = PaymentWhere({ currency: "USD" });
+
+// Filter object
+const result2 = PaymentWhere({
+  currency: {
+    equals: "USD",
+    in: ["USD", "EUR", "GBP"],
+    notIn: ["JPY"],
+    not: "CAD"
+  }
+});
+```
+
+**Available operations:** `equals`, `in`, `notIn`, `not`
+
+#### DateTime Filters
+
+DateTime fields use `DateTimeFilter`:
+
+```typescript
+import { PostWhere } from "./generated/validators";
+
+// Direct Date value
+const result1 = PostWhere({ createdAt: new Date("2024-01-01") });
+
+// Filter object
+const result2 = PostWhere({
+  createdAt: {
+    equals: new Date("2024-01-01"),
+    gt: new Date("2024-01-01"),   // After
+    gte: new Date("2024-01-01"),  // On or after
+    lt: new Date("2024-12-31"),   // Before
+    lte: new Date("2024-12-31"),  // On or before
+    in: [new Date("2024-01-01"), new Date("2024-06-01")],
+    notIn: [new Date("2024-07-04")],
+    not: new Date("2024-01-01")
+  }
+});
+```
+
+**Available operations:** `equals`, `gt`, `gte`, `lt`, `lte`, `in`, `notIn`, `not`
+
+#### Array Filters
+
+Array fields use specialized array filters with operations for list matching:
+
+```typescript
+import { TagWhere } from "./generated/validators";
+
+// String arrays
+const result1 = TagWhere({
+  labels: {
+    isEmpty: false,           // Array is empty
+    has: "important",         // Array contains value
+    hasEvery: ["tag1", "tag2"], // Array contains all values
+    hasSome: ["tag1", "tag2"],  // Array contains at least one value
+    equals: ["exact", "match"]  // Array exactly matches
+  }
+});
+
+// Number arrays
+const result2 = ScoresWhere({
+  values: {
+    isEmpty: false,
+    has: 100,
+    hasEvery: [90, 95, 100],
+    hasSome: [100, 200],
+    equals: [90, 95, 100]
+  }
+});
+
+// Enum arrays
+const result3 = PermissionsWhere({
+  roles: {
+    isEmpty: false,
+    has: "ADMIN",
+    hasEvery: ["USER", "ADMIN"],
+    hasSome: ["ADMIN", "MODERATOR"],
+    equals: ["USER"]
+  }
+});
+```
+
+**Available array filter types:**
+- `StringArrayFilter` - for `String[]` fields
+- `NumberArrayFilter` - for `Int[]`, `Float[]`, `Decimal[]` fields
+- `BigIntArrayFilter` - for `BigInt[]` fields
+- `arrayFilter(EnumType)` - for enum array fields
+
+**Available operations:** `isEmpty`, `has`, `hasEvery`, `hasSome`, `equals`
+
+### Combining Filters
+
+You can combine multiple filters in a single where clause:
+
+```typescript
+import { PostWhere } from "./generated/validators";
+
+const complexQuery = PostWhere({
+  title: { contains: "TypeScript" },
+  views: { gte: 100 },
+  published: true,
+  rating: { gte: 4.0 },
+  createdAt: {
+    gte: new Date("2024-01-01"),
+    lt: new Date("2024-12-31")
+  }
+});
+```
+
 ### Generated Code Examples
 
 #### Enum Generation

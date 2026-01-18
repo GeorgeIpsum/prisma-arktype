@@ -145,6 +145,18 @@ function stringifyWhere(model: DMMF.Model):
     const isExternalSchema = schemaAnnotation?.isExternal === true;
     const isDateTimeField =
       field.type === "DateTime" && !typeOverwrite && !schemaAnnotation;
+    const isStringField =
+      field.type === "String" && !typeOverwrite && !schemaAnnotation;
+    const isIntField =
+      (field.type === "Int" || field.type === "BigInt") &&
+      !typeOverwrite &&
+      !schemaAnnotation;
+    const isFloatField =
+      (field.type === "Float" || field.type === "Decimal") &&
+      !typeOverwrite &&
+      !schemaAnnotation;
+    const isBooleanField =
+      field.type === "Boolean" && !typeOverwrite && !schemaAnnotation;
     const isBytesField =
       field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
 
@@ -212,6 +224,51 @@ function stringifyWhere(model: DMMF.Model):
       fieldType = `type("Date").or(DateTimeFilter)`;
       if (!runtimeDependencies.includes("DateTimeFilter")) {
         runtimeDependencies.push("DateTimeFilter");
+      }
+    }
+
+    // String fields can accept either string or StringFilter
+    if (isStringField && !field.isList) {
+      // Use type() constructor to create a union with StringFilter
+      fieldType = `type("string").or(StringFilter)`;
+      if (!runtimeDependencies.includes("StringFilter")) {
+        runtimeDependencies.push("StringFilter");
+      }
+    }
+
+    // Int/BigInt fields can accept either number.integer or IntFilter
+    if (isIntField && !field.isList) {
+      // Use type() constructor to create a union with IntFilter
+      fieldType = `type("number.integer").or(IntFilter)`;
+      if (!runtimeDependencies.includes("IntFilter")) {
+        runtimeDependencies.push("IntFilter");
+      }
+    }
+
+    // Float/Decimal fields can accept either number or NumberFilter
+    if (isFloatField && !field.isList) {
+      // Use type() constructor to create a union with NumberFilter
+      fieldType = `type("number").or(NumberFilter)`;
+      if (!runtimeDependencies.includes("NumberFilter")) {
+        runtimeDependencies.push("NumberFilter");
+      }
+    }
+
+    // Enum fields can accept either the enum value or enumFilter
+    if (isEnumType && !field.isList) {
+      // Use type() constructor to create a union with enumFilter
+      fieldType = `type(${fieldType}).or(enumFilter(${fieldType}))`;
+      if (!runtimeDependencies.includes("enumFilter")) {
+        runtimeDependencies.push("enumFilter");
+      }
+    }
+
+    // Boolean fields can accept either boolean or BooleanFilter
+    if (isBooleanField && !field.isList) {
+      // Use type() constructor to create a union with BooleanFilter
+      fieldType = `type("boolean").or(BooleanFilter)`;
+      if (!runtimeDependencies.includes("BooleanFilter")) {
+        runtimeDependencies.push("BooleanFilter");
       }
     }
 

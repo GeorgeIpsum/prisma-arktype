@@ -25,6 +25,22 @@
     "./runtime/arrayFilters": {
       "import": "./dist/runtime/arrayFilters.js",
       "types": "./dist/runtime/arrayFilters.d.ts"
+    },
+    "./runtime/stringFilter": {
+      "import": "./dist/runtime/stringFilter.js",
+      "types": "./dist/runtime/stringFilter.d.ts"
+    },
+    "./runtime/numberFilter": {
+      "import": "./dist/runtime/numberFilter.js",
+      "types": "./dist/runtime/numberFilter.d.ts"
+    },
+    "./runtime/enumFilter": {
+      "import": "./dist/runtime/enumFilter.js",
+      "types": "./dist/runtime/enumFilter.d.ts"
+    },
+    "./runtime/booleanFilter": {
+      "import": "./dist/runtime/booleanFilter.js",
+      "types": "./dist/runtime/booleanFilter.d.ts"
     }
   },
   "bin": {
