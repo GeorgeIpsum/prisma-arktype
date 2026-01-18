@@ -28,6 +28,9 @@ function isPrismaV7OrHigher(): boolean {
   }
 }
 
+// Cache the Prisma version check result at module level to avoid repeated file I/O
+const IS_PRISMA_V7_OR_HIGHER = isPrismaV7OrHigher();
+
 const primitiveTypes = [
   "Int",
   "BigInt",
@@ -71,7 +74,7 @@ export function stringifyPrimitiveType(
     case "Bytes":
       // Prisma v6 and below: Bytes returns as Buffer
       // Prisma v7+: Bytes returns as Uint8Array
-      if (isPrismaV7OrHigher()) {
+      if (IS_PRISMA_V7_OR_HIGHER) {
         return "Uint8ArrayInstance";
       }
       return "BufferInstance";
