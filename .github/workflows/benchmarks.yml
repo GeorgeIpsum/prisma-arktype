@@ -79,8 +79,10 @@ jobs:
 
       - name: Run benchmarks
         run: |
-          # Run with increased memory and GC access
-          NODE_OPTIONS="--max-old-space-size=4096 --expose-gc" pnpm bench
+          # Create reports directory
+          mkdir -p __benchmarks__/reports
+          # Run benchmarks and save to JSON
+          NODE_OPTIONS="--max-old-space-size=4096 --expose-gc" pnpm bench:ci
         continue-on-error: true # Don't fail the workflow, just report
 
       - name: Compare with baseline

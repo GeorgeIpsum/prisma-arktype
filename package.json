@@ -69,7 +69,8 @@
     "bench:memory": "node --expose-gc node_modules/.bin/vitest bench __benchmarks__/suites/memory.bench.ts --config vitest.bench.config.ts",
     "bench:compare": "tsx __benchmarks__/scripts/compare.ts",
     "bench:update-baseline": "tsx __benchmarks__/scripts/update-baseline.ts",
-    "bench:profile": "node --cpu-prof --expose-gc node_modules/.bin/vitest bench --config vitest.bench.config.ts"
+    "bench:profile": "node --cpu-prof --expose-gc node_modules/.bin/vitest bench --config vitest.bench.config.ts",
+    "bench:ci": "tsx __benchmarks__/scripts/run-and-save.ts"
   },
   "keywords": [
     "prisma",
