@@ -17,12 +17,19 @@ export function processPlain(
   for (const model of models) {
     const result = stringifyPlain(model);
     if (result) {
-      processedPlain.push({
+      const processedModel: ProcessedModel = {
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
-      });
+      };
+      if (result.needsBufferInstance) {
+        processedModel.needsBufferInstance = true;
+      }
+      if (result.needsUint8ArrayInstance) {
+        processedModel.needsUint8ArrayInstance = true;
+      }
+      processedPlain.push(processedModel);
     }
   }
   Object.freeze(processedPlain);
@@ -39,6 +46,8 @@ function stringifyPlain(
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      needsBufferInstance?: boolean;
+      needsUint8ArrayInstance?: boolean;
     }
   | undefined {
   const config = getConfig();
@@ -53,6 +62,8 @@ function stringifyPlain(
   const fields: string[] = [];
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
+  let needsBufferInstance = false;
+  let needsUint8ArrayInstance = false;
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -155,16 +166,27 @@ function stringifyPlain(
     const isEnumType =
       field.kind === "enum" && !typeOverwrite && !schemaAnnotation;
     const isExternalSchema = schemaAnnotation?.isExternal === true;
+    const isBytesField =
+      field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
+
+    // Track if we need BufferInstance or Uint8ArrayInstance import
+    if (isBytesField) {
+      if (fieldType === "BufferInstance") {
+        needsBufferInstance = true;
+      } else if (fieldType === "Uint8ArrayInstance") {
+        needsUint8ArrayInstance = true;
+      }
+    }
 
     if (field.isList) {
-      if (isExternalSchema || isEnumType) {
+      if (isExternalSchema || isEnumType || isBytesField) {
         fieldType = `${fieldType}.array()`;
       } else {
         fieldType = `"${wrapPrimitiveWithArray(fieldType.slice(1, -1))}"`;
       }
     }
     if (!field.isRequired) {
-      if (isExternalSchema || isEnumType) {
+      if (isExternalSchema || isEnumType || isBytesField) {
         fieldType = `${fieldType}.or("null")`;
       } else {
         // Remove quotes, add null, re-add quotes
@@ -184,11 +206,27 @@ function stringifyPlain(
     fields.push(`"${fieldName}": ${fieldType}`);
   }
 
-  return {
+  const result: {
+    stringified: string;
+    enumDependencies: string[];
+    externalSchemaDependencies: ExternalSchemaDependency[];
+    needsBufferInstance?: boolean;
+    needsUint8ArrayInstance?: boolean;
+  } = {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
     externalSchemaDependencies,
   };
+
+  if (needsBufferInstance) {
+    result.needsBufferInstance = true;
+  }
+
+  if (needsUint8ArrayInstance) {
+    result.needsUint8ArrayInstance = true;
+  }
+
+  return result;
 }
 
 export function stringifyPlainInputCreate(model: DMMF.Model):
@@ -196,6 +234,8 @@ export function stringifyPlainInputCreate(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      needsBufferInstance?: boolean;
+      needsUint8ArrayInstance?: boolean;
     }
   | undefined {
   return stringifyPlain(model, true, false);
@@ -206,6 +246,8 @@ export function stringifyPlainInputUpdate(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
+      needsBufferInstance?: boolean;
+      needsUint8ArrayInstance?: boolean;
     }
   | undefined {
   return stringifyPlain(model, false, true);

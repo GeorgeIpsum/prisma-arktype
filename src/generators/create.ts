@@ -14,12 +14,19 @@ export function processCreate(
 
     const result = stringifyPlainInputCreate(model);
     if (result) {
-      processedCreate.push({
+      const processedModel: ProcessedModel = {
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
-      });
+      };
+      if (result.needsBufferInstance) {
+        processedModel.needsBufferInstance = true;
+      }
+      if (result.needsUint8ArrayInstance) {
+        processedModel.needsUint8ArrayInstance = true;
+      }
+      processedCreate.push(processedModel);
     }
   }
   Object.freeze(processedCreate);

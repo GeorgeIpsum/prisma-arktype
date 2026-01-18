@@ -28,6 +28,12 @@ export function processWhere(
       if (result.needsDateTimeFilter) {
         processedModel.needsDateTimeFilter = true;
       }
+      if (result.needsBufferInstance) {
+        processedModel.needsBufferInstance = true;
+      }
+      if (result.needsUint8ArrayInstance) {
+        processedModel.needsUint8ArrayInstance = true;
+      }
       processedWhere.push(processedModel);
     }
 
@@ -41,6 +47,12 @@ export function processWhere(
       };
       if (uniqueResult.needsDateTimeFilter) {
         processedModel.needsDateTimeFilter = true;
+      }
+      if (uniqueResult.needsBufferInstance) {
+        processedModel.needsBufferInstance = true;
+      }
+      if (uniqueResult.needsUint8ArrayInstance) {
+        processedModel.needsUint8ArrayInstance = true;
       }
       processedWhereUnique.push(processedModel);
     }
@@ -57,6 +69,8 @@ function stringifyWhere(model: DMMF.Model):
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
       needsDateTimeFilter?: boolean;
+      needsBufferInstance?: boolean;
+      needsUint8ArrayInstance?: boolean;
     }
   | undefined {
   const { hidden } = extractAnnotations(model.documentation);
@@ -69,6 +83,8 @@ function stringifyWhere(model: DMMF.Model):
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
   let needsDateTimeFilter = false;
+  let needsBufferInstance = false;
+  let needsUint8ArrayInstance = false;
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -147,9 +163,20 @@ function stringifyWhere(model: DMMF.Model):
     const isExternalSchema = schemaAnnotation?.isExternal === true;
     const isDateTimeField =
       field.type === "DateTime" && !typeOverwrite && !schemaAnnotation;
+    const isBytesField =
+      field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
+
+    // Track if we need BufferInstance or Uint8ArrayInstance import
+    if (isBytesField) {
+      if (fieldType === "BufferInstance") {
+        needsBufferInstance = true;
+      } else if (fieldType === "Uint8ArrayInstance") {
+        needsUint8ArrayInstance = true;
+      }
+    }
 
     if (field.isList) {
-      if (isExternalSchema || isEnumType) {
+      if (isExternalSchema || isEnumType || isBytesField) {
         fieldType = `${fieldType}.array()`;
       } else {
         const inner = fieldType.slice(1, -1);
@@ -173,6 +200,8 @@ function stringifyWhere(model: DMMF.Model):
     enumDependencies: string[];
     externalSchemaDependencies: ExternalSchemaDependency[];
     needsDateTimeFilter?: boolean;
+    needsBufferInstance?: boolean;
+    needsUint8ArrayInstance?: boolean;
   } = {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
@@ -181,6 +210,14 @@ function stringifyWhere(model: DMMF.Model):
 
   if (needsDateTimeFilter) {
     result.needsDateTimeFilter = true;
+  }
+
+  if (needsBufferInstance) {
+    result.needsBufferInstance = true;
+  }
+
+  if (needsUint8ArrayInstance) {
+    result.needsUint8ArrayInstance = true;
   }
 
   return result;
@@ -192,6 +229,8 @@ function stringifyWhereUnique(model: DMMF.Model):
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
       needsDateTimeFilter?: boolean;
+      needsBufferInstance?: boolean;
+      needsUint8ArrayInstance?: boolean;
     }
   | undefined {
   const { hidden } = extractAnnotations(model.documentation);
@@ -204,6 +243,8 @@ function stringifyWhereUnique(model: DMMF.Model):
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
   let needsDateTimeFilter = false;
+  let needsBufferInstance = false;
+  let needsUint8ArrayInstance = false;
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -280,6 +321,17 @@ function stringifyWhereUnique(model: DMMF.Model):
 
     const isDateTimeField =
       field.type === "DateTime" && !typeOverwrite && !schemaAnnotation;
+    const isBytesField =
+      field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
+
+    // Track if we need BufferInstance or Uint8ArrayInstance import
+    if (isBytesField) {
+      if (fieldType === "BufferInstance") {
+        needsBufferInstance = true;
+      } else if (fieldType === "Uint8ArrayInstance") {
+        needsUint8ArrayInstance = true;
+      }
+    }
 
     // DateTime fields can accept either Date or DateTimeFilter
     if (isDateTimeField) {
@@ -301,6 +353,8 @@ function stringifyWhereUnique(model: DMMF.Model):
     enumDependencies: string[];
     externalSchemaDependencies: ExternalSchemaDependency[];
     needsDateTimeFilter?: boolean;
+    needsBufferInstance?: boolean;
+    needsUint8ArrayInstance?: boolean;
   } = {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
@@ -309,6 +363,14 @@ function stringifyWhereUnique(model: DMMF.Model):
 
   if (needsDateTimeFilter) {
     result.needsDateTimeFilter = true;
+  }
+
+  if (needsBufferInstance) {
+    result.needsBufferInstance = true;
+  }
+
+  if (needsUint8ArrayInstance) {
+    result.needsUint8ArrayInstance = true;
   }
 
   return result;

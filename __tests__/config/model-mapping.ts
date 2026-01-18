@@ -160,6 +160,8 @@ export const TEST_FIXTURES = {
     booleanDefault: true,
     dateTimeDefault: new Date(),
     jsonDefault: {},
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 
   TestEnumModel: {
