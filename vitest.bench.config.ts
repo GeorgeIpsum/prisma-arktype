@@ -17,7 +17,7 @@ export default defineConfig({
         "__benchmarks__/fixtures/**",
         "__benchmarks__/reports/**",
       ],
-      reporters: ["verbose", "json"],
+      reporters: ["verbose"],
       outputFile: {
         json: "__benchmarks__/reports/latest.json",
       },

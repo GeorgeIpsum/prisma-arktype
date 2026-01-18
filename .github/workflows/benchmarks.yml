@@ -22,6 +22,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Grant necessary permissions
+permissions:
+  contents: write  # For committing baseline updates
+  pull-requests: write  # For commenting on PRs
+  issues: write  # For commenting on PRs (PRs are issues)
+
 env:
   DATABASE_URL: "postgres"
 
@@ -96,15 +102,13 @@ jobs:
         id: ci_report
         run: |
           # Create a markdown report for PR comment
-          cat > pr_comment.md << 'EOF'
-          # 📊 Benchmark Results
-
-          $(cat comparison.txt)
-
-          ---
-          *Benchmark report generated on $(date)*
-          *Environment: Node $(node --version), ubuntu-latest*
-          EOF
+          echo "# 📊 Benchmark Results" > pr_comment.md
+          echo "" >> pr_comment.md
+          cat comparison.txt >> pr_comment.md
+          echo "" >> pr_comment.md
+          echo "---" >> pr_comment.md
+          echo "*Benchmark report generated on $(date)*" >> pr_comment.md
+          echo "*Environment: Node $(node --version), ubuntu-latest*" >> pr_comment.md
 
       - name: Comment PR with results
         if: github.event_name == 'pull_request'
