@@ -123,12 +123,14 @@ export async function preloadAllSchemas(): Promise<
 
   // Load standard schemas
   for (const name of getAvailableSchemas()) {
+    // biome-ignore lint/performance/noAwaitInLoops: <used only for bench>
     const result = await loadSchema(name);
     cache.set(name, result);
   }
 
   // Load realistic schemas
   for (const name of getRealisticSchemas()) {
+    // biome-ignore lint/performance/noAwaitInLoops: <used only for bench>
     const result = await loadRealisticSchema(name);
     cache.set(`realistic/${name}`, result);
   }

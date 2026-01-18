@@ -7,7 +7,6 @@
 
 import { execSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
 
 const REPORTS_DIR = "__benchmarks__/reports";
 const OUTPUT_FILE = `${REPORTS_DIR}/latest.json`;

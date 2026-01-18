@@ -21,7 +21,7 @@ export function processEnums(
 }
 
 function stringifyEnum(enumData: DMMF.DatamodelEnum): string | undefined {
-  const { annotations, hidden } = extractAnnotations(enumData.documentation);
+  const { hidden } = extractAnnotations(enumData.documentation);
 
   if (hidden) {
     return;
