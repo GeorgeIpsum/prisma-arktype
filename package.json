@@ -60,7 +60,17 @@
     "lint:fix": "biome check --write",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "bench": "vitest bench --config vitest.bench.config.ts",
+    "bench:ui": "vitest bench --ui --config vitest.bench.config.ts",
+    "bench:generation": "vitest bench __benchmarks__/suites/generation.bench.ts --config vitest.bench.config.ts",
+    "bench:processors": "vitest bench __benchmarks__/suites/processors.bench.ts --config vitest.bench.config.ts",
+    "bench:annotations": "vitest bench __benchmarks__/suites/annotations.bench.ts --config vitest.bench.config.ts",
+    "bench:memory": "node --expose-gc node_modules/.bin/vitest bench __benchmarks__/suites/memory.bench.ts --config vitest.bench.config.ts",
+    "bench:compare": "tsx __benchmarks__/scripts/compare.ts",
+    "bench:update-baseline": "tsx __benchmarks__/scripts/update-baseline.ts",
+    "bench:profile": "node --cpu-prof --expose-gc node_modules/.bin/vitest bench --config vitest.bench.config.ts",
+    "bench:ci": "tsx __benchmarks__/scripts/run-and-save.ts"
   },
   "keywords": [
     "prisma",
@@ -94,6 +104,7 @@
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@prisma/client": "7.2.0",
+    "@prisma/internals": "7.2.0",
     "@tilli-pro/biome": "0.9.0",
     "@types/node": "^24.10.0",
     "lefthook": "^2.0.2",

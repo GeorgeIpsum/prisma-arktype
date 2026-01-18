@@ -1,0 +1,7427 @@
+// Extreme Schema - Scalability Limits Testing
+// 500 models, 50 enums, ~4000 fields
+// Target: <30s generation time
+// Output: ~4000 files, ~15 MB
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator prisma_arktype {
+  provider = "node ../../dist/index.js"
+  output   = "../../__benchmarks__/reports/.generated/extreme"
+}
+
+// Enums (50 total)
+enum Enum0 {
+  VALUE_0_0
+  VALUE_0_1
+  VALUE_0_2
+  VALUE_0_3
+  VALUE_0_4
+}
+enum Enum1 {
+  VALUE_1_0
+  VALUE_1_1
+  VALUE_1_2
+  VALUE_1_3
+  VALUE_1_4
+}
+enum Enum2 {
+  VALUE_2_0
+  VALUE_2_1
+  VALUE_2_2
+  VALUE_2_3
+  VALUE_2_4
+}
+enum Enum3 {
+  VALUE_3_0
+  VALUE_3_1
+  VALUE_3_2
+  VALUE_3_3
+  VALUE_3_4
+}
+enum Enum4 {
+  VALUE_4_0
+  VALUE_4_1
+  VALUE_4_2
+  VALUE_4_3
+  VALUE_4_4
+}
+enum Enum5 {
+  VALUE_5_0
+  VALUE_5_1
+  VALUE_5_2
+  VALUE_5_3
+  VALUE_5_4
+}
+enum Enum6 {
+  VALUE_6_0
+  VALUE_6_1
+  VALUE_6_2
+  VALUE_6_3
+  VALUE_6_4
+}
+enum Enum7 {
+  VALUE_7_0
+  VALUE_7_1
+  VALUE_7_2
+  VALUE_7_3
+  VALUE_7_4
+}
+enum Enum8 {
+  VALUE_8_0
+  VALUE_8_1
+  VALUE_8_2
+  VALUE_8_3
+  VALUE_8_4
+}
+enum Enum9 {
+  VALUE_9_0
+  VALUE_9_1
+  VALUE_9_2
+  VALUE_9_3
+  VALUE_9_4
+}
+enum Enum10 {
+  VALUE_10_0
+  VALUE_10_1
+  VALUE_10_2
+  VALUE_10_3
+  VALUE_10_4
+}
+enum Enum11 {
+  VALUE_11_0
+  VALUE_11_1
+  VALUE_11_2
+  VALUE_11_3
+  VALUE_11_4
+}
+enum Enum12 {
+  VALUE_12_0
+  VALUE_12_1
+  VALUE_12_2
+  VALUE_12_3
+  VALUE_12_4
+}
+enum Enum13 {
+  VALUE_13_0
+  VALUE_13_1
+  VALUE_13_2
+  VALUE_13_3
+  VALUE_13_4
+}
+enum Enum14 {
+  VALUE_14_0
+  VALUE_14_1
+  VALUE_14_2
+  VALUE_14_3
+  VALUE_14_4
+}
+enum Enum15 {
+  VALUE_15_0
+  VALUE_15_1
+  VALUE_15_2
+  VALUE_15_3
+  VALUE_15_4
+}
+enum Enum16 {
+  VALUE_16_0
+  VALUE_16_1
+  VALUE_16_2
+  VALUE_16_3
+  VALUE_16_4
+}
+enum Enum17 {
+  VALUE_17_0
+  VALUE_17_1
+  VALUE_17_2
+  VALUE_17_3
+  VALUE_17_4
+}
+enum Enum18 {
+  VALUE_18_0
+  VALUE_18_1
+  VALUE_18_2
+  VALUE_18_3
+  VALUE_18_4
+}
+enum Enum19 {
+  VALUE_19_0
+  VALUE_19_1
+  VALUE_19_2
+  VALUE_19_3
+  VALUE_19_4
+}
+enum Enum20 {
+  VALUE_20_0
+  VALUE_20_1
+  VALUE_20_2
+  VALUE_20_3
+  VALUE_20_4
+}
+enum Enum21 {
+  VALUE_21_0
+  VALUE_21_1
+  VALUE_21_2
+  VALUE_21_3
+  VALUE_21_4
+}
+enum Enum22 {
+  VALUE_22_0
+  VALUE_22_1
+  VALUE_22_2
+  VALUE_22_3
+  VALUE_22_4
+}
+enum Enum23 {
+  VALUE_23_0
+  VALUE_23_1
+  VALUE_23_2
+  VALUE_23_3
+  VALUE_23_4
+}
+enum Enum24 {
+  VALUE_24_0
+  VALUE_24_1
+  VALUE_24_2
+  VALUE_24_3
+  VALUE_24_4
+}
+enum Enum25 {
+  VALUE_25_0
+  VALUE_25_1
+  VALUE_25_2
+  VALUE_25_3
+  VALUE_25_4
+}
+enum Enum26 {
+  VALUE_26_0
+  VALUE_26_1
+  VALUE_26_2
+  VALUE_26_3
+  VALUE_26_4
+}
+enum Enum27 {
+  VALUE_27_0
+  VALUE_27_1
+  VALUE_27_2
+  VALUE_27_3
+  VALUE_27_4
+}
+enum Enum28 {
+  VALUE_28_0
+  VALUE_28_1
+  VALUE_28_2
+  VALUE_28_3
+  VALUE_28_4
+}
+enum Enum29 {
+  VALUE_29_0
+  VALUE_29_1
+  VALUE_29_2
+  VALUE_29_3
+  VALUE_29_4
+}
+enum Enum30 {
+  VALUE_30_0
+  VALUE_30_1
+  VALUE_30_2
+  VALUE_30_3
+  VALUE_30_4
+}
+enum Enum31 {
+  VALUE_31_0
+  VALUE_31_1
+  VALUE_31_2
+  VALUE_31_3
+  VALUE_31_4
+}
+enum Enum32 {
+  VALUE_32_0
+  VALUE_32_1
+  VALUE_32_2
+  VALUE_32_3
+  VALUE_32_4
+}
+enum Enum33 {
+  VALUE_33_0
+  VALUE_33_1
+  VALUE_33_2
+  VALUE_33_3
+  VALUE_33_4
+}
+enum Enum34 {
+  VALUE_34_0
+  VALUE_34_1
+  VALUE_34_2
+  VALUE_34_3
+  VALUE_34_4
+}
+enum Enum35 {
+  VALUE_35_0
+  VALUE_35_1
+  VALUE_35_2
+  VALUE_35_3
+  VALUE_35_4
+}
+enum Enum36 {
+  VALUE_36_0
+  VALUE_36_1
+  VALUE_36_2
+  VALUE_36_3
+  VALUE_36_4
+}
+enum Enum37 {
+  VALUE_37_0
+  VALUE_37_1
+  VALUE_37_2
+  VALUE_37_3
+  VALUE_37_4
+}
+enum Enum38 {
+  VALUE_38_0
+  VALUE_38_1
+  VALUE_38_2
+  VALUE_38_3
+  VALUE_38_4
+}
+enum Enum39 {
+  VALUE_39_0
+  VALUE_39_1
+  VALUE_39_2
+  VALUE_39_3
+  VALUE_39_4
+}
+enum Enum40 {
+  VALUE_40_0
+  VALUE_40_1
+  VALUE_40_2
+  VALUE_40_3
+  VALUE_40_4
+}
+enum Enum41 {
+  VALUE_41_0
+  VALUE_41_1
+  VALUE_41_2
+  VALUE_41_3
+  VALUE_41_4
+}
+enum Enum42 {
+  VALUE_42_0
+  VALUE_42_1
+  VALUE_42_2
+  VALUE_42_3
+  VALUE_42_4
+}
+enum Enum43 {
+  VALUE_43_0
+  VALUE_43_1
+  VALUE_43_2
+  VALUE_43_3
+  VALUE_43_4
+}
+enum Enum44 {
+  VALUE_44_0
+  VALUE_44_1
+  VALUE_44_2
+  VALUE_44_3
+  VALUE_44_4
+}
+enum Enum45 {
+  VALUE_45_0
+  VALUE_45_1
+  VALUE_45_2
+  VALUE_45_3
+  VALUE_45_4
+}
+enum Enum46 {
+  VALUE_46_0
+  VALUE_46_1
+  VALUE_46_2
+  VALUE_46_3
+  VALUE_46_4
+}
+enum Enum47 {
+  VALUE_47_0
+  VALUE_47_1
+  VALUE_47_2
+  VALUE_47_3
+  VALUE_47_4
+}
+enum Enum48 {
+  VALUE_48_0
+  VALUE_48_1
+  VALUE_48_2
+  VALUE_48_3
+  VALUE_48_4
+}
+enum Enum49 {
+  VALUE_49_0
+  VALUE_49_1
+  VALUE_49_2
+  VALUE_49_3
+  VALUE_49_4
+}
+
+// Model Group 1 (Models 1-50)
+model Model0 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+}
+
+model Model1 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model2 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model3 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model4 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model5 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model6 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model7 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model8 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model9 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model10 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model11 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model12 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model13 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model14 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model15 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model16 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model17 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model18 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model19 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model20 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model21 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model22 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model23 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model24 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model25 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model26 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model27 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model28 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model29 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model30 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model31 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model32 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model33 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model34 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model35 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model36 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model37 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model38 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model39 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model40 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model41 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model42 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model43 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model44 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model45 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model46 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model47 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model48 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model49 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 2 (Models 51-100)
+model Model50 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model51 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model52 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model53 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model54 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model55 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model56 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model57 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model58 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model59 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model60 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model61 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model62 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model63 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model64 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model65 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model66 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model67 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model68 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model69 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model70 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model71 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model72 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model73 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model74 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model75 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model76 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model77 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model78 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model79 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model80 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model81 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model82 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model83 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model84 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model85 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model86 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model87 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model88 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model89 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model90 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model91 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model92 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model93 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model94 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model95 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model96 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model97 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model98 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model99 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 3 (Models 101-150)
+model Model100 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model101 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model102 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model103 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model104 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model105 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model106 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model107 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model108 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model109 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model110 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model111 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model112 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model113 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model114 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model115 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model116 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model117 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model118 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model119 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model120 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model121 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model122 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model123 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model124 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model125 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model126 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model127 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model128 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model129 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model130 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model131 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model132 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model133 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model134 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model135 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model136 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model137 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model138 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model139 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model140 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model141 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model142 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model143 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model144 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model145 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model146 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model147 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model148 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model149 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 4 (Models 151-200)
+model Model150 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model151 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model152 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model153 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model154 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model155 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model156 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model157 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model158 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model159 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model160 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model161 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model162 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model163 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model164 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model165 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model166 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model167 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model168 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model169 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model170 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model171 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model172 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model173 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model174 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model175 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model176 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model177 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model178 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model179 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model180 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model181 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model182 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model183 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model184 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model185 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model186 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model187 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model188 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model189 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model190 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model191 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model192 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model193 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model194 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model195 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model196 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model197 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model198 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model199 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 5 (Models 201-250)
+model Model200 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model201 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model202 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model203 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model204 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model205 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model206 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model207 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model208 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model209 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model210 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model211 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model212 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model213 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model214 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model215 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model216 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model217 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model218 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model219 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model220 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model221 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model222 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model223 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model224 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model225 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model226 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model227 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model228 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model229 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model230 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model231 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model232 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model233 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model234 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model235 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model236 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model237 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model238 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model239 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model240 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model241 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model242 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model243 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model244 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model245 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model246 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model247 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model248 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model249 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 6 (Models 251-300)
+model Model250 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model251 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model252 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model253 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model254 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model255 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model256 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model257 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model258 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model259 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model260 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model261 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model262 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model263 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model264 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model265 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model266 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model267 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model268 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model269 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model270 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model271 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model272 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model273 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model274 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model275 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model276 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model277 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model278 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model279 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model280 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model281 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model282 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model283 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model284 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model285 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model286 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model287 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model288 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model289 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model290 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model291 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model292 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model293 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model294 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model295 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model296 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model297 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model298 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model299 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 7 (Models 301-350)
+model Model300 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model301 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model302 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model303 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model304 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model305 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model306 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model307 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model308 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model309 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model310 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model311 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model312 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model313 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model314 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model315 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model316 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model317 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model318 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model319 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model320 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model321 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model322 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model323 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model324 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model325 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model326 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model327 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model328 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model329 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model330 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model331 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model332 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model333 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model334 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model335 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model336 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model337 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model338 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model339 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model340 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model341 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model342 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model343 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model344 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model345 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model346 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model347 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model348 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model349 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 8 (Models 351-400)
+model Model350 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model351 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model352 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model353 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model354 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model355 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model356 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model357 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model358 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model359 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model360 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model361 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model362 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model363 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model364 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model365 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model366 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model367 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model368 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model369 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model370 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model371 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model372 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model373 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model374 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model375 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model376 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model377 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model378 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model379 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model380 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model381 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model382 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model383 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model384 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model385 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model386 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model387 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model388 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model389 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model390 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model391 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model392 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model393 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model394 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model395 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model396 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model397 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model398 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model399 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 9 (Models 401-450)
+model Model400 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model401 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model402 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model403 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model404 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model405 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model406 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model407 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model408 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model409 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model410 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model411 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model412 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model413 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model414 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model415 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model416 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model417 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model418 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model419 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model420 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model421 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model422 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model423 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model424 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model425 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model426 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model427 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model428 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model429 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model430 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model431 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model432 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model433 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model434 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model435 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model436 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model437 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model438 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model439 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model440 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model441 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model442 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model443 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model444 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model445 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model446 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model447 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model448 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model449 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+// Model Group 10 (Models 451-500)
+model Model450 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum0 @default(VALUE_0_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model451 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model452 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model453 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model454 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model455 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model456 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model457 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model458 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model459 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model460 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum10 @default(VALUE_10_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model461 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model462 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model463 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model464 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model465 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model466 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model467 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model468 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model469 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model470 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum20 @default(VALUE_20_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model471 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model472 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model473 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model474 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model475 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model476 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model477 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model478 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model479 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model480 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum30 @default(VALUE_30_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model481 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model482 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model483 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model484 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model485 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model486 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model487 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model488 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model489 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model490 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status Enum40 @default(VALUE_40_0)
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model491 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model492 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model493 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model494 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model495 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model496 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model497 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model498 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}
+
+model Model499 {
+  id String @id @default(cuid())
+  name String
+  description String?
+  value Int @default(0)
+  amount Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  relatedId String?
+  @@index([relatedId])
+}

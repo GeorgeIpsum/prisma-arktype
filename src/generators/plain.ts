@@ -15,6 +15,8 @@ import type {
 
 export const processedPlain: ProcessedModel[] = [];
 
+const extRegex = /\.(ts|js)$/;
+
 export function processPlain(
   models: DMMF.Model[] | Readonly<DMMF.Model[]>,
 ): void {
@@ -48,9 +50,7 @@ function stringifyPlain(
     }
   | undefined {
   const config = getConfig();
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
@@ -68,12 +68,7 @@ function stringifyPlain(
     fieldName?: string,
   ): string {
     const baseName =
-      exportName ||
-      path
-        .split("/")
-        .pop()
-        ?.replace(/\.(ts|js)$/, "") ||
-      "Schema";
+      exportName || path.split("/").pop()?.replace(extRegex, "") || "Schema";
     const suffix = fieldName ? `_${fieldName}` : "";
     return `${baseName}${suffix}`;
   }
@@ -113,13 +108,13 @@ function stringifyPlain(
       if (schemaAnnotation.isExternal) {
         // External schema - generate alias and track dependency
         const alias = generateUniqueAlias(
-          schemaAnnotation.importPath!,
+          schemaAnnotation.importPath as string,
           schemaAnnotation.exportName,
           field.name,
         );
         if (!externalSchemaDependencies.some((d) => d.localAlias === alias)) {
           const dependency: ExternalSchemaDependency = {
-            importPath: schemaAnnotation.importPath!,
+            importPath: schemaAnnotation.importPath as string,
             localAlias: alias,
           };
           if (schemaAnnotation.exportName) {

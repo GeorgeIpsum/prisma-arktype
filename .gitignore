@@ -152,3 +152,15 @@ prisma/schema/*
 !prisma/schema/test-models.prisma
 !prisma/schema/README.md
 !prisma/schema/schema.prisma
+
+# Benchmark reports (except baseline)
+__benchmarks__/reports/latest.json
+__benchmarks__/reports/history/
+__benchmarks__/reports/.generated/
+
+# CPU profiler output
+*.cpuprofile
+
+# Benchmark comparison output
+comparison.txt
+pr_comment.md
