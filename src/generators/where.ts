@@ -6,7 +6,11 @@ import {
 } from "../primitiveField";
 import { wrapPrimitiveWithArray } from "../wrappers";
 import { processedEnums } from "./enum";
-import type { ExternalSchemaDependency, ProcessedModel } from "../model";
+import type {
+  ExternalSchemaDependency,
+  ProcessedModel,
+  RuntimeDependency,
+} from "../model";
 
 export const processedWhere: ProcessedModel[] = [];
 export const processedWhereUnique: ProcessedModel[] = [];
@@ -19,42 +23,24 @@ export function processWhere(
   for (const model of models) {
     const result = stringifyWhere(model);
     if (result) {
-      const processedModel: ProcessedModel = {
+      processedWhere.push({
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
-      };
-      if (result.needsDateTimeFilter) {
-        processedModel.needsDateTimeFilter = true;
-      }
-      if (result.needsBufferInstance) {
-        processedModel.needsBufferInstance = true;
-      }
-      if (result.needsUint8ArrayInstance) {
-        processedModel.needsUint8ArrayInstance = true;
-      }
-      processedWhere.push(processedModel);
+        runtimeDependencies: result.runtimeDependencies,
+      });
     }
 
     const uniqueResult = stringifyWhereUnique(model);
     if (uniqueResult) {
-      const processedModel: ProcessedModel = {
+      processedWhereUnique.push({
         name: model.name,
         stringified: uniqueResult.stringified,
         enumDependencies: uniqueResult.enumDependencies,
         externalSchemaDependencies: uniqueResult.externalSchemaDependencies,
-      };
-      if (uniqueResult.needsDateTimeFilter) {
-        processedModel.needsDateTimeFilter = true;
-      }
-      if (uniqueResult.needsBufferInstance) {
-        processedModel.needsBufferInstance = true;
-      }
-      if (uniqueResult.needsUint8ArrayInstance) {
-        processedModel.needsUint8ArrayInstance = true;
-      }
-      processedWhereUnique.push(processedModel);
+        runtimeDependencies: uniqueResult.runtimeDependencies,
+      });
     }
   }
   Object.freeze(processedWhere);
@@ -68,9 +54,7 @@ function stringifyWhere(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
-      needsDateTimeFilter?: boolean;
-      needsBufferInstance?: boolean;
-      needsUint8ArrayInstance?: boolean;
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   const { hidden } = extractAnnotations(model.documentation);
@@ -82,9 +66,7 @@ function stringifyWhere(model: DMMF.Model):
   const fields: string[] = [];
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
-  let needsDateTimeFilter = false;
-  let needsBufferInstance = false;
-  let needsUint8ArrayInstance = false;
+  const runtimeDependencies: RuntimeDependency[] = [];
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -166,12 +148,11 @@ function stringifyWhere(model: DMMF.Model):
     const isBytesField =
       field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
 
-    // Track if we need BufferInstance or Uint8ArrayInstance import
+    // Track runtime dependencies for Bytes fields
     if (isBytesField) {
-      if (fieldType === "BufferInstance") {
-        needsBufferInstance = true;
-      } else if (fieldType === "Uint8ArrayInstance") {
-        needsUint8ArrayInstance = true;
+      const runtimeDep = fieldType as RuntimeDependency;
+      if (!runtimeDependencies.includes(runtimeDep)) {
+        runtimeDependencies.push(runtimeDep);
       }
     }
 
@@ -188,39 +169,21 @@ function stringifyWhere(model: DMMF.Model):
     if (isDateTimeField && !field.isList) {
       // Use type() constructor to create a union with DateTimeFilter
       fieldType = `type("Date").or(DateTimeFilter)`;
-      needsDateTimeFilter = true;
+      if (!runtimeDependencies.includes("DateTimeFilter")) {
+        runtimeDependencies.push("DateTimeFilter");
+      }
     }
 
     // All where fields are optional
     fields.push(`"${field.name}?": ${fieldType}`);
   }
 
-  const result: {
-    stringified: string;
-    enumDependencies: string[];
-    externalSchemaDependencies: ExternalSchemaDependency[];
-    needsDateTimeFilter?: boolean;
-    needsBufferInstance?: boolean;
-    needsUint8ArrayInstance?: boolean;
-  } = {
+  return {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
     externalSchemaDependencies,
+    runtimeDependencies,
   };
-
-  if (needsDateTimeFilter) {
-    result.needsDateTimeFilter = true;
-  }
-
-  if (needsBufferInstance) {
-    result.needsBufferInstance = true;
-  }
-
-  if (needsUint8ArrayInstance) {
-    result.needsUint8ArrayInstance = true;
-  }
-
-  return result;
 }
 
 function stringifyWhereUnique(model: DMMF.Model):
@@ -228,9 +191,7 @@ function stringifyWhereUnique(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
-      needsDateTimeFilter?: boolean;
-      needsBufferInstance?: boolean;
-      needsUint8ArrayInstance?: boolean;
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   const { hidden } = extractAnnotations(model.documentation);
@@ -242,9 +203,7 @@ function stringifyWhereUnique(model: DMMF.Model):
   const fields: string[] = [];
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
-  let needsDateTimeFilter = false;
-  let needsBufferInstance = false;
-  let needsUint8ArrayInstance = false;
+  const runtimeDependencies: RuntimeDependency[] = [];
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -324,12 +283,11 @@ function stringifyWhereUnique(model: DMMF.Model):
     const isBytesField =
       field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
 
-    // Track if we need BufferInstance or Uint8ArrayInstance import
+    // Track runtime dependencies for Bytes fields
     if (isBytesField) {
-      if (fieldType === "BufferInstance") {
-        needsBufferInstance = true;
-      } else if (fieldType === "Uint8ArrayInstance") {
-        needsUint8ArrayInstance = true;
+      const runtimeDep = fieldType as RuntimeDependency;
+      if (!runtimeDependencies.includes(runtimeDep)) {
+        runtimeDependencies.push(runtimeDep);
       }
     }
 
@@ -337,7 +295,9 @@ function stringifyWhereUnique(model: DMMF.Model):
     if (isDateTimeField) {
       // Use type() constructor to create a union with DateTimeFilter
       fieldType = `type("Date").or(DateTimeFilter)`;
-      needsDateTimeFilter = true;
+      if (!runtimeDependencies.includes("DateTimeFilter")) {
+        runtimeDependencies.push("DateTimeFilter");
+      }
     }
 
     // All whereUnique fields are optional
@@ -348,30 +308,10 @@ function stringifyWhereUnique(model: DMMF.Model):
     return;
   }
 
-  const result: {
-    stringified: string;
-    enumDependencies: string[];
-    externalSchemaDependencies: ExternalSchemaDependency[];
-    needsDateTimeFilter?: boolean;
-    needsBufferInstance?: boolean;
-    needsUint8ArrayInstance?: boolean;
-  } = {
+  return {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
     externalSchemaDependencies,
+    runtimeDependencies,
   };
-
-  if (needsDateTimeFilter) {
-    result.needsDateTimeFilter = true;
-  }
-
-  if (needsBufferInstance) {
-    result.needsBufferInstance = true;
-  }
-
-  if (needsUint8ArrayInstance) {
-    result.needsUint8ArrayInstance = true;
-  }
-
-  return result;
 }

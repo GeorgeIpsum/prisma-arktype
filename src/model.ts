@@ -4,13 +4,20 @@ export interface ExternalSchemaDependency {
   localAlias: string; // Unique local name to use in code
 }
 
+/**
+ * Runtime dependencies are built-in runtime schemas provided by prisma-arktype
+ * (e.g., DateTimeFilter, BufferInstance, Uint8ArrayInstance)
+ */
+export type RuntimeDependency =
+  | "DateTimeFilter"
+  | "BufferInstance"
+  | "Uint8ArrayInstance";
+
 export interface ProcessedModel {
   name: string;
   stringified: string;
   enumDependencies?: string[]; // Enum types that this model references
   modelDependencies?: string[]; // Model Plain types that this model references
   externalSchemaDependencies?: ExternalSchemaDependency[]; // External schema imports
-  needsDateTimeFilter?: boolean; // Whether this model needs DateTimeFilter import
-  needsBufferInstance?: boolean; // Whether this model needs BufferInstance import (Prisma v6 and below)
-  needsUint8ArrayInstance?: boolean; // Whether this model needs Uint8ArrayInstance import (Prisma v7+)
+  runtimeDependencies?: RuntimeDependency[]; // Built-in runtime schemas that this model needs
 }

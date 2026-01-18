@@ -7,7 +7,11 @@ import {
 } from "../primitiveField";
 import { wrapPrimitiveWithArray } from "../wrappers";
 import { processedEnums } from "./enum";
-import type { ExternalSchemaDependency, ProcessedModel } from "../model";
+import type {
+  ExternalSchemaDependency,
+  ProcessedModel,
+  RuntimeDependency,
+} from "../model";
 
 export const processedPlain: ProcessedModel[] = [];
 
@@ -17,19 +21,13 @@ export function processPlain(
   for (const model of models) {
     const result = stringifyPlain(model);
     if (result) {
-      const processedModel: ProcessedModel = {
+      processedPlain.push({
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
-      };
-      if (result.needsBufferInstance) {
-        processedModel.needsBufferInstance = true;
-      }
-      if (result.needsUint8ArrayInstance) {
-        processedModel.needsUint8ArrayInstance = true;
-      }
-      processedPlain.push(processedModel);
+        runtimeDependencies: result.runtimeDependencies,
+      });
     }
   }
   Object.freeze(processedPlain);
@@ -46,8 +44,7 @@ function stringifyPlain(
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
-      needsBufferInstance?: boolean;
-      needsUint8ArrayInstance?: boolean;
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   const config = getConfig();
@@ -62,8 +59,7 @@ function stringifyPlain(
   const fields: string[] = [];
   const enumDependencies: string[] = [];
   const externalSchemaDependencies: ExternalSchemaDependency[] = [];
-  let needsBufferInstance = false;
-  let needsUint8ArrayInstance = false;
+  const runtimeDependencies: RuntimeDependency[] = [];
 
   // Helper function for generating unique aliases
   function generateUniqueAlias(
@@ -169,12 +165,11 @@ function stringifyPlain(
     const isBytesField =
       field.type === "Bytes" && !typeOverwrite && !schemaAnnotation;
 
-    // Track if we need BufferInstance or Uint8ArrayInstance import
+    // Track runtime dependencies for Bytes fields
     if (isBytesField) {
-      if (fieldType === "BufferInstance") {
-        needsBufferInstance = true;
-      } else if (fieldType === "Uint8ArrayInstance") {
-        needsUint8ArrayInstance = true;
+      const runtimeDep = fieldType as RuntimeDependency;
+      if (!runtimeDependencies.includes(runtimeDep)) {
+        runtimeDependencies.push(runtimeDep);
       }
     }
 
@@ -206,27 +201,12 @@ function stringifyPlain(
     fields.push(`"${fieldName}": ${fieldType}`);
   }
 
-  const result: {
-    stringified: string;
-    enumDependencies: string[];
-    externalSchemaDependencies: ExternalSchemaDependency[];
-    needsBufferInstance?: boolean;
-    needsUint8ArrayInstance?: boolean;
-  } = {
+  return {
     stringified: `{\n  ${fields.join(",\n  ")}\n}`,
     enumDependencies,
     externalSchemaDependencies,
+    runtimeDependencies,
   };
-
-  if (needsBufferInstance) {
-    result.needsBufferInstance = true;
-  }
-
-  if (needsUint8ArrayInstance) {
-    result.needsUint8ArrayInstance = true;
-  }
-
-  return result;
 }
 
 export function stringifyPlainInputCreate(model: DMMF.Model):
@@ -234,8 +214,7 @@ export function stringifyPlainInputCreate(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
-      needsBufferInstance?: boolean;
-      needsUint8ArrayInstance?: boolean;
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   return stringifyPlain(model, true, false);
@@ -246,8 +225,7 @@ export function stringifyPlainInputUpdate(model: DMMF.Model):
       stringified: string;
       enumDependencies: string[];
       externalSchemaDependencies: ExternalSchemaDependency[];
-      needsBufferInstance?: boolean;
-      needsUint8ArrayInstance?: boolean;
+      runtimeDependencies: RuntimeDependency[];
     }
   | undefined {
   return stringifyPlain(model, false, true);

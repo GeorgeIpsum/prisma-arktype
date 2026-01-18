@@ -14,19 +14,13 @@ export function processUpdate(
 
     const result = stringifyPlainInputUpdate(model);
     if (result) {
-      const processedModel: ProcessedModel = {
+      processedUpdate.push({
         name: model.name,
         stringified: result.stringified,
         enumDependencies: result.enumDependencies,
         externalSchemaDependencies: result.externalSchemaDependencies,
-      };
-      if (result.needsBufferInstance) {
-        processedModel.needsBufferInstance = true;
-      }
-      if (result.needsUint8ArrayInstance) {
-        processedModel.needsUint8ArrayInstance = true;
-      }
-      processedUpdate.push(processedModel);
+        runtimeDependencies: result.runtimeDependencies,
+      });
     }
   }
   Object.freeze(processedUpdate);

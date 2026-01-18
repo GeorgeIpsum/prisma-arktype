@@ -1,7 +1,11 @@
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { getConfig } from "./config";
-import type { ExternalSchemaDependency, ProcessedModel } from "./model";
+import type {
+  ExternalSchemaDependency,
+  ProcessedModel,
+  RuntimeDependency,
+} from "./model";
 
 export async function format(input: string): Promise<string> {
   // For now, return input as-is. Could integrate prettier later
@@ -47,27 +51,28 @@ function generateExternalSchemaImports(
     .join("\n")}\n`;
 }
 
-function generateDateTimeFilterImport(needsDateTimeFilter?: boolean): string {
-  if (!needsDateTimeFilter) {
-    return "";
-  }
-  return `import { DateTimeFilter } from "prisma-arktype/runtime/filters";\n`;
-}
+/**
+ * Maps runtime dependency names to their import paths
+ */
+const RUNTIME_DEPENDENCY_IMPORTS: Record<RuntimeDependency, string> = {
+  DateTimeFilter: `import { DateTimeFilter } from "prisma-arktype/runtime/filters";\n`,
+  BufferInstance: `import { BufferInstance } from "prisma-arktype/runtime/buffer";\n`,
+  Uint8ArrayInstance: `import { Uint8ArrayInstance } from "prisma-arktype/runtime/uint8array";\n`,
+};
 
-function generateBufferInstanceImport(needsBufferInstance?: boolean): string {
-  if (!needsBufferInstance) {
-    return "";
-  }
-  return `import { BufferInstance } from "prisma-arktype/runtime/buffer";\n`;
-}
-
-function generateUint8ArrayInstanceImport(
-  needsUint8ArrayInstance?: boolean,
+/**
+ * Generates import statements for runtime dependencies
+ */
+function generateRuntimeDependencyImports(
+  runtimeDependencies?: RuntimeDependency[],
 ): string {
-  if (!needsUint8ArrayInstance) {
+  if (!runtimeDependencies || runtimeDependencies.length === 0) {
     return "";
   }
-  return `import { Uint8ArrayInstance } from "prisma-arktype/runtime/uint8array";\n`;
+
+  return runtimeDependencies
+    .map((dep) => RUNTIME_DEPENDENCY_IMPORTS[dep])
+    .join("");
 }
 
 export function mapAllModelsForWrite(
@@ -101,13 +106,10 @@ export function mapAllModelsForWrite(
     const externalSchemaImports = generateExternalSchemaImports(
       model.externalSchemaDependencies,
     );
-    const bufferInstanceImport = generateBufferInstanceImport(
-      model.needsBufferInstance,
+    const runtimeImports = generateRuntimeDependencyImports(
+      model.runtimeDependencies,
     );
-    const uint8ArrayInstanceImport = generateUint8ArrayInstanceImport(
-      model.needsUint8ArrayInstance,
-    );
-    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${bufferInstanceImport}${uint8ArrayInstanceImport}export const ${model.name}Plain = type(${model.stringified});\n`;
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${runtimeImports}export const ${model.name}Plain = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Plain`, content);
   }
 
@@ -136,16 +138,10 @@ export function mapAllModelsForWrite(
     const externalSchemaImports = generateExternalSchemaImports(
       model.externalSchemaDependencies,
     );
-    const dateTimeFilterImport = generateDateTimeFilterImport(
-      model.needsDateTimeFilter,
+    const runtimeImports = generateRuntimeDependencyImports(
+      model.runtimeDependencies,
     );
-    const bufferInstanceImport = generateBufferInstanceImport(
-      model.needsBufferInstance,
-    );
-    const uint8ArrayInstanceImport = generateUint8ArrayInstanceImport(
-      model.needsUint8ArrayInstance,
-    );
-    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${dateTimeFilterImport}${bufferInstanceImport}${uint8ArrayInstanceImport}export const ${model.name}Where = type(${model.stringified});\n`;
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${runtimeImports}export const ${model.name}Where = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Where`, content);
   }
 
@@ -155,16 +151,10 @@ export function mapAllModelsForWrite(
     const externalSchemaImports = generateExternalSchemaImports(
       model.externalSchemaDependencies,
     );
-    const dateTimeFilterImport = generateDateTimeFilterImport(
-      model.needsDateTimeFilter,
+    const runtimeImports = generateRuntimeDependencyImports(
+      model.runtimeDependencies,
     );
-    const bufferInstanceImport = generateBufferInstanceImport(
-      model.needsBufferInstance,
-    );
-    const uint8ArrayInstanceImport = generateUint8ArrayInstanceImport(
-      model.needsUint8ArrayInstance,
-    );
-    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${dateTimeFilterImport}${bufferInstanceImport}${uint8ArrayInstanceImport}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${runtimeImports}export const ${model.name}WhereUnique = type(${model.stringified});\n`;
     modelMap.set(`${model.name}WhereUnique`, content);
   }
 
@@ -174,13 +164,10 @@ export function mapAllModelsForWrite(
     const externalSchemaImports = generateExternalSchemaImports(
       model.externalSchemaDependencies,
     );
-    const bufferInstanceImport = generateBufferInstanceImport(
-      model.needsBufferInstance,
+    const runtimeImports = generateRuntimeDependencyImports(
+      model.runtimeDependencies,
     );
-    const uint8ArrayInstanceImport = generateUint8ArrayInstanceImport(
-      model.needsUint8ArrayInstance,
-    );
-    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${bufferInstanceImport}${uint8ArrayInstanceImport}export const ${model.name}Create = type(${model.stringified});\n`;
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${runtimeImports}export const ${model.name}Create = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Create`, content);
   }
 
@@ -190,13 +177,10 @@ export function mapAllModelsForWrite(
     const externalSchemaImports = generateExternalSchemaImports(
       model.externalSchemaDependencies,
     );
-    const bufferInstanceImport = generateBufferInstanceImport(
-      model.needsBufferInstance,
+    const runtimeImports = generateRuntimeDependencyImports(
+      model.runtimeDependencies,
     );
-    const uint8ArrayInstanceImport = generateUint8ArrayInstanceImport(
-      model.needsUint8ArrayInstance,
-    );
-    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${bufferInstanceImport}${uint8ArrayInstanceImport}export const ${model.name}Update = type(${model.stringified});\n`;
+    const content = `${arktypeImport}${enumImports}${externalSchemaImports}${runtimeImports}export const ${model.name}Update = type(${model.stringified});\n`;
     modelMap.set(`${model.name}Update`, content);
   }
 
