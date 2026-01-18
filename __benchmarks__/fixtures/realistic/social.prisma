@@ -1,0 +1,589 @@
+// Realistic Social Network Schema
+// ~40 models representing a social media platform
+// Users, Posts, Comments, Messages, Feeds, Notifications, etc.
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator prisma_arktype {
+  provider = "node ../../../dist/index.js"
+  output   = "../../../__benchmarks__/reports/.generated/social"
+}
+
+enum PostVisibility {
+  PUBLIC
+  FRIENDS
+  FOLLOWERS
+  PRIVATE
+}
+
+enum PostType {
+  TEXT
+  IMAGE
+  VIDEO
+  LINK
+  POLL
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  MENTION
+  FOLLOW
+  FRIEND_REQUEST
+  MESSAGE
+  SHARE
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  HATE_SPEECH
+  VIOLENCE
+  NUDITY
+  FALSE_INFO
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWED
+  RESOLVED
+  DISMISSED
+}
+
+// User Management
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  username        String    @unique
+  displayName     String
+  passwordHash    String
+  bio             String?   @db.Text
+  avatarUrl       String?
+  coverUrl        String?
+  website         String?
+  location        String?
+  birthDate       DateTime?
+  isVerified      Boolean   @default(false)
+  isPrivate       Boolean   @default(false)
+  isActive        Boolean   @default(true)
+  lastSeenAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  profile           UserProfile?
+  settings          UserSettings?
+  posts             Post[]
+  comments          Comment[]
+  likes             Like[]
+  shares            Share[]
+  followers         Friendship[]      @relation("FollowerRelation")
+  following         Friendship[]      @relation("FollowingRelation")
+  sentMessages      Message[]         @relation("SentMessages")
+  receivedMessages  Message[]         @relation("ReceivedMessages")
+  notifications     Notification[]
+  stories           Story[]
+  highlights        Highlight[]
+  savedPosts        SavedPost[]
+  blockedUsers      Block[]           @relation("BlockedBy")
+  blockedByUsers    Block[]           @relation("BlockedUser")
+  reports           Report[]
+  activities        Activity[]
+
+  @@index([email])
+  @@index([username])
+}
+
+model UserProfile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id])
+  followersCount   Int      @default(0)
+  followingCount   Int      @default(0)
+  postsCount       Int      @default(0)
+  friendsCount     Int      @default(0)
+  interests        String[]
+  occupation       String?
+  education        String?
+  relationshipStatus String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model UserSettings {
+  id                    String   @id @default(cuid())
+  userId                String   @unique
+  user                  User     @relation(fields: [userId], references: [id])
+  emailNotifications    Boolean  @default(true)
+  pushNotifications     Boolean  @default(true)
+  showOnlineStatus      Boolean  @default(true)
+  allowTagging          Boolean  @default(true)
+  allowComments         Boolean  @default(true)
+  allowMessages         Boolean  @default(true)
+  showBirthday          Boolean  @default(true)
+  showLocation          Boolean  @default(true)
+  language              String   @default("en")
+  theme                 String   @default("light")
+  privacy               Json     @default("{}")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+// Social Connections
+model Friendship {
+  id         String           @id @default(cuid())
+  followerId String
+  follower   User             @relation("FollowerRelation", fields: [followerId], references: [id])
+  followingId String
+  following  User             @relation("FollowingRelation", fields: [followingId], references: [id])
+  status     FriendshipStatus @default(PENDING)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+  @@index([status])
+}
+
+model Block {
+  id        String   @id @default(cuid())
+  blockerId String
+  blocker   User     @relation("BlockedBy", fields: [blockerId], references: [id])
+  blockedId String
+  blocked   User     @relation("BlockedUser", fields: [blockedId], references: [id])
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@unique([blockerId, blockedId])
+  @@index([blockerId])
+  @@index([blockedId])
+}
+
+// Posts & Content
+model Post {
+  id         String         @id @default(cuid())
+  authorId   String
+  author     User           @relation(fields: [authorId], references: [id])
+  content    String?        @db.Text
+  type       PostType       @default(TEXT)
+  visibility PostVisibility @default(PUBLIC)
+  location   String?
+  isEdited   Boolean        @default(false)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  media      Media[]
+  comments   Comment[]
+  likes      Like[]
+  shares     Share[]
+  tags       PostTag[]
+  mentions   PostMention[]
+  savedBy    SavedPost[]
+  reports    Report[]
+
+  @@index([authorId])
+  @@index([type])
+  @@index([visibility])
+  @@index([createdAt])
+}
+
+model Media {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  url       String
+  thumbnailUrl String?
+  type      String
+  width     Int?
+  height    Int?
+  duration  Int?
+  size      Int?
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  content   String   @db.Text
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  likes CommentLike[]
+
+  @@index([postId])
+  @@index([authorId])
+  @@index([parentId])
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+}
+
+model CommentLike {
+  id        String   @id @default(cuid())
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([commentId, userId])
+  @@index([commentId])
+  @@index([userId])
+}
+
+model Share {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  content   String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+  @@index([userId])
+}
+
+model Tag {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  postsCount Int      @default(0)
+  createdAt DateTime  @default(now())
+
+  posts PostTag[]
+
+  @@index([slug])
+  @@index([postsCount])
+}
+
+model PostTag {
+  postId String
+  post   Post   @relation(fields: [postId], references: [id])
+  tagId  String
+  tag    Tag    @relation(fields: [tagId], references: [id])
+
+  @@id([postId, tagId])
+}
+
+model PostMention {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+}
+
+model SavedPost {
+  id        String   @id @default(cuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+}
+
+// Stories & Highlights
+model Story {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  mediaUrl  String
+  mediaType String
+  duration  Int      @default(15)
+  viewsCount Int     @default(0)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  views StoryView[]
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model StoryView {
+  id        String   @id @default(cuid())
+  storyId   String
+  story     Story    @relation(fields: [storyId], references: [id])
+  userId    String
+  viewedAt  DateTime @default(now())
+
+  @@unique([storyId, userId])
+  @@index([storyId])
+  @@index([userId])
+}
+
+model Highlight {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  coverUrl  String?
+  storyIds  String[]
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// Messaging
+model Conversation {
+  id           String   @id @default(cuid())
+  name         String?
+  isGroup      Boolean  @default(false)
+  lastMessageAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  userId         String
+  lastReadAt     DateTime?
+  joinedAt       DateTime     @default(now())
+
+  @@unique([conversationId, userId])
+  @@index([conversationId])
+  @@index([userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  senderId       String
+  sender         User         @relation("SentMessages", fields: [senderId], references: [id])
+  recipientId    String?
+  recipient      User?        @relation("ReceivedMessages", fields: [recipientId], references: [id])
+  content        String       @db.Text
+  mediaUrl       String?
+  mediaType      String?
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([conversationId])
+  @@index([senderId])
+  @@index([recipientId])
+  @@index([isRead])
+}
+
+// Notifications
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id])
+  type      NotificationType
+  title     String
+  content   String
+  actorId   String?
+  entityType String?
+  entityId  String?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([type])
+}
+
+// Groups & Communities
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  avatarUrl   String?
+  coverUrl    String?
+  isPrivate   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members GroupMember[]
+  posts   GroupPost[]
+
+  @@index([slug])
+}
+
+model GroupMember {
+  id       String   @id @default(cuid())
+  groupId  String
+  group    Group    @relation(fields: [groupId], references: [id])
+  userId   String
+  role     String   @default("member")
+  joinedAt DateTime @default(now())
+
+  @@unique([groupId, userId])
+  @@index([groupId])
+  @@index([userId])
+}
+
+model GroupPost {
+  id        String   @id @default(cuid())
+  groupId   String
+  group     Group    @relation(fields: [groupId], references: [id])
+  authorId  String
+  content   String   @db.Text
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([groupId])
+  @@index([authorId])
+}
+
+// Events
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @db.Text
+  location    String?
+  startDate   DateTime
+  endDate     DateTime?
+  coverUrl    String?
+  isOnline    Boolean  @default(false)
+  creatorId   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  attendees EventAttendee[]
+
+  @@index([startDate])
+  @@index([creatorId])
+}
+
+model EventAttendee {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id])
+  userId    String
+  status    String   @default("interested")
+  joinedAt  DateTime @default(now())
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+// Moderation & Safety
+model Report {
+  id         String       @id @default(cuid())
+  postId     String?
+  post       Post?        @relation(fields: [postId], references: [id])
+  reporterId String
+  reporter   User         @relation(fields: [reporterId], references: [id])
+  reason     ReportReason
+  details    String?      @db.Text
+  status     ReportStatus @default(PENDING)
+  reviewedAt DateTime?
+  reviewedBy String?
+  resolution String?
+  createdAt  DateTime     @default(now())
+
+  @@index([postId])
+  @@index([reporterId])
+  @@index([status])
+}
+
+// Analytics & Activity
+model Activity {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  action     String
+  entityType String
+  entityId   String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+}
+
+model Trending {
+  id        String   @id @default(cuid())
+  type      String
+  entityId  String
+  score     Decimal  @db.Decimal(10, 2)
+  rank      Int
+  category  String?
+  timestamp DateTime @default(now())
+
+  @@unique([type, entityId, timestamp])
+  @@index([type, rank])
+  @@index([timestamp])
+}
+
+model Analytics {
+  id        String   @id @default(cuid())
+  userId    String?
+  event     String
+  category  String?
+  label     String?
+  value     Int?
+  metadata  Json?
+  timestamp DateTime @default(now())
+
+  @@index([event])
+  @@index([userId])
+  @@index([timestamp])
+}
+
+// System
+model Config {
+  key       String   @id
+  value     String   @db.Text
+  category  String
+  isPublic  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}

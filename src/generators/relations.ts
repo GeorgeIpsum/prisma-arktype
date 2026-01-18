@@ -25,9 +25,7 @@ export function processRelations(
 function stringifyRelations(
   model: DMMF.Model,
 ): { stringified: string; modelDependencies: string[] } | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
@@ -93,9 +91,7 @@ function stringifyRelationsInputCreate(
   model: DMMF.Model,
   allModels: DMMF.Model[] | Readonly<DMMF.Model[]>,
 ): string | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;
@@ -155,9 +151,7 @@ function stringifyRelationsInputUpdate(
   model: DMMF.Model,
   allModels: DMMF.Model[] | Readonly<DMMF.Model[]>,
 ): string | undefined {
-  const { annotations: modelAnnotations, hidden } = extractAnnotations(
-    model.documentation,
-  );
+  const { hidden } = extractAnnotations(model.documentation);
 
   if (hidden) {
     return;

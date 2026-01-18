@@ -1,0 +1,172 @@
+name: Benchmarks
+
+on:
+  # Run on pushes to main to establish/update baseline
+  push:
+    branches:
+      - main
+  # Run on PRs with the 'benchmark' label
+  pull_request:
+    types: [labeled, synchronize, opened, reopened]
+  # Allow manual triggering
+  workflow_dispatch:
+    inputs:
+      update_baseline:
+        description: 'Update baseline after run'
+        required: false
+        type: boolean
+        default: false
+
+# Ensure only one benchmark run at a time per PR/branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    # Only run if:
+    # 1. Push to main, OR
+    # 2. PR with 'benchmark' label, OR
+    # 3. Manual workflow dispatch
+    if: |
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'benchmark'))
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for baseline comparison
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Run benchmarks
+        run: |
+          # Run with increased memory and GC access
+          NODE_OPTIONS="--max-old-space-size=4096 --expose-gc" pnpm bench
+        continue-on-error: true  # Don't fail the workflow, just report
+
+      - name: Compare with baseline
+        id: compare
+        if: github.event_name == 'pull_request'
+        run: |
+          pnpm bench:compare > comparison.txt 2>&1 || true
+          cat comparison.txt
+
+          # Check for critical regressions
+          if grep -q "CRITICAL REGRESSIONS DETECTED" comparison.txt; then
+            echo "has_critical_regression=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_critical_regression=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate CI report
+        if: github.event_name == 'pull_request'
+        id: ci_report
+        run: |
+          # Create a markdown report for PR comment
+          cat > pr_comment.md << 'EOF'
+          # 📊 Benchmark Results
+
+          $(cat comparison.txt)
+
+          ---
+          *Benchmark report generated on $(date)*
+          *Environment: Node $(node --version), ubuntu-latest*
+          EOF
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const comment = fs.readFileSync('pr_comment.md', 'utf8');
+
+            // Find existing benchmark comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('📊 Benchmark Results')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+            }
+
+      - name: Warn on critical regression
+        if: github.event_name == 'pull_request' && steps.compare.outputs.has_critical_regression == 'true'
+        run: |
+          echo "::warning::Critical performance regression detected (>25% slowdown). Please review the benchmark results."
+
+      - name: Update baseline (main branch)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          pnpm bench:update-baseline
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add __benchmarks__/reports/baseline.json __benchmarks__/reports/history/
+          git commit -m "chore: update benchmark baseline [skip ci]" || true
+          git push || true
+
+      - name: Update baseline (manual trigger)
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.update_baseline == 'true'
+        run: |
+          pnpm bench:update-baseline
+
+      - name: Upload benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-results
+          path: |
+            __benchmarks__/reports/latest.json
+            __benchmarks__/reports/history/
+          retention-days: 90
+
+      - name: Archive reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-artifacts
+          path: |
+            __benchmarks__/reports/
+            comparison.txt
+            pr_comment.md
+          retention-days: 30

@@ -1,0 +1,66 @@
+// Small Schema - Baseline Performance Testing
+// 5 models, 1 enum, ~30 fields
+// Target: <100ms generation time
+// Output: ~40 files, ~150 KB
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator prisma_arktype {
+  provider = "node ../../dist/index.js"
+  output   = "../../__benchmarks__/reports/.generated/small"
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  posts Post[]
+}
+
+model Post {
+  id        String   @id @default(cuid())
+  title     String
+  content   String?
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([authorId])
+}
+
+model Product {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  inStock     Boolean @default(true)
+}
+
+model Category {
+  id   String @id @default(cuid())
+  name String @unique
+  slug String @unique
+}
+
+model Setting {
+  key   String @id
+  value String
+  type  String @default("string")
+}

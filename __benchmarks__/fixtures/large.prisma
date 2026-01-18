@@ -1,0 +1,1411 @@
+// Large Schema - Stress Test
+// 100 models, 20 enums, ~800 fields
+// Target: <5s generation time
+// Output: ~800 files, ~3 MB
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator prisma_arktype {
+  provider = "node ../../dist/index.js"
+  output   = "../../__benchmarks__/reports/.generated/large"
+}
+
+// Enums (20 total)
+enum UserRole { ADMIN USER MODERATOR GUEST SUPER_ADMIN }
+enum OrderStatus { PENDING PROCESSING SHIPPED DELIVERED CANCELLED RETURNED REFUNDED }
+enum PaymentMethod { CREDIT_CARD DEBIT_CARD PAYPAL STRIPE BANK_TRANSFER CRYPTO APPLE_PAY GOOGLE_PAY }
+enum Priority { LOW MEDIUM HIGH URGENT CRITICAL }
+enum ContentType { TEXT IMAGE VIDEO AUDIO DOCUMENT PDF SPREADSHEET PRESENTATION }
+enum SubscriptionTier { FREE BASIC PREMIUM ENTERPRISE }
+enum TransactionType { PURCHASE REFUND CREDIT DEBIT TRANSFER ADJUSTMENT }
+enum NotificationType { EMAIL SMS PUSH IN_APP WEBHOOK }
+enum TaskStatus { TODO IN_PROGRESS BLOCKED REVIEW DONE CANCELLED }
+enum IssueType { BUG FEATURE IMPROVEMENT TASK EPIC STORY }
+enum IssuePriority { TRIVIAL MINOR MAJOR CRITICAL BLOCKER }
+enum ProjectStatus { PLANNING ACTIVE ON_HOLD COMPLETED CANCELLED ARCHIVED }
+enum MemberRole { OWNER ADMIN MEMBER VIEWER GUEST }
+enum EventType { CREATED UPDATED DELETED VIEWED SHARED COMMENTED LIKED }
+enum FileCategory { IMAGE VIDEO DOCUMENT ARCHIVE CODE DATA OTHER }
+enum TicketStatus { OPEN IN_PROGRESS WAITING_RESPONSE RESOLVED CLOSED }
+enum DeploymentStatus { PENDING DEPLOYING DEPLOYED FAILED ROLLED_BACK }
+enum Environment { DEVELOPMENT STAGING PRODUCTION }
+enum LogLevel { DEBUG INFO WARN ERROR FATAL }
+enum AccessLevel { PUBLIC PRIVATE RESTRICTED CONFIDENTIAL }
+
+// Core User Management (10 models)
+model User {
+  id String @id @default(cuid())
+  email String @unique
+  username String @unique
+  firstName String
+  lastName String
+  passwordHash String
+  role UserRole @default(USER)
+  isActive Boolean @default(true)
+  isVerified Boolean @default(false)
+  lastLoginAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  profile UserProfile?
+  settings UserSettings?
+  sessions Session[]
+  apiKeys ApiKey[]
+  notifications Notification[]
+  activities Activity[]
+  teamMembers TeamMember[]
+  @@index([email]) @@index([username])
+}
+
+model UserProfile {
+  id String @id @default(cuid())
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+  bio String? @db.Text
+  avatarUrl String?
+  coverUrl String?
+  website String?
+  location String?
+  birthDate DateTime?
+  phone String?
+  company String?
+  jobTitle String?
+  timezone String?
+  language String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserSettings {
+  id String @id @default(cuid())
+  userId String @unique
+  user User @relation(fields: [userId], references: [id])
+  theme String @default("light")
+  emailNotifications Boolean @default(true)
+  pushNotifications Boolean @default(true)
+  smsNotifications Boolean @default(false)
+  twoFactorEnabled Boolean @default(false)
+  language String @default("en")
+  timezone String @default("UTC")
+  privacy Json @default("{}")
+  preferences Json @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Session {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  token String @unique
+  refreshToken String? @unique
+  deviceInfo String?
+  ipAddress String?
+  userAgent String?
+  expiresAt DateTime
+  lastActivityAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  @@index([userId]) @@index([token])
+}
+
+model ApiKey {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  name String
+  key String @unique
+  permissions Json @default("[]")
+  lastUsedAt DateTime?
+  expiresAt DateTime?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  @@index([userId]) @@index([key])
+}
+
+model Activity {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  action String
+  entityType String
+  entityId String
+  metadata Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  @@index([userId]) @@index([entityType, entityId])
+}
+
+model Notification {
+  id String @id @default(cuid())
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  type NotificationType
+  title String
+  message String @db.Text
+  data Json?
+  isRead Boolean @default(false)
+  readAt DateTime?
+  priority Priority @default(MEDIUM)
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([userId]) @@index([isRead])
+}
+
+model PasswordReset {
+  id String @id @default(cuid())
+  email String
+  token String @unique
+  expiresAt DateTime
+  usedAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([email]) @@index([token])
+}
+
+model EmailVerification {
+  id String @id @default(cuid())
+  email String
+  token String @unique
+  expiresAt DateTime
+  verifiedAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([email]) @@index([token])
+}
+
+model TwoFactorAuth {
+  id String @id @default(cuid())
+  userId String @unique
+  secret String
+  backupCodes String[]
+  isEnabled Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Team & Organization (10 models)
+model Organization {
+  id String @id @default(cuid())
+  name String
+  slug String @unique
+  description String? @db.Text
+  logoUrl String?
+  website String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  teams Team[]
+  projects Project[]
+  settings OrganizationSettings?
+  @@index([slug])
+}
+
+model OrganizationSettings {
+  id String @id @default(cuid())
+  organizationId String @unique
+  organization Organization @relation(fields: [organizationId], references: [id])
+  allowPublicProjects Boolean @default(false)
+  requireTwoFactor Boolean @default(false)
+  sessionTimeout Int @default(3600)
+  maxFileSize Int @default(10485760)
+  allowedDomains String[]
+  customDomain String?
+  features Json @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id String @id @default(cuid())
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  name String
+  slug String
+  description String? @db.Text
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  members TeamMember[]
+  projects Project[]
+  @@unique([organizationId, slug]) @@index([organizationId])
+}
+
+model TeamMember {
+  id String @id @default(cuid())
+  teamId String
+  team Team @relation(fields: [teamId], references: [id])
+  userId String
+  user User @relation(fields: [userId], references: [id])
+  role MemberRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+  @@unique([teamId, userId]) @@index([teamId]) @@index([userId])
+}
+
+model Project {
+  id String @id @default(cuid())
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  teamId String?
+  team Team? @relation(fields: [teamId], references: [id])
+  name String
+  slug String
+  description String? @db.Text
+  status ProjectStatus @default(PLANNING)
+  startDate DateTime?
+  endDate DateTime?
+  budget Decimal? @db.Decimal(10, 2)
+  isPublic Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tasks Task[]
+  issues Issue[]
+  milestones Milestone[]
+  documents Document[]
+  @@unique([organizationId, slug]) @@index([organizationId]) @@index([teamId])
+}
+
+model Task {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id])
+  title String
+  description String? @db.Text
+  status TaskStatus @default(TODO)
+  priority Priority @default(MEDIUM)
+  assigneeId String?
+  creatorId String
+  dueDate DateTime?
+  startDate DateTime?
+  completedAt DateTime?
+  estimatedHours Int?
+  actualHours Int?
+  tags String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comments TaskComment[]
+  dependencies TaskDependency[]
+  @@index([projectId]) @@index([assigneeId]) @@index([creatorId])
+}
+
+model TaskComment {
+  id String @id @default(cuid())
+  taskId String
+  task Task @relation(fields: [taskId], references: [id])
+  authorId String
+  content String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([taskId]) @@index([authorId])
+}
+
+model TaskDependency {
+  id String @id @default(cuid())
+  taskId String
+  dependsOnId String
+  type String @default("blocks")
+  createdAt DateTime @default(now())
+  @@unique([taskId, dependsOnId]) @@index([taskId]) @@index([dependsOnId])
+}
+
+model Issue {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id])
+  issueNumber Int
+  title String
+  description String? @db.Text
+  type IssueType
+  priority IssuePriority @default(MINOR)
+  status TaskStatus @default(TODO)
+  reporterId String
+  assigneeId String?
+  labels String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([projectId, issueNumber]) @@index([projectId]) @@index([reporterId]) @@index([assigneeId])
+}
+
+model Milestone {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id])
+  title String
+  description String? @db.Text
+  dueDate DateTime?
+  completedAt DateTime?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([projectId])
+}
+
+// Content Management (15 models)
+model Post {
+  id String @id @default(cuid())
+  title String
+  slug String @unique
+  content String @db.Text
+  excerpt String?
+  authorId String
+  categoryId String?
+  contentType ContentType @default(TEXT)
+  published Boolean @default(false)
+  publishedAt DateTime?
+  views Int @default(0)
+  likes Int @default(0)
+  featured Boolean @default(false)
+  seoTitle String?
+  seoDescription String?
+  seoKeywords String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  comments Comment[]
+  tags PostTag[]
+  media PostMedia[]
+  revisions PostRevision[]
+  @@index([slug]) @@index([authorId]) @@index([categoryId])
+}
+
+model Comment {
+  id String @id @default(cuid())
+  postId String
+  post Post @relation(fields: [postId], references: [id])
+  authorId String
+  content String @db.Text
+  parentId String?
+  isApproved Boolean @default(false)
+  isSpam Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([postId]) @@index([authorId]) @@index([parentId])
+}
+
+model Category {
+  id String @id @default(cuid())
+  name String @unique
+  slug String @unique
+  description String? @db.Text
+  parentId String?
+  position Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([slug]) @@index([parentId])
+}
+
+model Tag {
+  id String @id @default(cuid())
+  name String @unique
+  slug String @unique
+  description String?
+  color String?
+  posts PostTag[]
+  createdAt DateTime @default(now())
+  @@index([slug])
+}
+
+model PostTag {
+  postId String
+  post Post @relation(fields: [postId], references: [id])
+  tagId String
+  tag Tag @relation(fields: [tagId], references: [id])
+  @@id([postId, tagId])
+}
+
+model Media {
+  id String @id @default(cuid())
+  filename String
+  originalFilename String
+  mimeType String
+  size Int
+  width Int?
+  height Int?
+  duration Int?
+  url String
+  thumbnailUrl String?
+  category FileCategory
+  uploaderId String
+  isPublic Boolean @default(false)
+  metadata Json?
+  createdAt DateTime @default(now())
+  posts PostMedia[]
+  @@index([uploaderId]) @@index([category])
+}
+
+model PostMedia {
+  postId String
+  post Post @relation(fields: [postId], references: [id])
+  mediaId String
+  media Media @relation(fields: [mediaId], references: [id])
+  position Int @default(0)
+  @@id([postId, mediaId])
+}
+
+model PostRevision {
+  id String @id @default(cuid())
+  postId String
+  post Post @relation(fields: [postId], references: [id])
+  title String
+  content String @db.Text
+  authorId String
+  createdAt DateTime @default(now())
+  @@index([postId]) @@index([authorId])
+}
+
+model Page {
+  id String @id @default(cuid())
+  title String
+  slug String @unique
+  content String @db.Text
+  template String @default("default")
+  parentId String?
+  position Int @default(0)
+  published Boolean @default(false)
+  publishedAt DateTime?
+  seoTitle String?
+  seoDescription String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([slug]) @@index([parentId])
+}
+
+model Menu {
+  id String @id @default(cuid())
+  name String @unique
+  location String
+  isActive Boolean @default(true)
+  items MenuItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MenuItem {
+  id String @id @default(cuid())
+  menuId String
+  menu Menu @relation(fields: [menuId], references: [id])
+  label String
+  url String
+  parentId String?
+  position Int @default(0)
+  target String @default("_self")
+  icon String?
+  cssClass String?
+  isActive Boolean @default(true)
+  @@index([menuId]) @@index([parentId])
+}
+
+model Widget {
+  id String @id @default(cuid())
+  name String @unique
+  type String
+  location String
+  config Json @default("{}")
+  position Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Template {
+  id String @id @default(cuid())
+  name String @unique
+  description String? @db.Text
+  content String @db.Text
+  category String
+  variables Json @default("[]")
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Redirect {
+  id String @id @default(cuid())
+  fromPath String @unique
+  toPath String
+  statusCode Int @default(301)
+  isActive Boolean @default(true)
+  hitCount Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([fromPath])
+}
+
+model Seo {
+  id String @id @default(cuid())
+  path String @unique
+  title String
+  description String
+  keywords String[]
+  ogTitle String?
+  ogDescription String?
+  ogImage String?
+  twitterCard String?
+  canonical String?
+  robots String?
+  schema Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([path])
+}
+
+// E-commerce (20 models)
+model Product {
+  id String @id @default(cuid())
+  name String
+  slug String @unique
+  description String @db.Text
+  shortDescription String?
+  price Decimal @db.Decimal(10, 2)
+  comparePrice Decimal? @db.Decimal(10, 2)
+  costPrice Decimal? @db.Decimal(10, 2)
+  sku String @unique
+  barcode String?
+  trackInventory Boolean @default(true)
+  stock Int @default(0)
+  lowStockThreshold Int @default(10)
+  weight Decimal? @db.Decimal(10, 2)
+  dimensions Json?
+  isActive Boolean @default(true)
+  isFeatured Boolean @default(false)
+  taxable Boolean @default(true)
+  requiresShipping Boolean @default(true)
+  metaTitle String?
+  metaDescription String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  variants ProductVariant[]
+  images ProductImage[]
+  categories ProductCategory[]
+  reviews Review[]
+  orderItems OrderItem[]
+  @@index([slug]) @@index([sku])
+}
+
+model ProductVariant {
+  id String @id @default(cuid())
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  name String
+  sku String @unique
+  price Decimal @db.Decimal(10, 2)
+  comparePrice Decimal? @db.Decimal(10, 2)
+  stock Int @default(0)
+  weight Decimal? @db.Decimal(10, 2)
+  options Json
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([productId]) @@index([sku])
+}
+
+model ProductImage {
+  id String @id @default(cuid())
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  url String
+  alt String?
+  position Int @default(0)
+  createdAt DateTime @default(now())
+  @@index([productId])
+}
+
+model ProductCategory {
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  categoryId String
+  @@id([productId, categoryId])
+}
+
+model Collection {
+  id String @id @default(cuid())
+  name String @unique
+  slug String @unique
+  description String? @db.Text
+  image String?
+  isActive Boolean @default(true)
+  position Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([slug])
+}
+
+model Order {
+  id String @id @default(cuid())
+  orderNumber String @unique
+  customerId String
+  status OrderStatus @default(PENDING)
+  subtotal Decimal @db.Decimal(10, 2)
+  tax Decimal @db.Decimal(10, 2)
+  shipping Decimal @db.Decimal(10, 2)
+  discount Decimal @db.Decimal(10, 2)
+  total Decimal @db.Decimal(10, 2)
+  currency String @default("USD")
+  notes String? @db.Text
+  customerNote String? @db.Text
+  ipAddress String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items OrderItem[]
+  payments Payment[]
+  shipments Shipment[]
+  refunds Refund[]
+  @@index([customerId]) @@index([orderNumber]) @@index([status])
+}
+
+model OrderItem {
+  id String @id @default(cuid())
+  orderId String
+  order Order @relation(fields: [orderId], references: [id])
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  variantId String?
+  name String
+  sku String
+  quantity Int
+  price Decimal @db.Decimal(10, 2)
+  tax Decimal @db.Decimal(10, 2)
+  total Decimal @db.Decimal(10, 2)
+  metadata Json?
+  @@index([orderId]) @@index([productId])
+}
+
+model Payment {
+  id String @id @default(cuid())
+  orderId String
+  order Order @relation(fields: [orderId], references: [id])
+  amount Decimal @db.Decimal(10, 2)
+  method PaymentMethod
+  status String
+  transactionId String? @unique
+  gatewayResponse Json?
+  failureReason String?
+  processedAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([orderId]) @@index([transactionId])
+}
+
+model Shipment {
+  id String @id @default(cuid())
+  orderId String
+  order Order @relation(fields: [orderId], references: [id])
+  carrier String
+  trackingNumber String? @unique
+  shippingMethod String
+  shippingCost Decimal @db.Decimal(10, 2)
+  estimatedDelivery DateTime?
+  shippedAt DateTime?
+  deliveredAt DateTime?
+  address Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([orderId]) @@index([trackingNumber])
+}
+
+model Refund {
+  id String @id @default(cuid())
+  orderId String
+  order Order @relation(fields: [orderId], references: [id])
+  amount Decimal @db.Decimal(10, 2)
+  reason String
+  notes String? @db.Text
+  status String @default("pending")
+  processedAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([orderId])
+}
+
+model Cart {
+  id String @id @default(cuid())
+  customerId String? @unique
+  sessionId String? @unique
+  currency String @default("USD")
+  expiresAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items CartItem[]
+}
+
+model CartItem {
+  id String @id @default(cuid())
+  cartId String
+  cart Cart @relation(fields: [cartId], references: [id])
+  productId String
+  variantId String?
+  quantity Int
+  price Decimal @db.Decimal(10, 2)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([cartId])
+}
+
+model Wishlist {
+  id String @id @default(cuid())
+  customerId String @unique
+  isPublic Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items WishlistItem[]
+}
+
+model WishlistItem {
+  id String @id @default(cuid())
+  wishlistId String
+  wishlist Wishlist @relation(fields: [wishlistId], references: [id])
+  productId String
+  variantId String?
+  addedAt DateTime @default(now())
+  @@index([wishlistId])
+}
+
+model Review {
+  id String @id @default(cuid())
+  productId String
+  product Product @relation(fields: [productId], references: [id])
+  customerId String
+  rating Int
+  title String
+  content String @db.Text
+  isVerified Boolean @default(false)
+  isApproved Boolean @default(false)
+  helpfulCount Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([productId]) @@index([customerId])
+}
+
+model Coupon {
+  id String @id @default(cuid())
+  code String @unique
+  description String?
+  discountType String
+  discountValue Decimal @db.Decimal(10, 2)
+  minPurchase Decimal? @db.Decimal(10, 2)
+  maxDiscount Decimal? @db.Decimal(10, 2)
+  usageLimit Int?
+  usageCount Int @default(0)
+  startsAt DateTime?
+  expiresAt DateTime?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([code])
+}
+
+model Inventory {
+  id String @id @default(cuid())
+  sku String @unique
+  locationId String
+  quantity Int @default(0)
+  reserved Int @default(0)
+  available Int @default(0)
+  reorderPoint Int @default(0)
+  reorderQuantity Int @default(0)
+  lastStockCheck DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([sku]) @@index([locationId])
+}
+
+model InventoryTransaction {
+  id String @id @default(cuid())
+  sku String
+  type TransactionType
+  quantity Int
+  previousQuantity Int
+  newQuantity Int
+  reference String?
+  notes String?
+  userId String?
+  createdAt DateTime @default(now())
+  @@index([sku]) @@index([type])
+}
+
+model Supplier {
+  id String @id @default(cuid())
+  name String
+  email String? @unique
+  phone String?
+  address Json?
+  contactPerson String?
+  taxId String?
+  paymentTerms String?
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Subscription & Billing (10 models)
+model Subscription {
+  id String @id @default(cuid())
+  customerId String
+  planId String
+  status String
+  tier SubscriptionTier
+  currentPeriodStart DateTime
+  currentPeriodEnd DateTime
+  cancelAt DateTime?
+  canceledAt DateTime?
+  trialStart DateTime?
+  trialEnd DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  invoices Invoice[]
+  @@index([customerId]) @@index([planId])
+}
+
+model SubscriptionPlan {
+  id String @id @default(cuid())
+  name String @unique
+  description String? @db.Text
+  tier SubscriptionTier
+  price Decimal @db.Decimal(10, 2)
+  billingInterval String
+  trialDays Int @default(0)
+  features Json @default("[]")
+  limits Json @default("{}")
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invoice {
+  id String @id @default(cuid())
+  invoiceNumber String @unique
+  subscriptionId String
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+  customerId String
+  amount Decimal @db.Decimal(10, 2)
+  tax Decimal @db.Decimal(10, 2)
+  total Decimal @db.Decimal(10, 2)
+  status String
+  dueDate DateTime
+  paidAt DateTime?
+  currency String @default("USD")
+  createdAt DateTime @default(now())
+  items InvoiceItem[]
+  @@index([subscriptionId]) @@index([customerId]) @@index([invoiceNumber])
+}
+
+model InvoiceItem {
+  id String @id @default(cuid())
+  invoiceId String
+  invoice Invoice @relation(fields: [invoiceId], references: [id])
+  description String
+  quantity Int
+  unitPrice Decimal @db.Decimal(10, 2)
+  amount Decimal @db.Decimal(10, 2)
+  tax Decimal @db.Decimal(10, 2)
+  total Decimal @db.Decimal(10, 2)
+  @@index([invoiceId])
+}
+
+model Transaction {
+  id String @id @default(cuid())
+  customerId String
+  type TransactionType
+  amount Decimal @db.Decimal(10, 2)
+  currency String @default("USD")
+  status String
+  reference String?
+  description String?
+  metadata Json?
+  processedAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([customerId]) @@index([type]) @@index([reference])
+}
+
+model CustomerCredit {
+  id String @id @default(cuid())
+  customerId String @unique
+  balance Decimal @db.Decimal(10, 2) @default(0)
+  currency String @default("USD")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CreditTransaction {
+  id String @id @default(cuid())
+  customerId String
+  amount Decimal @db.Decimal(10, 2)
+  type String
+  description String?
+  reference String?
+  balanceBefore Decimal @db.Decimal(10, 2)
+  balanceAfter Decimal @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  @@index([customerId])
+}
+
+model PaymentMethod {
+  id String @id @default(cuid())
+  customerId String
+  type String
+  provider String
+  last4 String?
+  expiryMonth Int?
+  expiryYear Int?
+  isDefault Boolean @default(false)
+  metadata Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([customerId])
+}
+
+model BillingAddress {
+  id String @id @default(cuid())
+  customerId String
+  firstName String
+  lastName String
+  company String?
+  address1 String
+  address2 String?
+  city String
+  state String?
+  postalCode String
+  country String
+  phone String?
+  isDefault Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([customerId])
+}
+
+model TaxRate {
+  id String @id @default(cuid())
+  country String
+  state String?
+  city String?
+  postalCode String?
+  rate Decimal @db.Decimal(5, 4)
+  name String
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([country, state, city])
+}
+
+// System & Logs (15 models)
+model AuditLog {
+  id String @id @default(cuid())
+  userId String?
+  action String
+  entityType String
+  entityId String
+  changes Json?
+  metadata Json?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  @@index([entityType, entityId]) @@index([userId]) @@index([action])
+}
+
+model ErrorLog {
+  id String @id @default(cuid())
+  level LogLevel
+  message String @db.Text
+  stack String? @db.Text
+  context Json?
+  userId String?
+  sessionId String?
+  url String?
+  method String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+  @@index([level]) @@index([userId]) @@index([createdAt])
+}
+
+model AccessLog {
+  id String @id @default(cuid())
+  userId String?
+  path String
+  method String
+  statusCode Int
+  responseTime Int
+  ipAddress String?
+  userAgent String?
+  referer String?
+  createdAt DateTime @default(now())
+  @@index([userId]) @@index([path]) @@index([createdAt])
+}
+
+model SystemLog {
+  id String @id @default(cuid())
+  level LogLevel
+  source String
+  message String @db.Text
+  data Json?
+  createdAt DateTime @default(now())
+  @@index([level]) @@index([source]) @@index([createdAt])
+}
+
+model Job {
+  id String @id @default(cuid())
+  queue String
+  type String
+  payload Json
+  status String @default("pending")
+  attempts Int @default(0)
+  maxAttempts Int @default(3)
+  processedAt DateTime?
+  failedAt DateTime?
+  error String? @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([queue, status]) @@index([type])
+}
+
+model Schedule {
+  id String @id @default(cuid())
+  name String @unique
+  description String?
+  cron String
+  timezone String @default("UTC")
+  handler String
+  payload Json?
+  isActive Boolean @default(true)
+  lastRunAt DateTime?
+  nextRunAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([isActive, nextRunAt])
+}
+
+model Webhook {
+  id String @id @default(cuid())
+  url String
+  secret String
+  events String[]
+  isActive Boolean @default(true)
+  retryCount Int @default(3)
+  timeout Int @default(30)
+  headers Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deliveries WebhookDelivery[]
+}
+
+model WebhookDelivery {
+  id String @id @default(cuid())
+  webhookId String
+  webhook Webhook @relation(fields: [webhookId], references: [id])
+  event String
+  payload Json
+  response String? @db.Text
+  statusCode Int?
+  success Boolean @default(false)
+  attempts Int @default(0)
+  deliveredAt DateTime?
+  createdAt DateTime @default(now())
+  @@index([webhookId]) @@index([event])
+}
+
+model Cache {
+  key String @id
+  value String @db.Text
+  expiresAt DateTime?
+  tags String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([expiresAt])
+}
+
+model Config {
+  key String @id
+  value String @db.Text
+  category String
+  type String @default("string")
+  description String?
+  isPublic Boolean @default(false)
+  isEncrypted Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([category])
+}
+
+model Feature {
+  id String @id @default(cuid())
+  key String @unique
+  name String
+  description String? @db.Text
+  isEnabled Boolean @default(false)
+  rolloutPercentage Int @default(0)
+  rules Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([key])
+}
+
+model Metrics {
+  id String @id @default(cuid())
+  name String
+  value Decimal @db.Decimal(20, 4)
+  unit String?
+  tags Json?
+  timestamp DateTime @default(now())
+  @@index([name, timestamp])
+}
+
+model Analytics {
+  id String @id @default(cuid())
+  event String
+  category String?
+  label String?
+  value Int?
+  userId String?
+  sessionId String?
+  metadata Json?
+  createdAt DateTime @default(now())
+  @@index([event]) @@index([userId]) @@index([sessionId]) @@index([createdAt])
+}
+
+model Backup {
+  id String @id @default(cuid())
+  filename String @unique
+  size Int
+  type String
+  status String @default("pending")
+  startedAt DateTime @default(now())
+  completedAt DateTime?
+  error String? @db.Text
+  @@index([status]) @@index([type])
+}
+
+model Migration {
+  id String @id @default(cuid())
+  name String @unique
+  batch Int
+  executedAt DateTime @default(now())
+}
+
+// File Management (5 models)
+model File {
+  id String @id @default(cuid())
+  filename String
+  originalName String
+  mimeType String
+  size Int
+  path String
+  url String
+  category FileCategory
+  uploaderId String
+  folderId String?
+  isPublic Boolean @default(false)
+  downloads Int @default(0)
+  metadata Json?
+  hash String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([uploaderId]) @@index([folderId]) @@index([hash])
+}
+
+model Folder {
+  id String @id @default(cuid())
+  name String
+  parentId String?
+  ownerId String
+  isPublic Boolean @default(false)
+  position Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([parentId]) @@index([ownerId])
+}
+
+model FileShare {
+  id String @id @default(cuid())
+  fileId String
+  shareToken String @unique
+  password String?
+  expiresAt DateTime?
+  maxDownloads Int?
+  downloadCount Int @default(0)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  @@index([fileId]) @@index([shareToken])
+}
+
+model Document {
+  id String @id @default(cuid())
+  projectId String
+  project Project @relation(fields: [projectId], references: [id])
+  title String
+  content String @db.Text
+  version Int @default(1)
+  authorId String
+  accessLevel AccessLevel @default(PRIVATE)
+  tags String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([projectId]) @@index([authorId])
+}
+
+model DocumentVersion {
+  id String @id @default(cuid())
+  documentId String
+  version Int
+  content String @db.Text
+  authorId String
+  changeDescription String?
+  createdAt DateTime @default(now())
+  @@unique([documentId, version]) @@index([documentId])
+}
+
+// Support & Tickets (5 models)
+model Ticket {
+  id String @id @default(cuid())
+  ticketNumber String @unique
+  subject String
+  description String @db.Text
+  status TicketStatus @default(OPEN)
+  priority Priority @default(MEDIUM)
+  category String?
+  customerId String
+  assigneeId String?
+  tags String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  closedAt DateTime?
+  replies TicketReply[]
+  @@index([ticketNumber]) @@index([customerId]) @@index([assigneeId]) @@index([status])
+}
+
+model TicketReply {
+  id String @id @default(cuid())
+  ticketId String
+  ticket Ticket @relation(fields: [ticketId], references: [id])
+  authorId String
+  content String @db.Text
+  isInternal Boolean @default(false)
+  attachments Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([ticketId]) @@index([authorId])
+}
+
+model FAQ {
+  id String @id @default(cuid())
+  question String
+  answer String @db.Text
+  category String
+  position Int @default(0)
+  isPublic Boolean @default(true)
+  views Int @default(0)
+  helpful Int @default(0)
+  unhelpful Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([category])
+}
+
+model KnowledgeBase {
+  id String @id @default(cuid())
+  title String
+  slug String @unique
+  content String @db.Text
+  category String
+  tags String[]
+  authorId String
+  isPublished Boolean @default(false)
+  views Int @default(0)
+  rating Decimal? @db.Decimal(3, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([slug]) @@index([category]) @@index([authorId])
+}
+
+model Feedback {
+  id String @id @default(cuid())
+  type String
+  subject String?
+  message String @db.Text
+  rating Int?
+  userId String?
+  email String?
+  metadata Json?
+  status String @default("pending")
+  createdAt DateTime @default(now())
+  @@index([type]) @@index([userId]) @@index([status])
+}
+
+// Deployment & Infrastructure (5 models)
+model Deployment {
+  id String @id @default(cuid())
+  version String
+  environment Environment
+  status DeploymentStatus @default(PENDING)
+  branch String
+  commit String
+  deployedBy String
+  startedAt DateTime @default(now())
+  completedAt DateTime?
+  duration Int?
+  logs String? @db.Text
+  metadata Json?
+  @@index([environment]) @@index([status]) @@index([deployedBy])
+}
+
+model Server {
+  id String @id @default(cuid())
+  hostname String @unique
+  ipAddress String
+  environment Environment
+  status String @default("active")
+  cpu Int?
+  memory Int?
+  disk Int?
+  region String?
+  provider String?
+  metadata Json?
+  lastHeartbeat DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([environment]) @@index([status])
+}
+
+model ServiceHealth {
+  id String @id @default(cuid())
+  service String
+  status String
+  responseTime Int?
+  uptime Decimal? @db.Decimal(5, 2)
+  lastCheck DateTime @default(now())
+  metadata Json?
+  @@index([service]) @@index([status])
+}
+
+model Alert {
+  id String @id @default(cuid())
+  type String
+  severity String
+  title String
+  message String @db.Text
+  source String?
+  isResolved Boolean @default(false)
+  resolvedAt DateTime?
+  resolvedBy String?
+  metadata Json?
+  createdAt DateTime @default(now())
+  @@index([type]) @@index([severity]) @@index([isResolved])
+}
+
+model Monitor {
+  id String @id @default(cuid())
+  name String @unique
+  type String
+  url String?
+  interval Int @default(60)
+  timeout Int @default(30)
+  isActive Boolean @default(true)
+  lastCheck DateTime?
+  lastStatus String?
+  uptime Decimal? @db.Decimal(5, 2)
+  config Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([type]) @@index([isActive])
+}

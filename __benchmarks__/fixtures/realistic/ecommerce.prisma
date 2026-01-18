@@ -1,0 +1,436 @@
+// Realistic E-commerce Schema
+// ~30 models representing a typical e-commerce platform
+// Products, Orders, Inventory, Customers, Reviews, etc.
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator prisma_arktype {
+  provider = "node ../../../dist/index.js"
+  output   = "../../../__benchmarks__/reports/.generated/ecommerce"
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  AUTHORIZED
+  CAPTURED
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  PAYPAL
+  STRIPE
+  BANK_TRANSFER
+}
+
+enum ShippingStatus {
+  PENDING
+  PREPARING
+  SHIPPED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED
+}
+
+// Customer Management
+model Customer {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  firstName    String
+  lastName     String
+  phone        String?
+  isVerified   Boolean   @default(false)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  addresses Address[]
+  orders    Order[]
+  cart      Cart?
+  wishlist  Wishlist?
+  reviews   Review[]
+  payments  PaymentMethod[]
+
+  @@index([email])
+}
+
+model Address {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  firstName  String
+  lastName   String
+  company    String?
+  address1   String
+  address2   String?
+  city       String
+  state      String?
+  postalCode String
+  country    String
+  phone      String?
+  isDefault  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([customerId])
+}
+
+// Product Catalog
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  description      String   @db.Text
+  shortDescription String?
+  price            Decimal  @db.Decimal(10, 2)
+  comparePrice     Decimal? @db.Decimal(10, 2)
+  costPrice        Decimal? @db.Decimal(10, 2)
+  sku              String   @unique
+  barcode          String?
+  trackInventory   Boolean  @default(true)
+  stock            Int      @default(0)
+  lowStockAlert    Int      @default(10)
+  weight           Decimal? @db.Decimal(10, 2)
+  dimensions       Json?
+  isActive         Boolean  @default(true)
+  isFeatured       Boolean  @default(false)
+  taxable          Boolean  @default(true)
+  metaTitle        String?
+  metaDescription  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  variants          ProductVariant[]
+  images            ProductImage[]
+  productCategories ProductCategory[]
+  reviews           Review[]
+  cartItems         CartItem[]
+  wishlistItems     WishlistItem[]
+  orderItems        OrderItem[]
+
+  @@index([slug])
+  @@index([sku])
+}
+
+model ProductVariant {
+  id           String   @id @default(cuid())
+  productId    String
+  product      Product  @relation(fields: [productId], references: [id])
+  name         String
+  sku          String   @unique
+  price        Decimal  @db.Decimal(10, 2)
+  comparePrice Decimal? @db.Decimal(10, 2)
+  stock        Int      @default(0)
+  weight       Decimal? @db.Decimal(10, 2)
+  options      Json
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([productId])
+  @@index([sku])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  url       String
+  alt       String?
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+}
+
+model Category {
+  id          String @id @default(cuid())
+  name        String @unique
+  slug        String @unique
+  description String? @db.Text
+  image       String?
+  parentId    String?
+  position    Int @default(0)
+  isActive    Boolean @default(true)
+
+  products ProductCategory[]
+
+  @@index([slug])
+  @@index([parentId])
+}
+
+model ProductCategory {
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  @@id([productId, categoryId])
+}
+
+// Orders & Checkout
+model Cart {
+  id         String   @id @default(cuid())
+  customerId String   @unique
+  customer   Customer @relation(fields: [customerId], references: [id])
+  currency   String   @default("USD")
+  expiresAt  DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  items CartItem[]
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  variantId String?
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([cartId])
+  @@index([productId])
+}
+
+model Order {
+  id           String      @id @default(cuid())
+  orderNumber  String      @unique
+  customerId   String
+  customer     Customer    @relation(fields: [customerId], references: [id])
+  status       OrderStatus @default(PENDING)
+  subtotal     Decimal     @db.Decimal(10, 2)
+  tax          Decimal     @db.Decimal(10, 2)
+  shipping     Decimal     @db.Decimal(10, 2)
+  discount     Decimal     @db.Decimal(10, 2)
+  total        Decimal     @db.Decimal(10, 2)
+  currency     String      @default("USD")
+  notes        String?     @db.Text
+  customerNote String?     @db.Text
+  ipAddress    String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  items     OrderItem[]
+  payments  Payment[]
+  shipments Shipment[]
+  refunds   Refund[]
+
+  @@index([customerId])
+  @@index([orderNumber])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  variantId String?
+  name      String
+  sku       String
+  quantity  Int
+  price     Decimal @db.Decimal(10, 2)
+  tax       Decimal @db.Decimal(10, 2)
+  total     Decimal @db.Decimal(10, 2)
+  metadata  Json?
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Payment {
+  id              String        @id @default(cuid())
+  orderId         String
+  order           Order         @relation(fields: [orderId], references: [id])
+  amount          Decimal       @db.Decimal(10, 2)
+  method          PaymentMethod
+  status          PaymentStatus @default(PENDING)
+  transactionId   String?       @unique
+  gatewayResponse Json?
+  failureReason   String?
+  processedAt     DateTime?
+  createdAt       DateTime      @default(now())
+
+  @@index([orderId])
+  @@index([transactionId])
+  @@index([status])
+}
+
+model Shipment {
+  id                String          @id @default(cuid())
+  orderId           String
+  order             Order           @relation(fields: [orderId], references: [id])
+  carrier           String
+  trackingNumber    String?         @unique
+  shippingMethod    String
+  shippingCost      Decimal         @db.Decimal(10, 2)
+  status            ShippingStatus  @default(PENDING)
+  estimatedDelivery DateTime?
+  shippedAt         DateTime?
+  deliveredAt       DateTime?
+  address           Json
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([orderId])
+  @@index([trackingNumber])
+  @@index([status])
+}
+
+model Refund {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  amount      Decimal  @db.Decimal(10, 2)
+  reason      String
+  notes       String?  @db.Text
+  status      String   @default("pending")
+  processedAt DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([orderId])
+  @@index([status])
+}
+
+// Inventory Management
+model Inventory {
+  id              String   @id @default(cuid())
+  sku             String   @unique
+  locationId      String
+  location        Warehouse @relation(fields: [locationId], references: [id])
+  quantity        Int      @default(0)
+  reserved        Int      @default(0)
+  available       Int      @default(0)
+  reorderPoint    Int      @default(0)
+  reorderQuantity Int      @default(0)
+  lastStockCheck  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([sku])
+  @@index([locationId])
+}
+
+model Warehouse {
+  id        String @id @default(cuid())
+  name      String @unique
+  code      String @unique
+  address   Json
+  isActive  Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  inventory Inventory[]
+
+  @@index([code])
+}
+
+// Reviews & Ratings
+model Review {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  rating      Int
+  title       String
+  content     String   @db.Text
+  isVerified  Boolean  @default(false)
+  isApproved  Boolean  @default(false)
+  helpfulCount Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+  @@index([customerId])
+  @@index([isApproved])
+}
+
+// Wishlist
+model Wishlist {
+  id         String   @id @default(cuid())
+  customerId String   @unique
+  customer   Customer @relation(fields: [customerId], references: [id])
+  isPublic   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  items WishlistItem[]
+}
+
+model WishlistItem {
+  id         String   @id @default(cuid())
+  wishlistId String
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  variantId  String?
+  addedAt    DateTime @default(now())
+
+  @@index([wishlistId])
+  @@index([productId])
+}
+
+// Coupons & Discounts
+model Coupon {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  description   String?
+  discountType  String
+  discountValue Decimal  @db.Decimal(10, 2)
+  minPurchase   Decimal? @db.Decimal(10, 2)
+  maxDiscount   Decimal? @db.Decimal(10, 2)
+  usageLimit    Int?
+  usageCount    Int      @default(0)
+  startsAt      DateTime?
+  expiresAt     DateTime?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+}
+
+// Store Payment Methods
+model PaymentMethod {
+  id         String   @id @default(cuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  type       String
+  provider   String
+  last4      String?
+  expiryMonth Int?
+  expiryYear Int?
+  isDefault  Boolean  @default(false)
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([customerId])
+}

@@ -43,9 +43,11 @@
   },
   "exclude": [
     "vitest.config.ts",
+    "vitest.bench.config.ts",
     "prisma.config.ts",
     "dist",
     "prisma",
-    "__tests__"
+    "__tests__",
+    "__benchmarks__"
   ]
 }

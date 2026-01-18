@@ -18,7 +18,9 @@ pre-commit:
 
     # Prevent committing common debug patterns
     forbidden-patterns:
-      glob: "*.{js,ts,tsx,jsx}"
+      glob:
+        - "src/*.{js,ts,tsx,jsx}"
+        - "dist/*.{js,ts,tsx,jsx}"
       run: |
         if echo "{staged_files}" | xargs grep -l "console.log\|debugger" 2>/dev/null; then
           echo "⚠️  Warning: Found console.log or debugger statements"

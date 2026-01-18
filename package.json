@@ -60,7 +60,16 @@
     "lint:fix": "biome check --write",
     "changeset": "changeset",
     "version": "changeset version",
-    "release": "pnpm build && changeset publish"
+    "release": "pnpm build && changeset publish",
+    "bench": "vitest bench --config vitest.bench.config.ts",
+    "bench:ui": "vitest bench --ui --config vitest.bench.config.ts",
+    "bench:generation": "vitest bench --grep \"End-to-End Generation\" --config vitest.bench.config.ts",
+    "bench:processors": "vitest bench --grep \"Processor Performance\" --config vitest.bench.config.ts",
+    "bench:annotations": "vitest bench --grep \"Annotation Extraction\" --config vitest.bench.config.ts",
+    "bench:memory": "node --expose-gc node_modules/.bin/vitest bench --grep \"Memory\" --config vitest.bench.config.ts",
+    "bench:compare": "tsx __benchmarks__/scripts/compare.ts",
+    "bench:update-baseline": "tsx __benchmarks__/scripts/update-baseline.ts",
+    "bench:profile": "node --cpu-prof --expose-gc node_modules/.bin/vitest bench --config vitest.bench.config.ts"
   },
   "keywords": [
     "prisma",
