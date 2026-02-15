@@ -1,6 +1,6 @@
 {
   "name": "prisma-arktype",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Generate ArkType schemas from your Prisma schema",
   "type": "module",
   "main": "./dist/index.js",

@@ -1,5 +1,11 @@
 # prisma-arktype
 
+## 2.5.1
+
+### Patch Changes
+
+- fbd84b3: Update export path maps to include default exports for tsx resolution
+
 ## 2.5.0
 
 ### Minor Changes
