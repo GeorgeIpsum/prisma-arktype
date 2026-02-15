@@ -8,39 +8,48 @@
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./runtime/filters": {
       "import": "./dist/runtime/filters.js",
-      "types": "./dist/runtime/filters.d.ts"
+      "types": "./dist/runtime/filters.d.ts",
+      "default": "./dist/runtime/filters.js"
     },
     "./runtime/buffer": {
       "import": "./dist/runtime/buffer.js",
-      "types": "./dist/runtime/buffer.d.ts"
+      "types": "./dist/runtime/buffer.d.ts",
+      "default": "./dist/runtime/buffer.js"
     },
     "./runtime/uint8array": {
       "import": "./dist/runtime/uint8array.js",
-      "types": "./dist/runtime/uint8array.d.ts"
+      "types": "./dist/runtime/uint8array.d.ts",
+      "default": "./dist/runtime/uint8array.js"
     },
     "./runtime/arrayFilters": {
       "import": "./dist/runtime/arrayFilters.js",
-      "types": "./dist/runtime/arrayFilters.d.ts"
+      "types": "./dist/runtime/arrayFilters.d.ts",
+      "default": "./dist/runtime/arrayFilters.js"
     },
     "./runtime/stringFilter": {
       "import": "./dist/runtime/stringFilter.js",
-      "types": "./dist/runtime/stringFilter.d.ts"
+      "types": "./dist/runtime/stringFilter.d.ts",
+      "default": "./dist/runtime/stringFilter.js"
     },
     "./runtime/numberFilter": {
       "import": "./dist/runtime/numberFilter.js",
-      "types": "./dist/runtime/numberFilter.d.ts"
+      "types": "./dist/runtime/numberFilter.d.ts",
+      "default": "./dist/runtime/numberFilter.js"
     },
     "./runtime/enumFilter": {
       "import": "./dist/runtime/enumFilter.js",
-      "types": "./dist/runtime/enumFilter.d.ts"
+      "types": "./dist/runtime/enumFilter.d.ts",
+      "default": "./dist/runtime/enumFilter.js"
     },
     "./runtime/booleanFilter": {
       "import": "./dist/runtime/booleanFilter.js",
-      "types": "./dist/runtime/booleanFilter.d.ts"
+      "types": "./dist/runtime/booleanFilter.d.ts",
+      "default": "./dist/runtime/booleanFilter.js"
     }
   },
   "bin": {
