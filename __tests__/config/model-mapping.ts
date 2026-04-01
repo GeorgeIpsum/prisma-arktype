@@ -61,6 +61,10 @@ export const TEST_MODEL_MAP = {
 
   // Array filter model (for testing array filters in where clauses)
   ARRAY_FILTER_MODEL: "TestArrayFilter",
+
+  // Model with Int auto-increment primary keys
+  INT_ID_PARENT: "TestIntIdParent",
+  INT_ID_CHILD: "TestIntIdChild",
 } as const;
 
 /**
@@ -254,5 +258,16 @@ export const TEST_FIXTURES = {
     numbers: [1, 2, 3, 42, 100],
     bigInts: [1, 2, 3, 9007199254740991],
     enumKeys: ["ACTIVE", "PENDING"] as const,
+  },
+
+  TestIntIdParent: {
+    id: 1,
+    name: "Test Int Parent",
+  },
+
+  TestIntIdChild: {
+    id: 1,
+    label: "Test Int Child",
+    parentId: 1,
   },
 } as const;

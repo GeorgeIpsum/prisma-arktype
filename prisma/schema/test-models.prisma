@@ -403,3 +403,20 @@ model TestArrayFilter {
   bigInts    BigInt[]
   enumKeys   TestStatus[]
 }
+
+/// Model for testing Int auto-increment primary keys
+model TestIntIdParent {
+  id       Int              @id @default(autoincrement())
+  name     String
+  children TestIntIdChild[]
+}
+
+/// Model for testing Int foreign key relations
+model TestIntIdChild {
+  id       Int            @id @default(autoincrement())
+  label    String
+  parentId Int
+  parent   TestIntIdParent @relation(fields: [parentId], references: [id])
+
+  @@index([parentId])
+}
