@@ -117,7 +117,7 @@ function stringifyRelationsInputCreate(
     let idType = '"string"';
     if (idField) {
       if (idField.type === "Int" || idField.type === "BigInt") {
-        idType = '"integer"';
+        idType = '"number.integer"';
       }
     }
 
@@ -176,7 +176,7 @@ function stringifyRelationsInputUpdate(
     let idType = '"string"';
     if (idField) {
       if (idField.type === "Int" || idField.type === "BigInt") {
-        idType = '"integer"';
+        idType = '"number.integer"';
       }
     }
 
