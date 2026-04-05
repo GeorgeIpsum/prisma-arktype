@@ -110,7 +110,9 @@ describe("Annotation Support", () => {
       const invalidResult = PlainValidator({
         id: "test",
         email: "not-an-email",
+        website: null,
         normalField: "normal",
+        description: null,
         computedField: "computed",
         updateOnlyField: "update",
         createOnlyField: "create",
@@ -124,7 +126,9 @@ describe("Annotation Support", () => {
       const validResult = PlainValidator({
         id: "test",
         email: "valid@example.com",
+        website: null,
         normalField: "normal",
+        description: null,
         computedField: "computed",
         updateOnlyField: "update",
         createOnlyField: "create",

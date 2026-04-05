@@ -22,8 +22,9 @@ describe("Dependency Tracking and Import Generation", () => {
       expect(content).toContain('import { TestStatus } from "./TestStatus"');
 
       // Should reference enums directly (not as strings)
-      expect(content).toContain('"currency?": TestCurrency');
-      expect(content).toContain('"status?": TestStatus');
+      // In Plain models, fields with @default are required (not optional)
+      expect(content).toContain('"currency": TestCurrency');
+      expect(content).toContain('"status": TestStatus');
     });
 
     it("should import enum dependencies in Where validator", () => {
