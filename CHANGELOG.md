@@ -1,5 +1,15 @@
 # prisma-arktype
 
+## 2.6.0
+
+### Minor Changes
+
+- 20df182: Fix default and optional parameter generation on plain models
+
+### Patch Changes
+
+- ebd086e: fix: use number.integer instead of integer for Int fields in relation connect schemas
+
 ## 2.5.1
 
 ### Patch Changes
