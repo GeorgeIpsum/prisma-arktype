@@ -184,10 +184,16 @@ function stringifyPlain(
         fieldType = `"${inner} | null"`;
       }
       // In ArkType, optional fields (can be missing) need ? on the key
-      fieldName += "?";
+      // Only for input models — in Plain, nullable fields are always present
+      if (isInputCreate || isInputUpdate) {
+        fieldName += "?";
+      }
     }
     // Fields with defaults are also optional in create/update
-    if (field.hasDefaultValue || isInputUpdate) {
+    if (
+      (isInputCreate || isInputUpdate) &&
+      (field.hasDefaultValue || isInputUpdate)
+    ) {
       if (!fieldName.endsWith("?")) {
         fieldName += "?";
       }

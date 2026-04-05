@@ -57,7 +57,9 @@ describe("Plain Model Generation", () => {
     const result = PlainValidator({
       id: "test",
       email: "test@example.com",
-      // name and phoneNumber are optional
+      name: null,
+      phoneNumber: null,
+      isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
